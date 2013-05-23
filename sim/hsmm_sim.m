@@ -29,6 +29,12 @@ Dmax_init = 50;
 
 [A0_init D0_init A_init D_init O_init] = genHSMMparam_init(Nobs, Nhid_init, Dmax_init);
 
+A0_init = A0_true;
+D0_init = D0_true;
+A_init = A_true;
+D_init = D_true;
+O_init = O_true;
+
 
 [A0_init_hmm A_init_hmm O_init_hmm] = genHMMparam(Nobs, Nhid_init);
 
@@ -62,10 +68,10 @@ createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm);
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
 %simulation time
-T = 700;
+T = 200;
 
 %number of obseration sequences
-numSeq = 300;
+numSeq = 1000;
 
 createTraining(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true);
 
@@ -73,10 +79,10 @@ createTraining(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, 
 %% =============== CREATE ANOMALY SEQUENCE ================================
 
 %simulation time
-T = 100;
+T = 200;
 
 %number of obseration sequences
-numSeq = 1000;
+numSeq = 2000;
 
 createTesting(T, numSeq, Nobs, ...
               Nhid_true, Dmax_true, Nhid_anom, Dmax_anom, ...

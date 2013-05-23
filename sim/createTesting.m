@@ -32,7 +32,7 @@ for i=1:floor(numSeq/2)
         %select duration (# of timesteps) until next observation
         dur = randsample(1:Dmax_true, 1, true, D_true(:,currState, prevDur))';
         
-        %perform dur observations in current state
+        %perform observations in current state
         currObs = randsample(1:Nobs, 1, true, O_true(:,currState))';
         
         %advance time

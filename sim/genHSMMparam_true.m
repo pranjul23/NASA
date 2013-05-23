@@ -46,7 +46,7 @@ end
 %========= observation distribution =========
 %element i,j is observation of symbol i, given we are in state j and d_{t-1} = k
 
-O = full(sprand(Nobs, Nhid,0.5));
+O = rand(Nobs, Nhid);
 for i=1:Nhid
     O(:,i) = O(:,i)/sum(O(:,i));
 end

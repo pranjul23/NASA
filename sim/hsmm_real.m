@@ -177,12 +177,15 @@ numSeq_train = length(list_train)-3;
 %the result will be written to 
 fid_train = fopen('/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/examples/training.txt', 'w');
 
-%names = importdata('/Users/igor/Documents/Projects/anomaly/code/HSMM/sim/lpr-mit-live-callnames.txt');
-%out = fopen('/Users/igor/Documents/Projects/anomaly/code/HSMM/sim/commands.txt', 'w');
+names = importdata('/Users/igor/Documents/Projects/anomaly/code/HSMM/sim/lpr-mit-live-callnames.txt');
+out = fopen('/Users/igor/Documents/Projects/anomaly/code/HSMM/sim/commands.txt', 'w');
 
 
 %find indeces of sequences of small lengths
+%ind = 1:numSeq_train;
+
 ind = [];
+
 for i=1:numSeq_train
     obs = load(strcat(dir_train, list_train(i+3).name));
     obs = obs(:,2);
@@ -200,7 +203,7 @@ for i=1:length(ind)
     obs = load(strcat(dir_train, list_train(ind(i)+3).name));
     obs = obs(:,2);
     
-    plot(obs, 'r*')
+    %plot(obs, 'r*')
     
     %sequence = names(obs+ones(size(obs)));
     %fprintf(out, '%s\n', sequence{:});

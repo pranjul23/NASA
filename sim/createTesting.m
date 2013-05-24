@@ -36,9 +36,9 @@ for i=1:floor(numSeq/2)
         currObs = randsample(1:Nobs, 1, true, O_true(:,currState))';
         
         %advance time
-        currTime = currTime + 1;
-        
+        currTime = currTime + 1;        
         prevDur = dur;
+        prevState = currState;
         
         %save data
         states = [states, currState];
@@ -84,9 +84,9 @@ for i=1:ceil(numSeq/2)
         currObs = randsample(1:Nobs, 1, true, O_anom(:,currState))';
         
         %advance time
-        currTime = currTime + 1;
-        
+        currTime = currTime + 1;        
         prevDur = dur;
+        prevState = currState;
         
         %save data
         states = [states, currState];

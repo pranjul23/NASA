@@ -9,10 +9,13 @@
 namespace dai{
 
 class TestHSMM{
+	std::vector<std::vector<std::pair<size_t, size_t> > > test_data;
 
+public:
 	TestHSMM(const char* filename);
-
-    void test();
+	void test();
 };
 
 }
+
+#endif

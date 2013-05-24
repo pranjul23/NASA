@@ -15,10 +15,11 @@ D0 = D0./sum(D0); %normalize
 %element i,j,k is transition from j to i when d_{t-1} = k: p(i|j,k)
 
 A1 = rand(Nhid);
+A1 = tril(A1,-1)+triu(A1,1);
+
 for i=1:Nhid
     A1(:,i) = A1(:,i)/sum(A1(:,i));
 end
-%A1 = [[.3 .3 .4 0 0]' [0 0 0 1 0]' [0 0 .2 .8 0]' [0 .4 0 0 .6]' [0 0 1 0 0]'];
 
 A = cat(3, A1, eye(Nhid));
 for i=3:Dmax
@@ -46,7 +47,7 @@ end
 %========= observation distribution =========
 %element i,j is observation of symbol i, given we are in state j and d_{t-1} = k
 
-O = rand(Nobs, Nhid);
+O = full(sprand(Nobs, Nhid, 0.5));
 for i=1:Nhid
     O(:,i) = O(:,i)/sum(O(:,i));
 end

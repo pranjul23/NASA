@@ -1,4 +1,4 @@
-function [A0 D0 A D O] = genHSMMparam_anom(Nobs, Nhid, Dmax, A0_true, D0_true, A_true, D_true, O_true)
+function [A0 D0 A D O] = genHSMMparam_anom(Nobs, Nhid, Dmax, Dmin, A0_true, D0_true, A_true, D_true, O_true)
 
 %initial state distribution
 A0 = rand(Nhid,1);
@@ -10,7 +10,10 @@ A0 = A0_true;
 
 %initial duration distribution
 D0 = rand(Dmax,1);
+D0(1:Dmin) = 0;
+
 D0 = D0./sum(D0); %normalize
+
 
 
 %========= transition distribution ==========
@@ -20,14 +23,13 @@ A1 = rand(Nhid);
 for i=1:Nhid
     A1(:,i) = A1(:,i)/sum(A1(:,i));
 end
-%A1 = [[.3 .3 .4 0 0]' [0 0 0 1 0]' [0 0 .2 .8 0]' [0 .4 0 0 .6]' [0 0 1 0 0]'];
+
+A1 = A_true(:,:,1);
 
 A = cat(3, A1, eye(Nhid));
 for i=3:Dmax
     A = cat(3, A, eye(Nhid));
 end
-
-%A = A_true;
 
 
 
@@ -35,10 +37,11 @@ end
 %element i,j is duration of i time units, given we are in state j and d_{t-1} = k
 
 D1 = rand(Dmax, Nhid);
+D1(1:Dmin,:) = 0;
 for i=1:Nhid
     D1(:,i) = D1(:,i)/sum(D1(:,i));
 end
-%D1 = [[.1 .1 .5 .3 0 0 0]' [0 0 0 .2 .8 0 0]' [0 0 0 0 .4 .4 .2]' [.1 .3 .3 .3 0 0 0]' [0 0 0 0 .3 .7 0]'];
+
 
 tmp = ones(1, Nhid);
 M = [tmp; zeros(Dmax-1, Nhid)];

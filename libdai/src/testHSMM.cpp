@@ -1,6 +1,7 @@
 
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 #include <dai/alldai.h>
 #include <dai/testHSMM.h>
@@ -8,23 +9,39 @@
 #include <dai/HSMMparam.h>
 
 
-
 namespace dai{
 
 using namespace std;
 
-void TrainHSMM::train(){
-
-}
-//HSMMparam param("hsmm_factor_graph_learnt.fg");
-
+TestHSMM::TestHSMM(const char* filename){
 	// Read test data
-	Observation test( "/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/examples/HSMMtesting.txt" );
-	vector<vector<pair<size_t, size_t> > > test_data = test.getData();
+	Observation test( filename );
+
+	test_data = test.getData();
+}
+
+
+void TestHSMM::test(){
+
+	HSMMparam param("hsmm_factor_graph_learnt.fg");
 
 	vector<Real> likelihood_test;
+	FactorGraph *graph;
+	JTree *jt;
 
-	cout << "Now we do sequence testing...\n";
+	// Set some constants
+	size_t maxiter = 10000;
+	Real   tol = 1e-9;
+	size_t verb = 0;
+
+	// Store the constants in a PropertySet object
+	PropertySet opts;
+	opts.set("maxiter",maxiter);  // Maximum number of iterations
+	opts.set("tol",tol);          // Tolerance for convergence
+	opts.set("verbose",verb);     // Verbosity (amount of output generated)
+
+
+	cout << "Now we do testing...\n";
 
 	for(size_t i=0; i<test_data.size(); i++) {
 
@@ -53,14 +70,12 @@ void TrainHSMM::train(){
 
 	cout << "done.\n";
 
-	//cout << "test likelihood: "<<"\n";
-	//for(size_t i=0; i<likelihood_test.size(); i++){
-	//	cout << likelihood_test.at(i)<<"\n";
-	//}
-
 	ofstream os;
 	os.open("HSMMlikelihood_test.txt", ios::trunc);
 
 	for(size_t i=0; i<likelihood_test.size(); i++){
 		os << likelihood_test.at(i)<<"\n";
 	}
+}
+
+}

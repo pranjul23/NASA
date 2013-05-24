@@ -7,15 +7,24 @@
 #include <dai/HSMMparam.h>
 
 
-
 namespace dai{
 
 using namespace std;
+
+
+TrainHSMM::TrainHSMM(const char* filename){
+	// Read sample from file
+	Observation obs(filename);
+	data = obs.getData();
+
+}
 
 void TrainHSMM::train(){
 
 	// Read FactorGraph from the file specified by the first command line argument
 	HSMMparam param("hsmm_factor_graph_init.fg");
+
+	param.printHSMMparam("hsmm_param_init.txt");
 
 	// Set some constants
 	size_t maxiter = 10000;
@@ -28,11 +37,6 @@ void TrainHSMM::train(){
 	opts.set("tol",tol);          // Tolerance for convergence
 	opts.set("verbose",verb);     // Verbosity (amount of output generated)
 
-
-	// Read sample from file
-	Observation obs( "/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/examples/HSMMtraining.txt" );
-	vector<vector<pair<size_t, size_t> > > data = obs.getData();
-
 	FactorGraph *graph;
 	JTree *jt;
 
@@ -44,9 +48,9 @@ void TrainHSMM::train(){
 	Real likelihood_curr = 0;
 	vector<Real> likelihood;
 
-	param.printHSMMparam("hsmm_param_init.txt");
+	cout << "Model training...\n";
 
-
+/*
 	for(size_t iter = 0; iter<10; iter++){
 
 		for(size_t i=0; i<data.size(); i++) {
@@ -155,7 +159,7 @@ void TrainHSMM::train(){
 			delete jt;
 			delete graph;
 
-			cout << "Processed data point " << i << " out of " << data.size() << "\n";
+			//cout << "Processed data point " << i << " out of " << data.size() << "\n";
 		}
 
 		//normalize the result and put back into init and dist structure
@@ -191,8 +195,11 @@ void TrainHSMM::train(){
 		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_prev <<"\n";
 	}
 
+*/
+	cout << "done.\n";
 
 	param.printHSMMparam("hsmm_param_learnt.txt");
+
 	param.saveHSMMparam("hsmm_factor_graph_learnt.fg");
 }
 

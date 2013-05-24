@@ -31,9 +31,9 @@ for i=1:numSeq
         currObs = randsample(1:Nobs, 1, true, O(:,currState))';
         
         %advance time
-        currTime = currTime + 1;
-        
+        currTime = currTime + 1;        
         prevDur = dur;
+        prevState = currState;
         
         %save data
         states = [states, currState];

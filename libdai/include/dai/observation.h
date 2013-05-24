@@ -3,6 +3,7 @@
 #define __defined_libdai_observation_h
 
 #include <vector>
+#include <dai/alldai.h>
 
 class Observation{
 private:

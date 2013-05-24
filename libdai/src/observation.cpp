@@ -1,5 +1,6 @@
 #include <dai/observation.h>
 #include <fstream>
+#include <iostream>
 
 Observation::Observation(const char* filename){
 
@@ -24,16 +25,16 @@ Observation::Observation(const char* filename){
 		}
 
 	}
-	/*
-		cout << " data.size = " << data.size() << "\n";
+/*
+		std::cout << " data.size = " << data.size() << "\n";
 		for(int i=0; i<data.size();i++){
-			cout << " data[i].size = " << data[i].size() << "\n";
+			std::cout << " data[i].size = " << data[i].size() << "\n";
 			for(int j=0; j<data[i].size(); j++){
-				cout << "data[i][j].first = " << data[i][j].first  << "\n";
-				cout << "data[i][j].second = " << data[i][j].second  << "\n";
+				std::cout << "data[i][j].first = " << data[i][j].first  << "\n";
+				std::cout << "data[i][j].second = " << data[i][j].second  << "\n";
 			}
 		}
-	 */
+		*/
 }
 
 

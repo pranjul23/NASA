@@ -6,14 +6,15 @@
 #include <dai/alldai.h>
 
 
+namespace dai{
 
 class TrainHSMM{
+	std::vector<std::vector<std::pair<size_t, size_t> > > data;
 
 public:
-	TrainHSMM(){};
-
+	TrainHSMM(const char* filename);
 	void train();
-
 };
 
+}
 #endif

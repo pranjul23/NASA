@@ -9,9 +9,9 @@
 namespace dai{
 
 class TrainHMM{
-
+	std::vector<std::vector<std::pair<size_t, size_t> > > data;
 public:
-	TrainHMM(){};
+	TrainHMM(const char* filename);
 	void train();
 };
 

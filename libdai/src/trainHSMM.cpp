@@ -19,10 +19,10 @@ TrainHSMM::TrainHSMM(const char* filename){
 
 }
 
-void TrainHSMM::train(){
+void TrainHSMM::train(const char* filename){
 
 	// Read FactorGraph from the file specified by the first command line argument
-	HSMMparam param("hsmm_factor_graph_init.fg");
+	HSMMparam param(filename);
 
 	param.printHSMMparam("hsmm_param_init.txt");
 
@@ -50,8 +50,8 @@ void TrainHSMM::train(){
 
 	cout << "Model training...\n";
 
-/*
-	for(size_t iter = 0; iter<10; iter++){
+
+	for(size_t iter = 0; iter<15; iter++){
 
 		for(size_t i=0; i<data.size(); i++) {
 
@@ -77,7 +77,6 @@ void TrainHSMM::train(){
 			//================= calculate initial distributions ===============
 			initD0 += jt->calcMarginal(graph->var(0));
 			initA0 += jt->calcMarginal(graph->var(1));
-
 
 			//================= prepare variables to calculate transition distribution ===============
 			vs.clear();
@@ -188,14 +187,14 @@ void TrainHSMM::train(){
 		durat.fill(0);
 		observ.fill(0);
 
+		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_curr <<
+				", diff: "<<  likelihood_curr-likelihood_prev <<"\n";
+
 		likelihood.push_back(likelihood_curr);
 		likelihood_prev = likelihood_curr;
 		likelihood_curr = 0;
-
-		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_prev <<"\n";
 	}
 
-*/
 	cout << "done.\n";
 
 	param.printHSMMparam("hsmm_param_learnt.txt");

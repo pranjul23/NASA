@@ -523,8 +523,12 @@ class TProb {
                 Z = sum();
             else if( norm == dai::NORMLINF )
                 Z = maxAbs();
+
             if( Z == (T)0 )
-                DAI_THROW(NOT_NORMALIZABLE);
+                //DAI_THROW(NOT_NORMALIZABLE);
+            	//if Z is zero, it means all elements are 0
+            	//we can let the normalized distrib to be all 0 as well
+            	*this /= (T)1;
             else
                 *this /= Z;
             return Z;

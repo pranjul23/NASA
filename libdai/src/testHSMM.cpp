@@ -21,9 +21,9 @@ TestHSMM::TestHSMM(const char* filename){
 }
 
 
-void TestHSMM::test(){
+void TestHSMM::test_loglik(const char* filename){
 
-	HSMMparam param("hsmm_factor_graph_learnt.fg");
+	HSMMparam param(filename);
 
 	vector<Real> likelihood_test;
 	FactorGraph *graph;
@@ -77,5 +77,89 @@ void TestHSMM::test(){
 		os << likelihood_test.at(i)<<"\n";
 	}
 }
+
+
+
+
+
+void TestHSMM::test_marginal(const char* filename){
+
+	HSMMparam param(filename);
+
+	FactorGraph *graph;
+	JTree *jt;
+
+	// Set some constants
+	size_t maxiter = 10000;
+	Real   tol = 1e-9;
+	size_t verb = 0;
+
+	// Store the constants in a PropertySet object
+	PropertySet opts;
+	opts.set("maxiter",maxiter);  // Maximum number of iterations
+	opts.set("tol",tol);          // Tolerance for convergence
+	opts.set("verbose",verb);     // Verbosity (amount of output generated)
+
+	Factor O_last;
+	vector< vector<Real> > all_marginal;
+	vector<Real> sequence_marginal;
+	all_marginal.resize(test_data.size());
+
+
+	cout << "Now we do testing...\n";
+
+	for(size_t i=0; i<test_data.size(); i++) {
+
+		//allocate memory
+		sequence_marginal.resize(test_data[i].size());
+
+		for(size_t k=1; k <= test_data[i].size(); k++){
+
+			//initialize HSMM of ever increasing size up to test_data[i].size()
+			graph = new FactorGraph();
+			graph->createHSMMFactorGraph(param.init, param.dist, k);
+
+			jt = new JTree(*graph, opts("updates",string("HUGIN"))("heuristic",string("MINWEIGHT")) );
+
+			//clamp all the observation variables to their observed values, except last variable which is not clamped
+			for(size_t j = 0; j < k; j++ ){
+				//cout << "clamping var" << test_data[i][j].first << " to value " << test_data[i][j].second << "\n";
+				jt->clamp(test_data[i][j].first, test_data[i][j].second);
+			}
+
+			jt->init();
+			jt->run();
+
+			//compute p(o_last=c | o_1...o_{last-1})
+			//this will give us a distribution: {o_last=1, o_last=2, ... o_last=M}
+			O_last = jt->calcMarginal(graph->var(3*k+1));
+
+			//since we have a specific observation at last time step: o_last=c, get its probability:
+			sequence_marginal.push_back( log(O_last.p().get(test_data[i][k].second)) );
+
+			delete jt;
+			delete graph;
+
+			cout << "Tested point " << i << " out of " << test_data.size() <<"\n";
+		}
+
+		cout << "Tested point " << i << " out of " << test_data.size() <<"\n";
+		all_marginal.push_back(sequence_marginal);
+		sequence_marginal.clear();
+	}
+
+	cout << "done.\n";
+
+	ofstream os;
+	os.open("HSMMmarginal_test.txt", ios::trunc);
+
+	for(size_t i=0; i<all_marginal.size(); i++){
+		for(size_t j=0; j<all_marginal[i].size(); j++){
+			os << all_marginal[i][j]<<" ";
+		}
+		os << "\n";
+	}
+}
+
 
 }

@@ -29,14 +29,7 @@ Dmax_init = 10;
 
 [A0_init D0_init A_init D_init O_init] = genHSMMparam_init(Nobs, Nhid_init, Dmax_init);
 
-A0_init = A0_true;
-D0_init = D0_true;
-A_init = A_true;
-D_init = D_true;
-O_init = O_true;
-
-
-[A0_init_hmm A_init_hmm O_init_hmm] = genHMMparam(Nobs, Nhid_init);
+[A0_init_hmm A_init_hmm O_init_hmm] = genHMMparam(A0_init, A_init, O_init);
 
 
 %% =============== ANOMALY PARAMETERS =====================================
@@ -44,13 +37,8 @@ O_init = O_true;
 %number of hidden states
 Nhid_anom = 4;
 
-%the larger the Nhid the larger the spread likelihood values of data
-%the change of Nhid_anom wrt true Nhid_true does not help in detecting
-%anomaly
-
-
 %number of observation steps
-Dmax_anom = 50;
+Dmax_anom = 10;
 
 
 %min duration
@@ -64,6 +52,7 @@ Dmin_anom = Dmax_true;
 %% =============== CREATE FACTOR GRAPH ====================================
 
 createHSMMfactorGraph(Nobs, Nhid_init, Dmax_init, A0_init, D0_init, A_init, D_init, O_init);
+createHSMMfactorGraph_true(Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true);
 
 createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm);
 
@@ -71,10 +60,10 @@ createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm);
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
 %simulation time
-T = 100;
+T = 200;
 
 %number of obseration sequences
-numSeq = 100;
+numSeq = 300;
 
 createTraining(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true);
 
@@ -85,7 +74,7 @@ createTraining(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, 
 T = 200;
 
 %number of obseration sequences
-numSeq = 1000;
+numSeq = 100;
 
 createTesting(T, numSeq, Nobs, ...
               Nhid_true, Dmax_true, Nhid_anom, Dmax_anom, ...

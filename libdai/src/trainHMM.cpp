@@ -11,10 +11,18 @@ namespace dai{
 
 using namespace std;
 
+TrainHMM::TrainHMM(const char* filename){
+	// Read test data
+		Observation train( filename );
+		data = train.getData();
+}
+
 void TrainHMM::train(){
 
 	// Read FactorGraph from the file specified by the first command line argument
 	HMMparam param("hmm_factor_graph_init.fg");
+
+	param.printHMMparam("hmm_param_init.txt");
 
 	// Set some constants
 	size_t maxiter = 10000;
@@ -27,10 +35,6 @@ void TrainHMM::train(){
 	opts.set("tol",tol);          // Tolerance for convergence
 	opts.set("verbose",verb);     // Verbosity (amount of output generated)
 
-	// Read sample from file
-	Observation obs( "HMMtraining.txt" );
-	vector<vector<pair<size_t, size_t> > > data = obs.getData();
-
 	FactorGraph *graph;
 	JTree *jt;
 
@@ -42,9 +46,9 @@ void TrainHMM::train(){
 	Real likelihood_curr = 0;
 	vector<Real> likelihood;
 
-	param.printHMMparam("hmm_param_init.txt");
+	cout << "Model training...\n";
 
-	for(size_t iter = 0; iter<10; iter++){
+	for(size_t iter = 0; iter<30; iter++){
 
 		for(size_t i=0; i<data.size(); i++) {
 
@@ -142,7 +146,10 @@ void TrainHMM::train(){
 		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_prev <<"\n";
 	}
 
+	cout << "done.\n";
+
 	param.printHMMparam("hmm_param_learnt.txt");
+
 	param.saveHMMparam("hmm_factor_graph_learnt.fg");
 }
 }

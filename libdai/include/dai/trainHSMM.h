@@ -13,7 +13,7 @@ class TrainHSMM{
 
 public:
 	TrainHSMM(const char* filename);
-	void train();
+	void train(const char* filename);
 };
 
 }

@@ -182,19 +182,19 @@ out = fopen('/Users/igor/Documents/Projects/anomaly/code/HSMM/sim/commands.txt',
 
 
 %find indeces of sequences of small lengths
-%ind = 1:numSeq_train;
+ind = 1:numSeq_train;
 
-ind = [];
-
-for i=1:numSeq_train
-    obs = load(strcat(dir_train, list_train(i+3).name));
-    obs = obs(:,2);
-    lenObs = length(obs);           
-    
-    if lenObs <= 160
-        ind = [ind i];
-    end
-end
+% ind = [];
+% 
+% for i=1:numSeq_train
+%     obs = load(strcat(dir_train, list_train(i+3).name));
+%     obs = obs(:,2);
+%     lenObs = length(obs);           
+%     
+%     if lenObs <= 160
+%         ind = [ind i];
+%     end
+% end
 
 fprintf(fid_train, '%d\n',length(ind));
 

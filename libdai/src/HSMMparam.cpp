@@ -156,7 +156,10 @@ void HSMMparam::printHSMMparam(const char* filename){
 	myfile << "==============================\n";
 
 	size_t li = 0;
-	for(size_t ii=0; ii<durat[2].states(); ii++){
+	//for(size_t ii=0; ii<durat[2].states(); ii++){
+
+		size_t ii = 0;
+
 		myfile << "P(Dt|At,Dt-1 = " << ii <<"): \n";
 		for(size_t jj=0; jj<durat[1].states(); jj++){
 			for(size_t kk=0; kk<durat[0].states(); kk++){
@@ -166,11 +169,17 @@ void HSMMparam::printHSMMparam(const char* filename){
 			myfile << "\n";
 		}
 		myfile << "\n";
-	}
+
+	//}
 	myfile << "==============================\n";
 
+
+
 	li = 0;
-	for(size_t ii=0; ii<trans[2].states(); ii++){
+	//for(size_t ii=0; ii<trans[2].states(); ii++){
+
+		ii = 0;
+
 		myfile << "P(At|At-1,Dt-1 = " << ii <<"): \n";
 		for(size_t jj=0; jj<trans[1].states(); jj++){
 			for(size_t kk=0; kk<trans[0].states(); kk++){
@@ -180,7 +189,8 @@ void HSMMparam::printHSMMparam(const char* filename){
 			myfile << "\n";
 		}
 		myfile << "\n";
-	}
+
+	//}
 	myfile << "================================\n";
 
 

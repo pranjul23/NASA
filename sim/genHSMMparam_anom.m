@@ -6,11 +6,10 @@ A0 = A0./sum(A0); %normalize
 
 A0 = A0_true;
 
-% pi = [1 0 0 0 0]';
 
 %initial duration distribution
 D0 = rand(Dmax,1);
-D0(1:Dmin) = 0;
+%D0(1:Dmin) = 0;
 
 D0 = D0./sum(D0); %normalize
 
@@ -36,8 +35,8 @@ end
 %========= duration distribution ============
 %element i,j is duration of i time units, given we are in state j and d_{t-1} = k
 
-D1 = rand(Dmax, Nhid);
-D1(1:Dmin,:) = 0;
+D1 = full(sprand(Dmax, Nhid, 0.5));
+%D1(1:Dmin,:) = 0;
 for i=1:Nhid
     D1(:,i) = D1(:,i)/sum(D1(:,i));
 end
@@ -56,8 +55,13 @@ end
 %========= observation distribution =========
 %element i,j is observation of symbol i, given we are in state j and d_{t-1} = k
 
-O = rand(Nobs, Nhid);
+O = full(sprand(Nobs, Nhid, 0.5));
 for i=1:Nhid
+    
+    if sum(O(:,i)) == 0
+        O(randi(Nobs,1),i)=1;
+    end
+    
     O(:,i) = O(:,i)/sum(O(:,i));
 end
 

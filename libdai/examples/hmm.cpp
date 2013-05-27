@@ -16,7 +16,7 @@ int main(){
 	//===========================================================
 	//train model using normal sequences
 
-	TrainHMM model;
+	TrainHMM model("HMMtraining.txt");
 	model.train();
 
 

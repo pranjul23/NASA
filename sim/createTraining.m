@@ -1,13 +1,16 @@
 function [] = createTraining(T, numSeq, Nobs, Nhid, Dmax, A0, D0, A, D, O)
 
 
-train = cell(numSeq,1);
-
 fidhsmm = fopen('../libdai/examples/HSMMtraining.txt', 'w');
 fidhmm = fopen('../libdai/examples/HMMtraining.txt', 'w');
 
 fprintf(fidhsmm, '%d\n',numSeq);
 fprintf(fidhmm, '%d\n',numSeq);
+
+%save data for Murphyk HMM function 
+train = cell(numSeq,1);
+initState = zeros(numSeq,1);
+initDur = zeros(numSeq,1);
 
 
 for i=1:numSeq
@@ -15,9 +18,13 @@ for i=1:numSeq
     prevState = randsample(1:Nhid, 1, true, A0);
     prevDur = randsample(1:Dmax, 1, true, D0);
 
+    initState(i) = prevState;
+    initDur(i) = prevDur;
+    
     currTime = 1;
     observations = [];
     states = [];
+    durations = [];
     
     while(currTime <= T)
         
@@ -36,6 +43,7 @@ for i=1:numSeq
         prevState = currState;
         
         %save data
+        durations = [durations, dur];
         states = [states, currState];
         observations = [observations, currObs-1];
     end
@@ -52,11 +60,12 @@ for i=1:numSeq
     fprintf(fidhsmm, [format,'%d\n'], dataHSMM'); 
     fprintf(fidhmm, [format,'%d\n'], dataHMM');
     
-    %save data for Murphyk HMM function
-    train{i} = observations + ones(size(observations));    
+    %save data for Murphyk HMM function    
+    train{i} = [durations; states; observations + ones(size(observations))];
+    
 end
 
-save('murphykHMMtrainData.mat', 'train');
+save('murphykHMMtrainData.mat', 'train', 'initState', 'initDur');
 
 fclose(fidhsmm);
 fclose(fidhmm);

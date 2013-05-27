@@ -10,7 +10,7 @@ public class test {
 		for(int i=0;i<26;i++){
 			String temp =  "" +((char)(a+i));
 			System.out.println(temp);
-			dataMap.put(temp, i+1);
+			dataMap.put(temp, i);
 		}
 		
 	}

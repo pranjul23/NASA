@@ -12,15 +12,20 @@ fprintf(fidhmm, '%d\n',numSeq);
 
 %data for Murphyk HMM function
 test = cell(numSeq,1);
-
+initState = zeros(numSeq,1);
+initDur = zeros(numSeq,1);
 
 %generate normal sequences
 for i=1:floor(numSeq/2)
     
     prevState = randsample(1:Nhid_true, 1, true, A0_true);
     prevDur = randsample(1:Dmax_true, 1, true, D0_true);
-
+    
+    initState(i) = prevState;
+    initDur(i) = prevDur;
+    
     currTime = 1;
+    durations = [];
     observations = [];
     states = [];
     
@@ -41,6 +46,7 @@ for i=1:floor(numSeq/2)
         prevState = currState;
         
         %save data
+        durations = [durations, dur];
         states = [states, currState];
         observations = [observations, currObs-1];
     end
@@ -57,7 +63,7 @@ for i=1:floor(numSeq/2)
     fprintf(fidhmm,[format,'%d\n'], dataHMM');
     
     %save data for Murphyk HMM function
-    test{i} = observations + ones(size(observations));  
+    test{i} = [durations; states; observations + ones(size(observations))];
 end
 
 
@@ -68,7 +74,12 @@ for i=1:ceil(numSeq/2)
     prevState = randsample(1:Nhid_anom, 1, true, A0_anom);
     prevDur = randsample(1:Dmax_anom, 1, true, D0_anom);
 
+    initState(i + floor(numSeq/2)) = prevState;
+    initDur(i + floor(numSeq/2)) = prevDur;
+    
+    
     currTime = 1;
+    durations = [];
     observations = [];
     states = [];
     
@@ -89,6 +100,7 @@ for i=1:ceil(numSeq/2)
         prevState = currState;
         
         %save data
+        durations = [durations, dur];
         states = [states, currState];
         observations = [observations, currObs-1];
     end
@@ -106,10 +118,10 @@ for i=1:ceil(numSeq/2)
     fprintf(fidhmm, [format,'%d\n'], dataHMM');
     
     %save data for Murphyk HMM function
-    test{i + floor(numSeq/2)} = observations + ones(size(observations));  
+    test{i + floor(numSeq/2)} = [durations; states; observations + ones(size(observations))];
 end
 
-save('murphykHMMtestData.mat', 'test');
+save('murphykHMMtestData.mat', 'test', 'initState', 'initDur');
 
 fclose(fidhsmm);
 fclose(fidhmm);

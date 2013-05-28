@@ -13,10 +13,12 @@ public class InputDataLoader {
 		 debugMethod(normalData);
 		 int numberOfObservationSteps = 200;
 		 int trainingData = 500;
-		 int normalTestData = 400;
-		 int anamolousTestData = 100;
+		 int normalTestData = 250;
+		 int anamolousTestData = 250;
 		 SequenceGenerator.GenerateDataFromAnamolies(anamolousTestData, normalTestData, numberOfObservationSteps, anamolousData);		
 		 SequenceGenerator.GenerateTrainDataWithNormalDataInTestFile(trainingData, normalTestData, numberOfObservationSteps, normalData);
+		 SequenceGenerator.GenerateDataFromAnamoliesForOtherModels(anamolousTestData, normalTestData, numberOfObservationSteps, anamolousData);		
+		 SequenceGenerator.GenerateTrainDataWithNormalDataInTestFileForOtherModels(trainingData, normalTestData, numberOfObservationSteps, normalData);
 		 CreateFactorGraphForHSMM.createFactorGraph(normalData);
 
 	}

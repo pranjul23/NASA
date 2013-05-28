@@ -3,6 +3,45 @@ package org.nasa;
 import java.io.*;
 
 public class SequenceGenerator {
+	
+	public static void GenerateDataFromAnamoliesForOtherModels(int anamolousTestData, int normalTestData,  int length,
+			NormalClassDataGeneration normal) throws Exception {
+		
+// Writing in the Training Data
+		FileWriter fstream = new FileWriter("HMMtesting.txt");
+		BufferedWriter out = new BufferedWriter(fstream);
+
+	
+		
+		// Duration 1 means Actually Duration 0
+		int j = 0;
+		while (j < anamolousTestData) {
+			String result = "";
+			int i = 0;
+			int oldState = normal.initialState;
+			int oldDuration = normal.initialDuration;
+
+			while (i < length) {
+				int nextState = getNewState(oldState, oldDuration, normal);
+				int nextDuration = getNewDuration(oldState, oldDuration, normal);
+				String observationSymbol = getObservationSymbol(nextState,
+						normal);
+
+				oldState = nextState;
+				oldDuration = nextDuration;
+				result = result + test.getInteger(observationSymbol) + " ";
+				i++;
+
+			}
+			System.out.println(result);
+			result = result.substring(0, result.length() - 1);
+			out.write(result);
+			out.write("\n");
+			j++;
+
+		}
+		out.close();
+	}
 
 	public static void GenerateDataFromAnamolies(int anamolousTestData, int normalTestData,  int length,
 			NormalClassDataGeneration normal) throws Exception {
@@ -136,6 +175,78 @@ public class SequenceGenerator {
 					out.write("\n");
 					out.write(demoLine);
 					out.write("\n");
+					out.write(result);
+					out.write("\n");
+					j++;
+
+				}
+				out.close();
+
+	}
+	
+	public static void GenerateTrainDataWithNormalDataInTestFileForOtherModels(int numTrainingSequences, int normalDataInTest,  int length,
+			NormalClassDataGeneration normal) throws Exception {
+		
+// Writing in the Training Data
+		FileWriter fstream = new FileWriter("HMMtraining.txt");
+		BufferedWriter out = new BufferedWriter(fstream);
+		
+		// Duration 1 means Actually Duration 0
+		 int j = 0;
+		while (j < numTrainingSequences) {
+			String result = "";
+			int i = 0;
+			int oldState = normal.initialState;
+			int oldDuration = normal.initialDuration;
+
+			while (i < length) {
+				int nextState = getNewState(oldState, oldDuration, normal);
+				int nextDuration = getNewDuration(oldState, oldDuration, normal);
+				String observationSymbol = getObservationSymbol(nextState,
+						normal);
+
+				oldState = nextState;
+				oldDuration = nextDuration;
+				result = result + test.getInteger(observationSymbol) + " ";
+				i++;
+
+			}
+			System.out.println(result);
+			result = result.substring(0, result.length() - 1);
+			out.write(result);
+			out.write("\n");
+			j++;
+
+		}
+		out.close();
+		
+ // Writing Normal Data in the Test File
+		// Writing in the Training Data
+				 fstream = new FileWriter("HMMtesting.txt",true);
+				 out = new BufferedWriter(fstream);
+
+				// Duration 1 means Actually Duration 0
+			       j = 0;
+				while (j < normalDataInTest) {
+					String result = "";
+					int i = 0;
+					int oldState = normal.initialState;
+					int oldDuration = normal.initialDuration;
+
+					while (i < length) {
+						int nextState = getNewState(oldState, oldDuration, normal);
+						int nextDuration = getNewDuration(oldState, oldDuration, normal);
+						String observationSymbol = getObservationSymbol(nextState,
+								normal);
+
+						oldState = nextState;
+						oldDuration = nextDuration;
+						result = result + test.getInteger(observationSymbol) + " ";
+						i++;
+
+					}
+					System.out.println(result);
+					result = result.substring(0, result.length() - 1);
 					out.write(result);
 					out.write("\n");
 					j++;

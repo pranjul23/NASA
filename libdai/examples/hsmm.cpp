@@ -27,7 +27,7 @@ int main(){
 	TestHSMM evaluation("HSMMtesting.txt");
 
 	evaluation.test_loglik("hsmm_factor_graph_learnt.fg");
-	evaluation.test_marginal("hsmm_factor_graph_learnt.fg");
+	//evaluation.test_marginal("hsmm_factor_graph_learnt.fg");
 };
 
 

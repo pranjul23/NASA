@@ -57,6 +57,7 @@ void TrainHSMM::train(const char* filename){
 
 			//initialize HSMM of size equal the number of observations
 			graph = new FactorGraph();
+
 			graph->createHSMMFactorGraph(param.init, param.dist, data[i].size());
 
 			jt = new JTree(*graph, opts("updates",string("HUGIN"))("heuristic",string("MINWEIGHT")) );

@@ -22,9 +22,7 @@
 #include <dai/index.h>
 #include <dai/util.h>
 
-
 namespace dai {
-
 
 /// Represents a (probability) factor.
 /** Mathematically, a \e factor is a function mapping joint states of some

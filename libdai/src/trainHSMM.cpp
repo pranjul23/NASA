@@ -6,6 +6,8 @@
 #include <dai/observation.h>
 #include <dai/HSMMparam.h>
 
+#include "valgrind/callgrind.h"
+
 
 namespace dai{
 
@@ -69,7 +71,14 @@ void TrainHSMM::train(const char* filename){
 			}
 
 			jt->init();
+
+			//CALLGRIND_START_INSTRUMENTATION;
+			//CALLGRIND_TOGGLE_COLLECT;
+
 			jt->run();
+
+			//CALLGRIND_TOGGLE_COLLECT;
+			//CALLGRIND_STOP_INSTRUMENTATION;
 
 			likelihood_curr += jt->logZ();
 
@@ -87,6 +96,7 @@ void TrainHSMM::train(const char* filename){
 			X |= graph->var(3);
 
 			vs.push_back(X);
+
 			tmp = X;
 			X /= tmp;
 
@@ -100,11 +110,10 @@ void TrainHSMM::train(const char* filename){
 				X /= tmp;
 			}
 
+
 			//calculate state transition distribution
 			//res = jt->calcDistrib(vs, 2);
 			transit += jt->calcDistrib(vs);
-
-
 
 			//================= prepare variables to calculate duration distribution ===============
 			vs.clear();
@@ -117,6 +126,7 @@ void TrainHSMM::train(const char* filename){
 			tmp = X;
 			X /= tmp;
 
+
 			for(size_t j = 2; j <= data[i].size(); j++){
 				X |= graph->var(3*j-4);
 				X |= graph->var(3*j-1);
@@ -126,6 +136,7 @@ void TrainHSMM::train(const char* filename){
 				tmp = X;
 				X /= tmp;
 			}
+
 
 			//calculate state duration distribution
 			//res = jt->calcDistrib(vs, 1);
@@ -159,7 +170,11 @@ void TrainHSMM::train(const char* filename){
 			delete jt;
 			delete graph;
 
-			//cout << "Processed data point " << i << " out of " << data.size() << "\n";
+			cout << "Processed data point " << i << " out of " << data.size() << "\n";
+
+			cout << "likelihood_curr "<<likelihood_curr << "\n";
+//			exit(1);
+
 		}
 
 		//normalize the result and put back into init and dist structure

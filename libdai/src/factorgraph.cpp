@@ -355,7 +355,7 @@ Real FactorGraph::logScore( const std::vector<size_t>& statevec ) const {
 
 void FactorGraph::clamp( size_t i, size_t x, bool backup ) {
 
-	//cout << "Clamping variable " << var(i) <<" with # of states = " << var(i).states() << ", to state " << x << "\n";
+//	cout << "Clamping variable " << var(i) <<" with # of states = " << var(i).states() << ", to state " << x << "\n";
 
     DAI_ASSERT( x <= var(i).states() );
     Factor mask( var(i), (Real)0 );
@@ -366,13 +366,12 @@ void FactorGraph::clamp( size_t i, size_t x, bool backup ) {
         newFacs[I] = factor(I) * mask;
     setFactors( newFacs, backup );
 
-    //cerr << "New factors: \n";
-    /*
-    for( size_t i = 0; i < nrFactors(); i++ ){
-    		cout << factor(i).vars() << endl;
-    		cout << factor(i).p() << endl;
-    }
-     */
+//    cerr << "New factors: \n";
+
+//    for( size_t i = 0; i < nrFactors(); i++ ){
+//    		cout << factor(i) << endl;
+//    }
+
     return;
 }
 
@@ -601,6 +600,7 @@ void FactorGraph::createHSMMFactorGraph(std::vector<Factor> &init, std::vector<F
 		dist[2].vars().elements().at(0).label() = 3*iter;
 		dist[2].vars().elements().at(1).label() = 3*iter+1;
 		facs.push_back(dist[2]);
+
 	}
 
 	*this = FactorGraph(facs);

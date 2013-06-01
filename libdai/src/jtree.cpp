@@ -824,8 +824,10 @@ Factor JTree::calcDistrib(const vector<VarSet> &vs){
 			if( it->vars() >> vs[i] ) break;
 		}
 
+
 		if( it != Qb.end() ) {
-	        term.p() = it->marginal(vs[i]).p();
+
+			term.p() = it->marginal(vs[i]).p();
 	        numerator += term;
 	    }
 		else {
@@ -836,14 +838,15 @@ Factor JTree::calcDistrib(const vector<VarSet> &vs){
 			}
 
 		    if( it != Qa.end() ) {
-				term.p() = it->marginal(vs[i]).p();
-				numerator += term;
+		    	term.p() = it->marginal(vs[i]).p();
+		    	numerator += term;
 			}
 			else{
 				DAI_THROW(BELIEF_NOT_AVAILABLE);
 				return numerator;
 			}
 		}
+
 	}
 
 	//cout << "Numerator: " << numerator << "\n";

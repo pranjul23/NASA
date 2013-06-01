@@ -1,0 +1,34 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Matlab
+*.mat
+*.fig
+*~
+
+# Others
+libdai/examples/*.txt
+*.fg
+*dSYM*
+*.pdf
+*.png
+*.dot
+*.out*
+*.py
+*hmm
+*hsmm
+*.DS_Store
+*.cproject
+*.project
+*.settings

@@ -19,6 +19,7 @@
 
 # Others
 libdai/examples/*.txt
+libdai/Makefile*
 *.fg
 *dSYM*
 *.pdf

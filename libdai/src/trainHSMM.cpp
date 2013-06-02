@@ -172,7 +172,7 @@ void TrainHSMM::train(const char* filename){
 
 			cout << "Processed data point " << i << " out of " << data.size() << "\n";
 
-			cout << "likelihood_curr "<<likelihood_curr << "\n";
+//			cout << "likelihood_curr "<<likelihood_curr << "\n";
 //			exit(1);
 
 		}

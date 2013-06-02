@@ -53,7 +53,7 @@ void TrainHSMM::train(const char* filename){
 	cout << "Model training...\n";
 
 
-	for(size_t iter = 0; iter<15; iter++){
+	for(size_t iter = 0; iter<50; iter++){
 
 		for(size_t i=0; i<data.size(); i++) {
 

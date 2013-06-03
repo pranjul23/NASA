@@ -18,7 +18,6 @@
 *~
 
 # Others
-libdai/Makefile*
 *dSYM*
 *.pdf
 *.png

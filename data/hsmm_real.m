@@ -16,10 +16,10 @@ ID = 0;
 Nobs = 183;
 
 %number of hidden states
-Nhid = 5;
+Nhid = 10;
 
 %max duration
-Dmax = 50;
+Dmax = 70;
 
 [A0 D0 A D O] = genHSMMparam_init(Nobs, Nhid, Dmax);
 

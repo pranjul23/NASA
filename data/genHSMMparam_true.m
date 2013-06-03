@@ -1,4 +1,4 @@
-function [A0 D0 A D O] = genHSMMparam_true(Nobs, Nhid, Dmax)
+function [A0 D0 A D O] = genHSMMparam_true(Nobs, Nhid, Dmax, ID)
 
 %initial state distribution
 A0 = full(sprand(Nhid, 1, 0.6));
@@ -80,7 +80,7 @@ end
 
 %============================================
 %write results to file
-filename = '../libdai/examples/true_parameters.txt';
+filename = strcat('../libdai/examples/data/true_parameters_',  num2str(ID), '.txt');
 
 fid = fopen(filename, 'w');
 fprintf(fid, '%s\n', 'A0 = ');

@@ -1,11 +1,15 @@
 function [] = createTesting_sim(T, numSeq, Nobs, ...
                                 Nhid_true, Dmax_true, Nhid_anom, Dmax_anom, ...
                                 A0_true, D0_true, A_true, D_true, O_true, ...
-                                A0_anom, D0_anom, A_anom, D_anom, O_anom)
+                                A0_anom, D0_anom, A_anom, D_anom, O_anom, ID)
 
 
-fidhsmm = fopen('../libdai/examples/HSMMtesting.txt', 'w');
-fidhmm = fopen('../libdai/examples/HMMtesting.txt', 'w');
+loc = strcat('../libdai/examples/data/HSMMtesting_',num2str(ID),'.txt');
+fidhsmm = fopen(loc, 'w');
+
+loc = strcat('../libdai/examples/data/HMMtesting_',num2str(ID),'.txt');
+fidhmm = fopen(loc, 'w');
+
 
 fprintf(fidhsmm, '%d\n',numSeq);
 fprintf(fidhmm, '%d\n',numSeq);

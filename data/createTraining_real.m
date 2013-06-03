@@ -1,4 +1,4 @@
-function [] = createTraining_real()
+function [] = createTraining_real(ID)
 
 
 %directory to read training data from
@@ -8,8 +8,11 @@ list_train = dir(dir_train);
 numSeq = length(list_train)-3;
 
 %the result will be written to 
-fidhsmm = fopen('../libdai/examples/HSMMtraining.txt', 'w');
-fidhmm = fopen('../libdai/examples/HMMtraining.txt', 'w');
+loc = strcat('../libdai/examples/data/HSMMtraining_',num2str(ID),'.txt');
+fidhsmm = fopen(loc, 'w');
+
+loc = strcat('../libdai/examples/data/HMMtraining_',num2str(ID),'.txt');
+fidhmm = fopen(loc, 'w');
 
 %data needed to visualize system call commands
 %names = importdata('lpr-mit-live-callnames.txt');
@@ -19,6 +22,8 @@ fidhmm = fopen('../libdai/examples/HMMtraining.txt', 'w');
 %for now find indeces of sequences that are short
 reduced_data = 1;
 
+
+
 if reduced_data
     
     ind = [];
@@ -27,7 +32,7 @@ if reduced_data
         obs = obs(:,2);
         lenObs = length(obs);
         
-        if lenObs <= 160
+        if lenObs <= 200
             ind = [ind i];
         end
     end
@@ -49,7 +54,7 @@ for i=1:numSeq
     obs = load(strcat(dir_train, list_train(ind(i)+3).name));
     obs = obs(:,2);
     
-    %plot(obs, 'r*')
+%     plot(obs, 'r*')
     
     %sequence = names(obs+ones(size(obs)));
     %fprintf(out, '%s\n', sequence{:});

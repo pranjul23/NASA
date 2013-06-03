@@ -16,17 +16,21 @@ using namespace std;
 
 TrainHSMM::TrainHSMM(const char* filename){
 	// Read sample from file
+
 	Observation obs(filename);
 	data = obs.getData();
 
 }
 
-void TrainHSMM::train(const char* filename){
+void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 	// Read FactorGraph from the file specified by the first command line argument
 	HSMMparam param(filename);
 
-	param.printHSMMparam("hsmm_param_init.txt");
+	stringstream hsmmParam;
+	hsmmParam << string("data/hsmm_param_init_") << ID << string(".txt");
+
+	param.printHSMMparam(hsmmParam.str().c_str());
 
 	// Set some constants
 	size_t maxiter = 10000;
@@ -53,7 +57,7 @@ void TrainHSMM::train(const char* filename){
 	cout << "Model training...\n";
 
 
-	for(size_t iter = 0; iter<50; iter++){
+	for(size_t iter = 0; iter<max_num_iter; iter++){
 
 		for(size_t i=0; i<data.size(); i++) {
 
@@ -203,19 +207,41 @@ void TrainHSMM::train(const char* filename){
 		durat.fill(0);
 		observ.fill(0);
 
-		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_curr <<
-				", diff: "<<  likelihood_curr-likelihood_prev <<"\n";
-
 		likelihood.push_back(likelihood_curr);
+
+		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_curr <<
+				", diff: "<<  std::abs(likelihood_curr-likelihood_prev) <<"\n";
+
+		if( std::abs(likelihood_curr-likelihood_prev) < 0.1 ){
+			break;
+		}
+
 		likelihood_prev = likelihood_curr;
 		likelihood_curr = 0;
+
 	}
 
 	cout << "done.\n";
 
-	param.printHSMMparam("hsmm_param_learnt.txt");
+	stringstream hsmmParam_learnt;
+	hsmmParam_learnt << string("data/hsmm_param_learnt_") << ID << string(".txt");
 
-	param.saveHSMMparam("hsmm_factor_graph_learnt.fg");
+	param.printHSMMparam(hsmmParam_learnt.str().c_str());
+
+
+	stringstream learntFactorGraph;
+	learntFactorGraph << string("data/hsmm_factor_graph_learnt_") << ID << string(".fg");
+
+	param.saveHSMMparam(learntFactorGraph.str().c_str());
 }
 
 }
+
+
+
+
+
+
+
+
+

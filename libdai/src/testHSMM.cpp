@@ -21,7 +21,7 @@ TestHSMM::TestHSMM(const char* filename){
 }
 
 
-void TestHSMM::test_loglik(const char* filename){
+void TestHSMM::test_loglik(const char* filename, size_t ID){
 
 	HSMMparam param(filename);
 
@@ -71,7 +71,9 @@ void TestHSMM::test_loglik(const char* filename){
 	cout << "done.\n";
 
 	ofstream os;
-	os.open("HSMMlikelihood_test.txt", ios::trunc);
+	stringstream result;
+	result << string("data/HSMMlikelihood_test_") << ID << string(".txt");
+	os.open(result.str().c_str(), ios::trunc);
 
 	for(size_t i=0; i<likelihood_test.size(); i++){
 		os << likelihood_test.at(i)<<"\n";
@@ -82,7 +84,7 @@ void TestHSMM::test_loglik(const char* filename){
 
 
 
-void TestHSMM::test_marginal(const char* filename){
+void TestHSMM::test_marginal(const char* filename, size_t ID){
 
 	HSMMparam param(filename);
 
@@ -152,7 +154,9 @@ void TestHSMM::test_marginal(const char* filename){
 	cout << "done.\n";
 
 	ofstream os;
-	os.open("HSMMmarginal_test.txt", ios::trunc);
+	stringstream result;
+	result << string("data/HSMMmarginal_test_") << ID << string(".txt");
+	os.open(result.str().c_str(), ios::trunc);
 
 	for(size_t i=0; i<all_marginal.size(); i++){
 		for(size_t j=0; j<all_marginal[i].size(); j++){

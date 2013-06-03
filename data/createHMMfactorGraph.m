@@ -1,7 +1,8 @@
-function [] = createHMMfactorGraph(Nobs, Nhid, A0, A, O)
+function [] = createHMMfactorGraph(Nobs, Nhid, A0, A, O, ID)
 
 
-fid = fopen('../libdai/examples/hmm_factor_graph_init.fg', 'w');
+loc = strcat('../libdai/examples/data/hmm_factor_graph_init_',  num2str(ID), '.fg');
+fid = fopen(loc, 'w');
 fprintf(fid, '%d\n\n',3);
 
 

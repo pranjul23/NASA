@@ -5,6 +5,10 @@ clear;
 clc;
 
 
+%unique ID
+ID = 0;
+
+
 %% ================ INIT PARAMETERS =======================================
 
 %number of observation symbols
@@ -15,7 +19,7 @@ Nobs = 183;
 Nhid = 5;
 
 %max duration
-Dmax = 80;
+Dmax = 50;
 
 [A0 D0 A D O] = genHSMMparam_init(Nobs, Nhid, Dmax);
 
@@ -25,19 +29,19 @@ Dmax = 80;
 
 %% =============== CREATE FACTOR GRAPH ====================================
 
-createHSMMfactorGraph(Nobs, Nhid, Dmax, A0, D0, A, D, O);
+createHSMMfactorGraph(Nobs, Nhid, Dmax, A0, D0, A, D, O, ID);
 
-createHMMfactorGraph(Nobs, Nhid, A0_hmm, A_hmm, O_hmm);
+createHMMfactorGraph(Nobs, Nhid, A0_hmm, A_hmm, O_hmm, ID);
 
 
 
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
-createTraining_real();
+createTraining_real(ID);
 
 
 
 
 %% =============== CREATE TESTING SEQUENCE ================================
 
-createTesting_real();
+createTesting_real(ID);

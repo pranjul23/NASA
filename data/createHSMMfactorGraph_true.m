@@ -1,7 +1,8 @@
-function [] = createHSMMfactorGraph_true(Nobs, Nhid, Dmax, A0, D0, A, D, O)
+function [] = createHSMMfactorGraph_true(Nobs, Nhid, Dmax, A0, D0, A, D, O, ID)
 
 
-fid = fopen('../libdai/examples/hsmm_factor_graph_init_true.fg', 'w');
+loc = strcat('../libdai/examples/data/hsmm_factor_graph_init_true_',  num2str(ID), '.fg');
+fid = fopen(loc, 'w');
 fprintf(fid, '%d\n\n',5);
 
 

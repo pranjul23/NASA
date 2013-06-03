@@ -3,29 +3,33 @@
 clear;
 clc;
 
+%unique ID
+ID = 0;
+
+
 %number of observation symbols
-Nobs = 70;
+Nobs = 7;
 
 
 %% =============== TRUE PARAMETERS ========================================
 
 %number of hidden states
-Nhid_true = 40;
+Nhid_true = 4;
 
 %number of observation steps
-Dmax_true = 100;
+Dmax_true = 10;
 
 
-[A0_true D0_true A_true D_true O_true] = genHSMMparam_true(Nobs, Nhid_true, Dmax_true);
+[A0_true D0_true A_true D_true O_true] = genHSMMparam_true(Nobs, Nhid_true, Dmax_true, ID);
 
 
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid_init = 40;
+Nhid_init = 4;
 
 %number of observation steps
-Dmax_init = 100;
+Dmax_init = 10;
 
 [A0_init D0_init A_init D_init O_init] = genHSMMparam_init(Nobs, Nhid_init, Dmax_init);
 
@@ -35,10 +39,10 @@ Dmax_init = 100;
 %% =============== ANOMALY PARAMETERS =====================================
 
 %number of hidden states
-Nhid_anom = 40;
+Nhid_anom = 4;
 
 %number of observation steps
-Dmax_anom = 100;
+Dmax_anom = 10;
 
 
 %min duration
@@ -51,10 +55,10 @@ Dmin_anom = Dmax_true;
 
 %% =============== CREATE FACTOR GRAPH ====================================
 
-createHSMMfactorGraph(Nobs, Nhid_init, Dmax_init, A0_init, D0_init, A_init, D_init, O_init);
-createHSMMfactorGraph_true(Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true);
+createHSMMfactorGraph(Nobs, Nhid_init, Dmax_init, A0_init, D0_init, A_init, D_init, O_init, ID);
+createHSMMfactorGraph_true(Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true, ID);
 
-createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm);
+createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm, ID);
 
 
 %% =============== CREATE TRAINING SEQUENCE ===============================
@@ -63,15 +67,15 @@ createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm);
 T = 200;
 
 %number of obseration sequences
-numSeq = 100;
+numSeq = 50;
 
-createTraining_sim(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true);
+createTraining_sim(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true, ID);
 
 
 %% =============== CREATE ANOMALY SEQUENCE ================================
 
 %simulation time
-T = 20;
+T = 200;
 
 %number of obseration sequences
 numSeq = 10;
@@ -79,7 +83,7 @@ numSeq = 10;
 createTesting_sim(T, numSeq, Nobs, ...
                   Nhid_true, Dmax_true, Nhid_anom, Dmax_anom, ...
                   A0_true, D0_true, A_true, D_true, O_true, ...
-                  A0_anom, D0_anom, A_anom, D_anom, O_anom);
+                  A0_anom, D0_anom, A_anom, D_anom, O_anom, ID);
 
 
 

@@ -1,8 +1,11 @@
-function [] = createTraining_sim(T, numSeq, Nobs, Nhid, Dmax, A0, D0, A, D, O)
+function [] = createTraining_sim(T, numSeq, Nobs, Nhid, Dmax, A0, D0, A, D, O, ID)
 
 
-fidhsmm = fopen('../libdai/examples/HSMMtraining.txt', 'w');
-fidhmm = fopen('../libdai/examples/HMMtraining.txt', 'w');
+loc = strcat('../libdai/examples/data/HSMMtraining_',num2str(ID),'.txt');
+fidhsmm = fopen(loc, 'w');
+
+loc = strcat('../libdai/examples/data/HMMtraining_',num2str(ID),'.txt');
+fidhmm = fopen(loc, 'w');
 
 fprintf(fidhsmm, '%d\n',numSeq);
 fprintf(fidhmm, '%d\n',numSeq);

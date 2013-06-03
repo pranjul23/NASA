@@ -4,7 +4,7 @@ clear;
 load murphykHMMtrainData.mat;
 load murphykHMMinit.mat;
 
-[LL, A0_post, A_post, O_post] = dhmm_em(train, A0, A', O', 'max_iter', 10);
+[LL, A0_post, A_post, O_post] = dhmm_em(train, A0, A', O', 'max_iter', 100);
 
 
 load murphykHMMtestData.mat;

@@ -1,4 +1,4 @@
-function [] = createTesting_real()
+function [] = createTesting_real(ID)
 
 %directory to read anomaly data from
 dir_test = 'lpr-mit-live-anomaly/';
@@ -7,8 +7,11 @@ list_test = dir(dir_test);
 numSeq = length(list_test)-3;
 
 %the result will be written to 
-fidhsmm = fopen('../libdai/examples/HSMMtesting.txt', 'w');
-fidhmm = fopen('../libdai/examples/HMMtesting.txt', 'w');
+loc = strcat('../libdai/examples/data/HSMMtesting_', num2str(ID), '.txt');
+fidhsmm = fopen(loc, 'w');
+
+loc = strcat('../libdai/examples/data/HMMtesting_', num2str(ID), '.txt');
+fidhmm = fopen(loc, 'w');
 
 %data needed to visualize system call commands
 %names = importdata('lpr-mit-live-callnames.txt');

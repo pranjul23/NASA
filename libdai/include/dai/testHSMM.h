@@ -13,8 +13,8 @@ class TestHSMM{
 
 public:
 	TestHSMM(const char* filename);
-	void test_loglik(const char* filename);
-	void test_marginal(const char* filename);
+	void test_loglik(const char* filename, size_t ID);
+	void test_marginal(const char* filename, size_t ID);
 };
 
 }

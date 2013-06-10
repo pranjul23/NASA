@@ -209,8 +209,10 @@ void JTree::GenerateJT( const FactorGraph &fg, const std::vector<VarSet> &cl ) {
     _mes.clear();
     _mes.reserve( nrORs() );
     for( size_t alpha = 0; alpha < nrORs(); alpha++ ) {
+
         _mes.push_back( vector<Factor>() );
         _mes[alpha].reserve( nbOR(alpha).size() );
+
         bforeach( const Neighbor &beta, nbOR(alpha) )
             _mes[alpha].push_back( Factor( IR(beta), 1.0 ) );
     }
@@ -280,28 +282,26 @@ void JTree::runHUGIN() {
 
 
     if( props.verbose >= 3 ) {
-    		cerr << "Cliques: \n";
-    		for( size_t i = 0; i < Qa.size(); i++ ){
-    			cerr <<"Clique: "<<Qa[i] << "\n";
+    	cerr << "Cliques: \n";
+    	for( size_t i = 0; i < Qa.size(); i++ ){
+    		cerr <<"Clique: "<<Qa[i] << "\n";
 
-    			cerr << "Assigned factors: ";
-    			for(size_t j=0; j<this->nrFactors(); j++){
-    				if(fac2OR(j) == i){
-    					 cerr << this->factor(j).vars() << "   ";
-    				}
+    		cerr << "Assigned factors: ";
+    		for(size_t j=0; j<this->nrFactors(); j++){
+    			if(fac2OR(j) == i){
+    				cerr << this->factor(j).vars() << "   ";
     			}
-    			cerr << "\n\n";
     		}
-
-    		cerr << "\nSeparators: \n";
-    		for( size_t i = 0; i < Qb.size(); i++ ){
-    			cerr << Qb[i] << "\n";
-    		}
-
     		cerr << "\n\n";
     	}
 
+    	cerr << "\nSeparators: \n";
+    	for( size_t i = 0; i < Qb.size(); i++ ){
+    		cerr << Qb[i] << "\n";
+    	}
 
+    	cerr << "\n\n";
+    }
 
     // CollectEvidence
     _logZ = 0.0;
@@ -378,6 +378,10 @@ void JTree::runHUGIN() {
         }
     }
 
+    for( size_t alpha = 0; alpha < nrORs(); alpha++ )
+            Qa[alpha].normalize();
+
+
     // Normalize
     /*
     cout << "Normalization of cliques:\n";
@@ -387,6 +391,18 @@ void JTree::runHUGIN() {
     }
     cout << "\n";
     */
+
+//    cout << "=======================================\n";
+//    cout <<"Cliques: " << "\n";
+//    for( size_t i = 0; i < Qa.size(); i++ ){
+//    	cout <<Qa[i] << "\n\n";
+//    }
+//
+//    cerr << "\nSeparators: \n";
+//    for( size_t i = 0; i < Qb.size(); i++ ){
+//    	cerr << Qb[i] << "\n\n";
+//    }
+
 }
 
 
@@ -546,25 +562,32 @@ size_t JTree::findEfficientTree( const VarSet& vs, RootedTree &Tree, size_t Prev
 
 Factor JTree::calcMarginal( const VarSet& vs ) {
     vector<Factor>::const_iterator beta;
+
     for( beta = Qb.begin(); beta != Qb.end(); beta++ )
         if( beta->vars() >> vs )
             break;
+
     if( beta != Qb.end() ) {
-        if( props.inference == Properties::InfType::SUMPROD )
-            return( beta->marginal(vs) );
+        if( props.inference == Properties::InfType::SUMPROD ){
+        	return( beta->marginal(vs) );
+        }
         else
             return( beta->maxMarginal(vs) );
-    } else {
+
+    }
+    else {
         vector<Factor>::const_iterator alpha;
         for( alpha = Qa.begin(); alpha != Qa.end(); alpha++ )
             if( alpha->vars() >> vs )
                 break;
         if( alpha != Qa.end() ) {
-            if( props.inference == Properties::InfType::SUMPROD )
-                return( alpha->marginal(vs) );
+            if( props.inference == Properties::InfType::SUMPROD ){
+            	return( alpha->marginal(vs) );
+            }
             else
                 return( alpha->maxMarginal(vs) );
-        } else {
+        }
+        else {
             // Find subtree to do efficient inference
             RootedTree T;
             size_t Tsize = findEfficientTree( vs, T );
@@ -855,6 +878,66 @@ Factor JTree::calcDistrib(const vector<VarSet> &vs){
 }
 
 
+Factor JTree::calcDistrib(const vector<VarSet> &vs, Factor & pattern){
+
+	vector<Factor>::const_iterator it;
+
+	size_t N = vs.size();
+
+	VarSet X, tmp = vs[0];
+	size_t i=0;
+
+	//var labels in vector of varsets are all different, so construct varset X which will unify all these variables
+	for(VarSet::const_iterator v = tmp.begin(); v != tmp.end(); v++){
+		X |= Var(i, v->states());
+		i++;
+	}
+
+	std::vector<size_t> v;
+	pattern.getAllNonZeros(v);
+
+	//output Factor with zero pattern same as in factor pattern
+	Factor numerator(X, 0.0, pattern.nrNonZeros(), pattern.getType()), term(X, 0.0);
+
+	numerator.setAllNonZeros(v);
+
+
+	for(size_t i=0; i<N; i++){
+
+		//try to find these variables among separators
+		for( it = Qb.begin(); it != Qb.end(); it++ ){
+			if( it->vars() >> vs[i] ) break;
+		}
+
+
+		if( it != Qb.end() ) {
+
+			term.p() = it->marginal(vs[i]).p();
+	        numerator += term;
+	    }
+		else {
+
+			//try to find these variables among cliques
+			for( it = Qa.begin(); it != Qa.end(); it++ ){
+			    if( it->vars() >> vs[i] ) break;
+			}
+
+		    if( it != Qa.end() ) {
+		    	term.p() = it->marginal(vs[i]).p();
+		    	numerator += term;
+			}
+			else{
+				DAI_THROW(BELIEF_NOT_AVAILABLE);
+				return numerator;
+			}
+		}
+
+	}
+
+//	cout << "Numerator: " << numerator << "\n";
+
+	return numerator;
+}
 
 
 

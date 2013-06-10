@@ -1,4 +1,3 @@
-
 #ifndef __defined_libdai_hsmmparam_h
 #define __defined_libdai_hsmmparam_h
 

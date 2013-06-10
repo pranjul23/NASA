@@ -57,43 +57,23 @@ class TFactor {
         /// Stores the factor values
         TProb<T> _p;
 
-        //indeces of elements of probabilities which are nonzero (other elements are always zero)
-        std::vector<size_t> _nonZeros;
-
-        //the type of this factor: regular(0), special sparse(1)
-        size_t _type;
-
     public:
     /// \name Constructors and destructors
     //@{
         /// Constructs factor depending on no variables with value \a p
-        TFactor ( T p = 1) : _vs(), _p(1,p), _nonZeros(), _type(0) {}
+        TFactor ( T p = 1 ) : _vs(), _p(1,p) {}
 
         /// Constructs factor depending on the variable \a v with uniform distribution
-        TFactor( const Var &v ) : _vs(v), _p(v.states()), _nonZeros(), _type(0) {}
+        TFactor( const Var &v ) : _vs(v), _p(v.states()) {}
 
         /// Constructs factor depending on variables in \a vars with uniform distribution
-        TFactor( const VarSet& vars) : _vs(vars), _p(), _nonZeros(), _type(0) {
+        TFactor( const VarSet& vars ) : _vs(vars), _p() {
             _p = TProb<T>( BigInt_size_t( _vs.nrStates() ) );
         }
 
         /// Constructs factor depending on variables in \a vars with all values set to \a p
-        TFactor( const VarSet& vars, T p) : _vs(vars), _p(), _nonZeros(), _type(0) {
-        	_p = TProb<T>( BigInt_size_t( _vs.nrStates() ), p );
-        }
-
-        /// Constructs factor depending on variables in \a vars with all values set to \a p
-        TFactor( const VarSet& vars, T p, size_t nrNonZ, size_t type) : _vs(vars), _p(), _nonZeros(), _type(type) {
-//        	std::cout << "Creating factor with nrNZ "<< nonZ << " and type " << type << "\n";
-
-        	if(_type !=0 ){
-        		_nonZeros.reserve(nrNonZ);
-        	}
-
-        	_p = TProb<T>( BigInt_size_t( _vs.nrStates() ), p );
-
-//        	std::cout << *this << "\n";
-//        	std::cout << "=====================================\n";
+        TFactor( const VarSet& vars, T p ) : _vs(vars), _p() {
+            _p = TProb<T>( BigInt_size_t( _vs.nrStates() ), p );
         }
 
         /// Constructs factor depending on variables in \a vars, copying the values from a std::vector<>
@@ -102,7 +82,7 @@ class TFactor {
          *  \param x Vector with values to be copied.
          */
         template<typename S>
-        TFactor( const VarSet& vars, const std::vector<S> &x) : _vs(vars), _p(), _nonZeros(), _type(0) {
+        TFactor( const VarSet& vars, const std::vector<S> &x ) : _vs(vars), _p() {
             DAI_ASSERT( (BigInt)x.size() == vars.nrStates() );
             _p = TProb<T>( x.begin(), x.end(), x.size() );
         }
@@ -111,18 +91,18 @@ class TFactor {
         /** \param vars contains the variables that the new factor should depend on.
          *  \param p Points to array of values to be added.
          */
-        TFactor( const VarSet& vars, const T* p) : _vs(vars), _p(), _type(0) {
+        TFactor( const VarSet& vars, const T* p ) : _vs(vars), _p() {
             size_t N = BigInt_size_t( _vs.nrStates() );
             _p = TProb<T>( p, p + N, N );
         }
 
         /// Constructs factor depending on variables in \a vars, copying the values from \a p
-        TFactor( const VarSet& vars, const TProb<T> &p) : _vs(vars), _p(p), _nonZeros(), _type(0) {
+        TFactor( const VarSet& vars, const TProb<T> &p ) : _vs(vars), _p(p) {
             DAI_ASSERT( _vs.nrStates() == (BigInt)_p.size() );
         }
 
         /// Constructs factor depending on variables in \a vars, permuting the values given in \a p accordingly
-        TFactor( const std::vector<Var> &vars, const std::vector<T> &p) : _vs(vars.begin(), vars.end(), vars.size()), _p(p.size()), _nonZeros(), _type(0) {
+        TFactor( const std::vector<Var> &vars, const std::vector<T> &p ) : _vs(vars.begin(), vars.end(), vars.size()), _p(p.size()) {
             BigInt nrStates = 1;
             for( size_t i = 0; i < vars.size(); i++ )
                 nrStates *= vars[i].states();
@@ -131,7 +111,6 @@ class TFactor {
             for( size_t li = 0; li < p.size(); ++li )
                 _p.set( permindex.convertLinearIndex(li), p[li] );
         }
-
     //@}
 
     /// \name Get/set individual entries
@@ -141,33 +120,6 @@ class TFactor {
 
         /// Gets \a i 'th entry
         T get( size_t i ) const { return _p[i]; }
-
-        //Add nonZero entry of this factor
-        void addNonZeroInd(size_t i){
-        	if(_type !=0 ){
-        		_nonZeros.push_back(i);
-        	}
-        }
-
-        void getAllNonZeros(std::vector<size_t> &v) const{
-        	v = _nonZeros;
-        }
-
-        void setAllNonZeros(std::vector<size_t> &v){
-        	_nonZeros = v;
-        }
-
-        void setType(size_t t){
-        	_type = t;
-        }
-
-        size_t getType() const {
-        	return _type;
-        }
-
-        long nrNonZeros() const{
-        	return _nonZeros.size();
-        }
     //@}
 
     /// \name Queries
@@ -203,7 +155,7 @@ class TFactor {
 
         /// Returns sum of all values
         T sum() const { return _p.sum(); }
-
+        
         /// Returns sum of absolute values
         T sumAbs() const { return _p.sumAbs(); }
 
@@ -228,7 +180,7 @@ class TFactor {
     /// \name Unary transformations
     //@{
         /// Returns negative of \c *this
-        TFactor<T> operator- () const {
+        TFactor<T> operator- () const { 
             // Note: the alternative (shorter) way of implementing this,
             //   return TFactor<T>( _vs, _p.abs() );
             // is slower because it invokes the copy constructor of TProb<T>
@@ -313,46 +265,22 @@ class TFactor {
     /// \name Operations with scalars
     //@{
         /// Sets all values to \a x
-        TFactor<T>& fill (T x) {
-        	_p.fill( x );
-        	_type = 0;
-        	_nonZeros.clear();
-        	return *this;
-        }
+        TFactor<T>& fill (T x) { _p.fill( x ); return *this; }
 
         /// Adds scalar \a x to each value
-        TFactor<T>& operator+= (T x) {
-        	_p += x;
-        	_type = 0;
-        	_nonZeros.clear();
-        	return *this;
-        }
+        TFactor<T>& operator+= (T x) { _p += x; return *this; }
 
         /// Subtracts scalar \a x from each value
-        TFactor<T>& operator-= (T x) {
-        	_p -= x;
-        	_type = 0;
-        	_nonZeros.clear();
-        	return *this;
-        }
+        TFactor<T>& operator-= (T x) { _p -= x; return *this; }
 
         /// Multiplies each value with scalar \a x
-        TFactor<T>& operator*= (T x) {
-        	_p *= x;
-        	return *this;
-        }
+        TFactor<T>& operator*= (T x) { _p *= x; return *this; }
 
         /// Divides each entry by scalar \a x
-        TFactor<T>& operator/= (T x) {
-        	_p /= x;
-        	return *this;
-        }
+        TFactor<T>& operator/= (T x) { _p /= x; return *this; }
 
         /// Raises values to the power \a x
-        TFactor<T>& operator^= (T x) {
-        	_p ^= x;
-        	return *this;
-        }
+        TFactor<T>& operator^= (T x) { _p ^= x; return *this; }
     //@}
 
     /// \name Transformations with scalars
@@ -366,8 +294,6 @@ class TFactor {
             TFactor<T> result;
             result._vs = _vs;
             result._p = p() + x;
-            result._type = 0;
-            result._nonZeros.clear();
             return result;
         }
 
@@ -376,8 +302,6 @@ class TFactor {
             TFactor<T> result;
             result._vs = _vs;
             result._p = p() - x;
-            result._type = 0;
-            result._nonZeros.clear();
             return result;
         }
 
@@ -386,8 +310,6 @@ class TFactor {
             TFactor<T> result;
             result._vs = _vs;
             result._p = p() * x;
-            result._type = 0;
-            result._nonZeros.clear();
             return result;
         }
 
@@ -396,8 +318,6 @@ class TFactor {
             TFactor<T> result;
             result._vs = _vs;
             result._p = p() / x;
-            result._type = 0;
-            result._nonZeros.clear();
             return result;
         }
 
@@ -406,8 +326,6 @@ class TFactor {
             TFactor<T> result;
             result._vs = _vs;
             result._p = p() ^ x;
-            result._type = 0;
-            result._nonZeros.clear();
             return result;
         }
     //@}
@@ -423,106 +341,31 @@ class TFactor {
 
             DAI_ASSERT( ((_vs | g._vs) == _vs) || ((_vs | g._vs) == g._vs)  );
 
-//            std::cout << "\n\n\n binaryOp Before: \n";
-//            std::cout << "*this: "<<*this << "\n";
-//            std::cout << "g: "<< g << "\n\n";
+        	if( _vs == g._vs ) // optimize special case
+                _p.pwBinaryOp( g._p, op );
+            else {
+                TFactor<T> f(*this); // make a copy
+                _vs |= g._vs;
 
-//            std::cout << "g.getType() = " << g.getType() << "\n";
-//            std::cout << "this->_type = " << this->_type << "\n";
 
-            if(g.getType() == 0 and this->_type == 0){
+                size_t N = BigInt_size_t( _vs.nrStates() );
 
-//            	std::cout << "binaryOp factor of Type 0\n";
+                IndexFor i_f( f._vs, _vs );
+                IndexFor i_g( g._vs, _vs );
 
-            	if( _vs == g._vs ) // optimize special case
-            		_p.pwBinaryOp( g._p, op );
-            	else {
-            		TFactor<T> f(*this); // make a copy
-            		_vs |= g._vs;
 
-            		size_t N = BigInt_size_t( _vs.nrStates() );
 
-            		IndexFor i_f( f._vs, _vs );
-            		IndexFor i_g( g._vs, _vs );
+                std::cout << "F " << f << "\n";
+                std::cout << "G " << g << "\n";
 
-//            		std::cout << "F " << f << "\n";
-//            		std::cout << "G " << g << "\n";
 
-            		_p.p().clear();
-            		_p.p().reserve( N );
-            		for( size_t i = 0; i < N; i++, ++i_f, ++i_g ){
-//            			std::cout << "ind_f = " << i_f << "    ind_g = " << i_g << "\n";
-            			_p.p().push_back( op( f._p[i_f], g._p[i_g] ) );
-            		}
-            	}
+                _p.p().clear();
+                _p.p().reserve( N );
+                for( size_t i = 0; i < N; i++, ++i_f, ++i_g ){
+                	std::cout << "ind_f = " << i_f << "    ind_g = " << i_g << "\n";
+                	_p.p().push_back( op( f._p[i_f], g._p[i_g] ) );
+                }
             }
-            else{ //this is a special sparse factor. The sparsity pattern will be the same as in one of the input factors
-
-            	DAI_ASSERT((g.getType() != 0) || (this->_type != 0));
-
-//            	std::cout << "binaryOp factor of Type 1\n";
-
-            	if( _vs == g._vs ){ // optimize special case
-
-            		if(g.getType() != 0){ // g has special sparse pattern, so result will have same sparsity pattern as g
-
-            			TFactor<T> this_copy(*this); // make a copy of this
-
-            			*this = g; //zero pattern of this will be same as in g
-
-            			//we will iterate only over nonzero entries
-            			size_t ind;
-            			for( size_t i = 0; i < g._nonZeros.size(); i++ ){
-            				ind = g._nonZeros[i];
-            				_p.p().at(ind) = op( this_copy._p[ind], g._p[ind] ) ;
-            			}
-            		}
-            		else{ // "this" has special sparse pattern, so result will have same sparsity pattern as g
-
-            			//we will iterate only over nonzero entries
-            			size_t ind;
-            			for( size_t i = 0; i < _nonZeros.size(); i++){
-            				ind = _nonZeros[i];
-            				_p.p().at(ind) =  op( _p[ind], g._p[ind] ) ;
-            			}
-            		}
-            	}
-            	else {
-
-            		if(g.getType() != 0){ // g has special sparse pattern, so result will have same sparsity pattern as g
-
-            			IndexFor i_this( _vs, g._vs, g._nonZeros);
-
-            			TFactor<T> this_copy(*this); // make a copy of this
-            			*this = g; //zero pattern of this will be same as in g
-
-            			//we will iterate only over nonzero entries
-            			size_t ind;
-            			for( size_t i = 0; i < g._nonZeros.size(); i++, ++i_this ){
-            				ind = g._nonZeros[i];
-//            				std::cout << "g._nonZeros[i] = " << g._nonZeros[i]<< "  " << "i_this = " << i_this << ":      " << this_copy._p[i_this] << " op " << g._p[ind] << "\n";
-            				_p.p().at(ind) = op( this_copy._p[i_this], g._p[ind] ) ;
-            			}
-            		}
-            		else{ // "this" has special sparse pattern, so result will have same sparsity pattern as this
-
-               			IndexFor i_g( g._vs, _vs, _nonZeros);
-
-            			//we will iterate only over nonzero entries
-               			size_t ind;
-            			for( size_t i = 0; i < _nonZeros.size(); i++, ++i_g ){
-            				ind = _nonZeros[i];
-//            				std::cout << "_nonZeros[i] = " << _nonZeros[i]<< "  " << "i_g = " << i_g << ":      " << _p[ind]<< " op " << g._p[i_g] << "\n";
-
-            				_p.p().at(ind) =  op( _p[ind], g._p[i_g] ) ;
-            			}
-            		}
-            	}
-            }
-
-//            std::cout << "binaryOp After: \n";
-//            std::cout << "*this: "<<*this << "\n\n\n";
-
             return *this;
         }
 
@@ -572,104 +415,28 @@ class TFactor {
          *  \param op Operation of type \a binOp
          */
         template<typename binOp> TFactor<T> binaryTr( const TFactor<T> &g, binOp op ) const {
-            // Note that to prevent a copy to be made, it is crucial
+            // Note that to prevent a copy to be made, it is crucial 
             // that the result is declared outside the if-else construct.
 
         	DAI_ASSERT( ((_vs | g._vs) == _vs) || ((_vs | g._vs) == g._vs)  );
 
             TFactor<T> result;
+            if( _vs == g._vs ) { // optimize special case
+                result._vs = _vs;
+                result._p = _p.pwBinaryTr( g._p, op );
+            } else {
+                result._vs = _vs | g._vs;
 
-//            std::cout << "\n\n\n binaryTr Before: \n";
-//            std::cout << "*this: "<<*this << "\n";
-//            std::cout << "g: "<< g << "\n\n";
+                size_t N = BigInt_size_t( result._vs.nrStates() );
 
-            if(g.getType() == 0 and this->_type == 0){
+                IndexFor i_f( _vs, result.vars() );
+                IndexFor i_g( g._vs, result.vars() );
 
-//            	std::cout << "binaryTr factor of Type 0\n";
-
-            	if( _vs == g._vs ) { // optimize special case
-            		result._vs = _vs;
-            		result._p = _p.pwBinaryTr( g._p, op );
-            	} else {
-            		result._vs = _vs | g._vs;
-
-            		size_t N = BigInt_size_t( result._vs.nrStates() );
-
-            		IndexFor i_f( _vs, result.vars() );
-            		IndexFor i_g( g._vs, result.vars() );
-
-            		result._p.p().clear();
-            		result._p.p().reserve( N );
-            		for( size_t i = 0; i < N; i++, ++i_f, ++i_g )
-            			result._p.p().push_back( op( _p[i_f], g[i_g] ) );
-            	}
+                result._p.p().clear();
+                result._p.p().reserve( N );
+                for( size_t i = 0; i < N; i++, ++i_f, ++i_g )
+                    result._p.p().push_back( op( _p[i_f], g[i_g] ) );
             }
-            else{ //this is a special sparse factor. The sparsity pattern will be the same as in one of the input factors
-
-//            	std::cout << "binaryTr factor of Type 1\n";
-
-
-            	if( _vs == g._vs ){ // optimize special case
-
-            		if(g.getType() != 0){ // g has special sparse pattern, so result will have same sparsity pattern as g
-
-               			result = g; //zero pattern of result will be same as in g
-
-            			//we will iterate only over nonzero entries
-            			size_t ind;
-            			for( size_t i = 0; i < g._nonZeros.size(); i++ ){
-            				ind = g._nonZeros[i];
-            				result._p.p().at(ind) = op( _p[ind], g._p[ind] ) ;
-            			}
-            		}
-            		else{ // "this" has special sparse pattern, so result will have same sparsity pattern as g
-
-            			result = *this; //zero pattern of result will be same as in this
-
-            			//we will iterate only over nonzero entries
-            			size_t ind;
-            			for( size_t i = 0; i < _nonZeros.size(); i++){
-            				ind = _nonZeros[i];
-            				result._p.p().at(ind) =  op( _p[ind], g._p[ind] ) ;
-            			}
-            		}
-            	}
-            	else {
-
-            		if(g.getType() != 0){ // g has special sparse pattern, so result will have same sparsity pattern as g
-
-            			IndexFor i_this( _vs, g._vs, g._nonZeros);
-
-            			result = g; //zero pattern of result will be same as in g
-
-            			//we will iterate only over nonzero entries
-            			size_t ind;
-            			for( size_t i = 0; i < g._nonZeros.size(); i++, ++i_this ){
-            				ind = g._nonZeros[i];
-//            				std::cout << "g._nonZeros[i] = " << g._nonZeros[i]<< "  " << "i_this = " << i_this << ":      " << _p[i_this] << " op " << g._p[ind] << "\n";
-            				result._p.p().at(ind) = op( _p[i_this], g._p[ind] ) ;
-            			}
-            		}
-            		else{ // "this" has special sparse pattern, so result will have same sparsity pattern as g
-
-            			IndexFor i_g( g._vs, _vs, _nonZeros);
-
-            			result = *this; //zero pattern of result will be same as in this
-
-            			//we will iterate only over nonzero entries
-            			size_t ind;
-            			for( size_t i = 0; i < _nonZeros.size(); i++, ++i_g ){
-            				ind = _nonZeros[i];
-//            				std::cout << "_nonZeros[i] = " << _nonZeros[i]<< "  " << "i_g = " << i_g << ":      " << _p[ind] << " op " << g._p[i_g] << "\n";
-            				result._p.p().at(ind) =  op( _p[ind], g._p[i_g] ) ;
-            			}
-            		}
-            	}
-            }
-
-//            std::cout << "binaryTr After: \n";
-//            std::cout << "result: "<<result << "\n\n\n";
-
             return result;
         }
 
@@ -728,10 +495,10 @@ class TFactor {
          *  returned corresponds with the factor \f$g : \prod_{l \in L \setminus M} X_l \to [0,\infty)\f$
          *  defined by \f$g(\{x_l\}_{l\in L \setminus M}) = f(\{x_l\}_{l\in L \setminus M}, \{s(x_m)\}_{m\in M})\f$.
          */
-        TFactor<T> slice( const VarSet& vars, size_t varsState ) const;
+        TFactor<T> slice( const VarSet& vars, size_t varsState ) const; 
 
         /// Embeds this factor in a larger VarSet
-        /** \pre vars() should be a subset of \a vars
+        /** \pre vars() should be a subset of \a vars 
          *
          *  If *this corresponds with \f$f : \prod_{l\in L} X_l \to [0,\infty)\f$ and \f$L \subset M\f$, then
          *  the embedded factor corresponds with \f$g : \prod_{m\in M} X_m \to [0,\infty) : x \mapsto f(x_L)\f$.
@@ -772,39 +539,24 @@ template<typename T> TFactor<T> TFactor<T>::slice( const VarSet& vars, size_t va
 template<typename T> TFactor<T> TFactor<T>::marginal(const VarSet &vars, bool normed) const {
     VarSet res_vars = vars & _vs;
 
-//    std::cout << "Marginalization of \n";
-//    std::cout << *this << "\n";
-
+    //std::cerr << "Marginalization: \n";
     //std::cerr << "Variables in this factor: " << _vs << "\n";
     //std::cerr << "Values in this factor: " << _p <<"\n";
     //std::cerr << "Variables to be left: " << vars << "\n";
 
     TFactor<T> res( res_vars, 0.0 );
 
-    if(_type != 0){
+    IndexFor i_res( res_vars, _vs );
 
-    	IndexFor i_res( res_vars, _vs, _nonZeros );
-
-    	for( size_t i = 0; i < _nonZeros.size(); i++, ++i_res ){
-//    		std::cout << "_nonZeros[i] = " << _nonZeros[i]<< "  " << "i_res = " << i_res << "\n";
-    		res.set( i_res, res[i_res] + _p[_nonZeros[i]] );
-    	}
+    for( size_t i = 0; i < _p.size(); i++, ++i_res ){
+    	//std::cerr << "Set " << i_res << " to value " << res[i_res] << " + " << _p[i] << " = " << res[i_res] + _p[i] << "\n";
+    	res.set( i_res, res[i_res] + _p[i] );
     }
-    else{
-
-    	IndexFor i_res( res_vars, _vs );
-
-    	for( size_t i = 0; i < _p.size(); i++, ++i_res ){
-    		//std::cerr << "Set " << i_res << " to value " << res[i_res] << " + " << _p[i] << " = " << res[i_res] + _p[i] << "\n";
-    		res.set( i_res, res[i_res] + _p[i] );
-    	}
-    }
-
 
     if( normed )
         res.normalize( NORMPROB );
 
-//    std::cerr << "Result of marginalization: " << res <<"\n";
+    //std::cerr << "Result of marginalization: " << res <<"\n";
 
     return res;
 }
@@ -860,7 +612,7 @@ template<typename T> T TFactor<T>::strength( const Var &i, const Var &j ) const 
 /** \relates TFactor
  */
 template<typename T> std::ostream& operator<< (std::ostream& os, const TFactor<T>& f) {
-    os << "(" << f.vars() << ", type:" << f.getType()<<", size: "<<f.p().size()<<", possibNZ: "<<f.nrNonZeros()<<", (";
+    os << "(" << f.vars() << ", (";
     for( size_t i = 0; i < f.nrStates(); i++ )
         os << (i == 0 ? "" : ", ") << f[i];
     os << "))";

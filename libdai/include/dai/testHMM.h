@@ -12,7 +12,8 @@ class TestHMM{
 	std::vector<std::vector<std::pair<size_t, size_t> > > test_data;
 public:
 	TestHMM(const char* filename);
-	void test();
+	void test_loglik(const char* filename, size_t ID);
+	void test_marginal(const char* filename, size_t ID);
 };
 
 }

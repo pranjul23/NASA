@@ -18,7 +18,8 @@
 #include <algorithm>
 #include <map>
 #include <dai/varset.h>
-
+#include <iostream>
+#include <stdlib.h>
 
 namespace dai {
 
@@ -59,31 +60,140 @@ class IndexFor {
         /// For each variable in forVars, its number of possible values
         std::vector<size_t> _ranges;
 
+        //non zero elements of a factor
+        std::vector<size_t> _nonZeros;
+
+        //index to keep track of which non zero entry we used last
+        long _ind;
+
+        //utility index needed to convert linear _nonZeros index into linear index for indexVars
+        std::vector<size_t> _matInd;
+        std::vector<size_t> _sumForVars;
+        ldiv_t divresult;
+        bool _done;
+
     public:
         /// Default constructor
-        IndexFor() : _index(-1) {}
+        IndexFor() : _index(-1), _nonZeros(), _ind(0), _matInd(), _sumForVars(), _done(false) {}
 
         /// Construct IndexFor object from \a indexVars and \a forVars
-        IndexFor( const VarSet& indexVars, const VarSet& forVars ) : _state( forVars.size(), 0 ) {
-            long sum = 1;
+        IndexFor( const VarSet& indexVars, const VarSet& forVars) : _state( forVars.size(), 0 ), _nonZeros(), _ind(0), _matInd(), _sumForVars(), _done(false) {
+
+        	long sum = 1;
 
             _ranges.reserve( forVars.size() );
             _sum.reserve( forVars.size() );
 
             VarSet::const_iterator j = forVars.begin();
+
             for( VarSet::const_iterator i = indexVars.begin(); i != indexVars.end(); ++i ) {
-                for( ; j != forVars.end() && *j <= *i; ++j ) {
+
+            	for( ; j != forVars.end() && *j <= *i; ++j ) {
                     _ranges.push_back( j->states() );
                     _sum.push_back( (*i == *j) ? sum : 0 );
                 }
                 sum *= i->states();
             }
+
+
             for( ; j != forVars.end(); ++j ) {
                 _ranges.push_back( j->states() );
                 _sum.push_back( 0 );
             }
+
             _index = 0;
         }
+
+
+
+        /// Construct IndexFor object from \a indexVars and \a forVars
+        IndexFor( const VarSet& indexVars, const VarSet& forVars, const std::vector<size_t> &nonZ ) : _state( forVars.size(), 0 ), _nonZeros(nonZ), _ind(0), _done(false) {
+
+//        	std::cout << "1st: " << indexVars << "\n";
+//        	for( VarSet::const_iterator i = indexVars.begin(); i != indexVars.end(); ++i ) {
+//        		std::cout << i->states() << " ";
+//        	}
+//        	std::cout << "\n";
+
+
+//        	std::cout << "2nd: " << forVars << "\n";
+//        	for( VarSet::const_iterator i = forVars.begin(); i != forVars.end(); ++i ) {
+//        		std::cout << i->states() << " ";
+//        	}
+//        	std::cout << "\n";
+
+
+        	long sum = 1;
+
+            _ranges.reserve( forVars.size() );
+            _sum.reserve( forVars.size() );
+
+            VarSet::const_iterator j = forVars.begin();
+
+            for( VarSet::const_iterator i = indexVars.begin(); i != indexVars.end(); ++i ) {
+
+            	for( ; j != forVars.end() && *j <= *i; ++j ) {
+                    _ranges.push_back( j->states() );
+                    _sum.push_back( (*i == *j) ? sum : 0 );
+                }
+                sum *= i->states();
+            }
+
+
+            for( ; j != forVars.end(); ++j ) {
+                _ranges.push_back( j->states() );
+                _sum.push_back( 0 );
+            }
+
+
+
+
+            //initialzie _matInd and _sumForVars
+
+            _matInd.resize(_ranges.size(), 0);
+
+            sum = 1;
+            _sumForVars.reserve( forVars.size() );
+
+            for( VarSet::const_iterator i = forVars.begin(); i != forVars.end(); ++i ) {
+            	_sumForVars.push_back(sum);
+            	sum *= i->states();
+            }
+
+
+
+
+            //prepare the first index
+
+            for(int i = _sumForVars.size()-1; i >= 0; i--){
+            	divresult = std::ldiv((long)_nonZeros[_ind], (long)_sumForVars[i]);
+
+            	_matInd[i] =divresult.quot;
+            	_nonZeros[_ind] = divresult.rem;
+            }
+
+            //convert from matrix index into linear index for indexVar
+
+            _index = 0;
+            for(size_t i = 0; i<_sum.size(); i++){
+            	_index += _sum[i]*_matInd[i];
+            }
+
+//            std::cout << "\n _ranges: \n";
+//            for(std::vector<size_t>::iterator it = _ranges.begin(); it != _ranges.end(); it++){
+//            	std::cout << *it << "\n";
+//            }
+//
+//            std::cout << "\n _sum: \n";
+//            for(std::vector<long>::iterator it = _sum.begin(); it != _sum.end(); it++){
+//            	std::cout << *it << "\n";
+//            }
+//
+//            std::cout << "======================================\n";
+        }
+
+
+
 
         /// Resets the state
         IndexFor& reset() {
@@ -100,21 +210,71 @@ class IndexFor {
 
         /// Increments the current state of \a forVars (prefix)
         IndexFor& operator++ () {
-            if( _index >= 0 ) {
-                size_t i = 0;
 
-                while( i < _state.size() ) {
-                    _index += _sum[i];
-                    if( ++_state[i] < _ranges[i] )
-                        break;
-                    _index -= _sum[i] * _ranges[i];
-                    _state[i] = 0;
-                    i++;
-                }
+        	if(_nonZeros.size() == 0){
+        		if( _index >= 0) {
 
-                if( i == _state.size() )
-                    _index = -1;
-            }
+        			size_t i = 0;
+
+//        			std::cout << "_index: " << _index << "\n";
+
+        			while( i < _state.size() ) {
+        				_index += _sum[i];
+        				//                    std::cout << "_index += _sum[i]: " << _index << "\n";
+
+
+        				if( ++_state[i] < _ranges[i] )
+        					break;
+
+
+        				_index -= _sum[i] * _ranges[i];
+        				//                    std::cout << "_index -= _sum[i] * _ranges[i]: " << _index << "\n";
+
+        				_state[i] = 0;
+        				i++;
+        			}
+
+//        			std::cout << "_state: \n";
+//        			for(std::vector<size_t>::iterator it = _state.begin(); it != _state.end(); it++){
+//        				std::cout << *it << " ";
+//        			}
+//        			std::cout << "\n";
+
+        			if( i == _state.size() )
+        				_index = -1;
+        		}
+        	}
+        	else{
+
+        		//convert from linear index _nonZeros into matrix index
+
+//        		std::cout << "_ind before: " << _ind << ", _nonZeros.size() "<<_nonZeros.size()<<"\n";
+
+    			_ind++;
+
+    			if(_ind >= (long)_nonZeros.size()){
+    				_index = -1;
+    			}
+    			else{
+        			for(int i = _sumForVars.size()-1; i >= 0; i--){
+        				divresult = std::ldiv((long)_nonZeros[_ind], (long)_sumForVars[i]);
+
+        				_matInd[i] =divresult.quot;
+        				_nonZeros[_ind] = divresult.rem;
+        			}
+
+        			//convert from matrix index into linear index for indexVar
+
+        			_index = 0;
+        			for(size_t i = 0; i<_sum.size(); i++){
+        				_index += _sum[i]*_matInd[i];
+        			}
+
+
+        		}
+        	}
+//            std::cout << "_index after: " << _index << "\n";
+
             return( *this );
         }
 

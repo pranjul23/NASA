@@ -12,6 +12,7 @@
 #include <dai/regiongraph.h>
 #include <dai/factorgraph.h>
 #include <dai/clustergraph.h>
+#include <iostream>
 
 
 namespace dai {
@@ -192,9 +193,12 @@ void RegionGraph::recomputeORs() {
 
 
 void RegionGraph::recomputeORs( const VarSet &ns ) {
-    for( size_t alpha = 0; alpha < nrORs(); alpha++ )
-        if( OR(alpha).vars().intersects( ns ) )
-            OR(alpha).fill( 1.0 );
+
+	for( size_t alpha = 0; alpha < nrORs(); alpha++ )
+        if( OR(alpha).vars().intersects( ns ) ){
+        	OR(alpha).fill( 1.0 );
+        }
+
     for( size_t I = 0; I < nrFactors(); I++ )
         if( fac2OR(I) != -1U )
             if( OR( fac2OR(I) ).vars().intersects( ns ) )

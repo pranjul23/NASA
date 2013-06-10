@@ -71,22 +71,34 @@ HSMMparam::HSMMparam(const char* filename){
 			Ivars.push_back( Var(labels[mi], dims[mi]) );
 		}
 
-		if(I < 2){
-			init.push_back( Factor( VarSet( Ivars.begin(), Ivars.end(), Ivars.size() ), (Real)0 ) );
-		}
-		else{
-			dist.push_back( Factor( VarSet( Ivars.begin(), Ivars.end(), Ivars.size() ), (Real)0 ) );
-		}
-
 		// calculate permutation object
 		Permute permindex( Ivars );
 
-		// read values
-		size_t nr_nonzeros;
+		// read # of nonzeros that are currently present in the factor
+		size_t nr_nonzeros_curr;
 		while( (is.peek()) == '#' ) getline(is,line);
-		is >> nr_nonzeros;
+		is >> nr_nonzeros_curr;
 
-		for( size_t k = 0; k < nr_nonzeros; k++ ) {
+
+		// read # of nonzeros in the factor that are possible
+		size_t nr_nonzeros_possib;
+		while( (is.peek()) == '#' ) getline(is,line);
+		is >> nr_nonzeros_possib;
+
+		// read the type of factor: 0-dense, 1-sparse
+		size_t factor_type;
+		while( (is.peek()) == '#' ) getline(is,line);
+		is >> factor_type;
+
+		if(I < 2){
+			init.push_back( Factor( VarSet( Ivars.begin(), Ivars.end(), Ivars.size() ), (Real)0, nr_nonzeros_possib, factor_type ) );
+		}
+		else{
+			dist.push_back( Factor( VarSet( Ivars.begin(), Ivars.end(), Ivars.size() ), (Real)0, nr_nonzeros_possib, factor_type ) );
+		}
+
+
+		for( size_t k = 0; k < nr_nonzeros_curr; k++ ) {
 			size_t li;
 			Real val;
 			while( (is.peek()) == '#' ) getline(is,line);
@@ -101,6 +113,21 @@ HSMMparam::HSMMparam(const char* filename){
 			}
 			else{
 				dist.back().set( permindex.convertLinearIndex( li ), val );
+			}
+		}
+
+
+		for( size_t k = 0; k < nr_nonzeros_possib; k++ ) {
+			size_t ind;
+			while( (is.peek()) == '#' ) getline(is,line);
+			is >> ind;
+
+			// store value, but permute indices first according to internal representation
+			if(I < 2){
+				init.back().addNonZeroInd(permindex.convertLinearIndex( ind ));
+			}
+			else{
+				dist.back().addNonZeroInd(permindex.convertLinearIndex( ind ));
 			}
 		}
 	}
@@ -140,7 +167,16 @@ void HSMMparam::saveHSMMparam(const char* filename){
 	FactorGraph graph = FactorGraph();
 	graph.createHSMMFactorGraph(init, dist, 1);
 
-	os << graph;
+//	for(size_t i=0; i<init.size(); i++){
+//		std::cout << "init[i] = " << init[i] << "\n";
+//	}
+//
+//	for(size_t i=0; i<dist.size(); i++){
+//		std::cout << "dist[i] = " << dist[i] << "\n";
+//	}
+
+//	os << graph;
+	graph.saveFactorGraph(os);
 
 	os.close();
 }

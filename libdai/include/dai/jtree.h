@@ -193,6 +193,7 @@ class JTree : public DAIAlgRG {
 
         //std::vector<Factor> calcDistrib(const std::vector<VarSet> &vs, const size_t& margLabel);
         Factor calcDistrib(const std::vector<VarSet> &vs);
+        Factor calcDistrib(const std::vector<VarSet> &vs, Factor &pattern);
         void normDistrib(Factor &f, const size_t& margLabel);
 
     //@}

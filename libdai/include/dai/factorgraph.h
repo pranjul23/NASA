@@ -235,15 +235,15 @@ class FactorGraph {
     //@{
         /// Set the content of the \a I 'th factor and make a backup of its old content if \a backup == \c true
         virtual void setFactor( size_t I, const Factor& newFactor, bool backup = false ) {
-            DAI_ASSERT( newFactor.vars() == factor(I).vars() );
-            if( backup )
-                backupFactor( I );
-            _factors[I] = newFactor;
+        	DAI_ASSERT( newFactor.vars() == factor(I).vars() );
+        	if( backup )
+        		backupFactor( I );
+        	_factors[I] = newFactor;
         }
 
         /// Set the contents of all factors as specified by \a facs and make a backup of the old contents if \a backup == \c true
         virtual void setFactors( const std::map<size_t, Factor>& facs, bool backup = false ) {
-            for( std::map<size_t, Factor>::const_iterator fac = facs.begin(); fac != facs.end(); fac++ ) {
+        	for( std::map<size_t, Factor>::const_iterator fac = facs.begin(); fac != facs.end(); fac++ ) {
                 if( backup )
                     backupFactor( fac->first );
                 setFactor( fac->first, fac->second );
@@ -334,6 +334,8 @@ class FactorGraph {
         /** \see \ref fileformats-factorgraph
          */
         friend std::ostream& operator<< (std::ostream& os, const FactorGraph& fg );
+
+        void saveFactorGraph ( std::ostream &os);
 
         /// Reads a factor graph from an input stream
         /** \see \ref fileformats-factorgraph

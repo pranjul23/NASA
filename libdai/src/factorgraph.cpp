@@ -96,6 +96,56 @@ std::ostream& operator<< ( std::ostream &os, const FactorGraph &fg ) {
 }
 
 
+/// Writes a FactorGraph to an output stream
+void FactorGraph::saveFactorGraph ( std::ostream &os) {
+    os << nrFactors() << endl;
+
+    for( size_t I = 0; I < nrFactors(); I++ ) {
+        os << endl;
+
+        //number of variables in factor
+        os << factor(I).vars().size() << endl;
+
+        //variable IDs in the factor
+        for( VarSet::const_iterator i = factor(I).vars().begin(); i != factor(I).vars().end(); i++ )
+            os << i->label() << " ";
+        os << endl;
+
+
+        //dim of variables in the factor
+        for( VarSet::const_iterator i = factor(I).vars().begin(); i != factor(I).vars().end(); i++ )
+            os << i->states() << " ";
+        os << endl;
+
+
+        //number of nonzeros currently in the factor
+        size_t nr_nonzeros = 0;
+        for( size_t k = 0; k < factor(I).nrStates(); k++ )
+            if( factor(I)[k] != (Real)0 )
+                nr_nonzeros++;
+        os << nr_nonzeros << endl;
+
+        //number of nonzeros in the factor that are possible
+        os << factor(I).nrNonZeros() << endl;
+
+        //type of factor
+        os << factor(I).getType() << endl;
+
+        //indeces of current nonzero elements
+        for( size_t k = 0; k < factor(I).nrStates(); k++ )
+            if( factor(I)[k] != (Real)0 )
+                os << k << " " << setw(os.precision()+4) << factor(I)[k] << endl;
+
+        //indeces of nonzero elements that are possible
+        std::vector<size_t> v;
+        factor(I).getAllNonZeros(v);
+        for( std::vector<size_t>::iterator it = v.begin(); it != v.end(); it++ )
+        	os << *it << "\n";
+    }
+}
+
+
+
 /// Reads a FactorGraph from an input stream
 std::istream& operator>> ( std::istream& is, FactorGraph &fg ) {
     long verbose = 0;
@@ -362,15 +412,19 @@ void FactorGraph::clamp( size_t i, size_t x, bool backup ) {
     mask.set( x, (Real)1 );
 
     map<size_t, Factor> newFacs;
-    bforeach( const Neighbor &I, nbV(i) )
+    bforeach( const Neighbor &I, nbV(i) ){
         newFacs[I] = factor(I) * mask;
+    }
+
     setFactors( newFacs, backup );
 
-//    cerr << "New factors: \n";
-
+//    cout << "=====================================================\n";
+//    cout << "New factors: \n";
 //    for( size_t i = 0; i < nrFactors(); i++ ){
 //    		cout << factor(i) << endl;
 //    }
+//    cout << "=====================================================\n";
+
 
     return;
 }

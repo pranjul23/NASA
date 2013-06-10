@@ -56,6 +56,23 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 	cout << "Model training...\n";
 
+//	std::vector<size_t> v;
+//	for(size_t i=0; i<param.init.size(); i++){
+//		param.init[i].getAllNonZeros(v);
+//		for(size_t j=0; j<v.size(); j++){
+//			std::cout << "init[i] ind = " << v[j] << "\n";
+//		}
+//		std::cout << "========================\n";
+//	}
+//
+//	for(size_t i=0; i<param.dist.size(); i++){
+//		param.dist[i].getAllNonZeros(v);
+//		for(size_t j=0; j<v.size(); j++){
+//			std::cout << "dist[i] ind = " << v[j] << "\n";
+//		}
+//		std::cout << "========================\n";
+//	}
+
 
 	for(size_t iter = 0; iter<max_num_iter; iter++){
 
@@ -117,7 +134,8 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 			//calculate state transition distribution
 			//res = jt->calcDistrib(vs, 2);
-			transit += jt->calcDistrib(vs);
+			//transit += jt->calcDistrib(vs);
+			transit += jt->calcDistrib(vs, param.dist[1]);
 
 			//================= prepare variables to calculate duration distribution ===============
 			vs.clear();
@@ -144,7 +162,8 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 			//calculate state duration distribution
 			//res = jt->calcDistrib(vs, 1);
-			durat += jt->calcDistrib(vs);
+			//durat += jt->calcDistrib(vs);
+			durat += jt->calcDistrib(vs, param.dist[0]);
 
 
 
@@ -169,7 +188,9 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 			//calculate state duration distribution
 			//res = jt->calcDistrib(vs, 1);
-			observ += jt->calcDistrib(vs);
+			//observ += jt->calcDistrib(vs);
+			observ += jt->calcDistrib(vs, param.dist[2]);
+
 
 			delete jt;
 			delete graph;
@@ -177,8 +198,6 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 			cout << "Processed data point " << i << " out of " << data.size() << "\n";
 
 //			cout << "likelihood_curr "<<likelihood_curr << "\n";
-//			exit(1);
-
 		}
 
 		//normalize the result and put back into init and dist structure
@@ -200,6 +219,14 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 		jt->normDistrib(observ, 1);
 		param.dist[2] = observ;
 
+//		for(size_t i=0; i<param.init.size(); i++){
+//			std::cout << "init[i] = " << param.init[i] << "\n";
+//		}
+//
+//		for(size_t i=0; i<param.dist.size(); i++){
+//			std::cout << "dist[i] = " << param.dist[i] << "\n";
+//		}
+
 		//clear factors
 		initA0.fill(0);
 		initD0.fill(0);
@@ -218,10 +245,9 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 		likelihood_prev = likelihood_curr;
 		likelihood_curr = 0;
-
 	}
 
-	cout << "done.\n";
+	cout << "Training done.\n";
 
 	stringstream hsmmParam_learnt;
 	hsmmParam_learnt << string("data/hsmm_param_learnt_") << ID << string(".txt");

@@ -12,7 +12,7 @@ class TrainHMM{
 	std::vector<std::vector<std::pair<size_t, size_t> > > data;
 public:
 	TrainHMM(const char* filename);
-	void train();
+	void train(const char* filename, size_t ID, size_t max_num_iter);
 };
 
 }

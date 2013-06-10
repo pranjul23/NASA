@@ -151,7 +151,7 @@ void TestHSMM::test_marginal(const char* filename, size_t ID){
 		delete graph;
 	}
 
-	cout << "done.\n";
+	cout << "Testing done.\n";
 
 	ofstream os;
 	stringstream result;

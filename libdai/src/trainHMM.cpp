@@ -17,12 +17,15 @@ TrainHMM::TrainHMM(const char* filename){
 		data = train.getData();
 }
 
-void TrainHMM::train(){
+void TrainHMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 	// Read FactorGraph from the file specified by the first command line argument
-	HMMparam param("hmm_factor_graph_init.fg");
+	HMMparam param(filename);
 
-	param.printHMMparam("hmm_param_init.txt");
+	stringstream hmmParam;
+	hmmParam << string("data/hmm_param_init_") << ID << string(".txt");
+
+	param.printHMMparam(hmmParam.str().c_str());
 
 	// Set some constants
 	size_t maxiter = 10000;
@@ -48,11 +51,11 @@ void TrainHMM::train(){
 
 	cout << "Model training...\n";
 
-	for(size_t iter = 0; iter<30; iter++){
+	for(size_t iter = 0; iter < max_num_iter; iter++){
 
 		for(size_t i=0; i<data.size(); i++) {
 
-			//initialize HSMM of size equal the number of observations
+			//initialize HMM of size equal the number of observations
 			graph = new FactorGraph();
 			graph->createHMMFactorGraph(param.init, param.dist, data[i].size());
 
@@ -118,7 +121,9 @@ void TrainHMM::train(){
 			delete jt;
 			delete graph;
 
-			//cout << "Processed data point " << i << " out of " << data.size() << "\n";
+			cout << "Processed data point " << i << " out of " << data.size() << "\n";
+
+//			cout << "likelihood_curr "<<likelihood_curr << "\n";
 		}
 
 		//normalize the result and put back into init and dist structure
@@ -140,16 +145,29 @@ void TrainHMM::train(){
 		observ.fill(0);
 
 		likelihood.push_back(likelihood_curr);
+
+		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_curr <<
+				", diff: "<<  std::abs(likelihood_curr-likelihood_prev) <<"\n";
+
+		if( std::abs(likelihood_curr-likelihood_prev) < 0.1 ){
+			break;
+		}
+
 		likelihood_prev = likelihood_curr;
 		likelihood_curr = 0;
-
-		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_prev <<"\n";
 	}
 
-	cout << "done.\n";
+	cout << "Training done.\n";
 
-	param.printHMMparam("hmm_param_learnt.txt");
+	stringstream hmmParam_learnt;
+	hmmParam_learnt << string("data/hmm_param_learnt_") << ID << string(".txt");
 
-	param.saveHMMparam("hmm_factor_graph_learnt.fg");
+	param.printHMMparam(hmmParam_learnt.str().c_str());
+
+
+	stringstream learntFactorGraph;
+	learntFactorGraph << string("data/hmm_factor_graph_learnt_") << ID << string(".fg");
+
+	param.saveHMMparam(learntFactorGraph.str().c_str());
 }
 }

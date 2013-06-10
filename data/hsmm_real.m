@@ -13,13 +13,13 @@ ID = 0;
 
 %number of observation symbols
 %including NULL
-Nobs = 183;
+Nobs = 41;
 
 %number of hidden states
 Nhid = 10;
 
 %max duration
-Dmax = 70;
+Dmax = 80;
 
 [A0 D0 A D O] = genHSMMparam_init(Nobs, Nhid, Dmax);
 

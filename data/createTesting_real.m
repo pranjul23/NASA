@@ -32,11 +32,19 @@ dir_train = 'lpr-mit-live-normal/';
 
 list_train = dir(dir_train);
 
+
+%symblos which occur in the training and testing data
+load map.mat;
+
+
 %first 10 sequences are normal ones
 for i=1:10
     
     obs = load(strcat(dir_train, list_train(i+3).name));
     obs = obs(:,2);
+    
+    %remap observations to have only observable system calls
+    obs = map(obs+1);
     
     %plot(obs, 'r*')
     
@@ -69,6 +77,9 @@ for i=1:5
     obs = load(strcat(dir_test, list_test(i+3).name));
     obs = obs(:,2);
     
+    %remap observations to have only observable system calls
+    obs = map(obs+1);
+    
     %plot(obs, 'r*')
     
     %sequence = names(obs+ones(size(obs)));
@@ -98,6 +109,9 @@ for i = numSeq:-1:numSeq-4
     
     obs = load(strcat(dir_test, list_test(i+3).name));
     obs = obs(:,2);
+    
+    %remap observations to have only observable system calls
+    obs = map(obs+1);
     
     %plot(obs, 'r*')
     

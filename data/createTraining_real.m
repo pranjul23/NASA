@@ -22,17 +22,17 @@ fidhmm = fopen(loc, 'w');
 %for now find indeces of sequences that are short
 reduced_data = 1;
 
+%symblos which occur in the training and testing data
+load map.mat;
 
-
-if reduced_data
-    
+if reduced_data   
     ind = [];
     for i=1:numSeq
         obs = load(strcat(dir_train, list_train(i+3).name));
         obs = obs(:,2);
         lenObs = length(obs);
         
-        if lenObs <= 200
+        if lenObs <= 170
             ind = [ind i];
         end
     end
@@ -53,6 +53,10 @@ for i=1:numSeq
     
     obs = load(strcat(dir_train, list_train(ind(i)+3).name));
     obs = obs(:,2);
+    
+    %remap observations to have only observable system calls
+    obs = map(obs+1);
+    
     
 %     plot(obs, 'r*')
     

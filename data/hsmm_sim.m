@@ -64,7 +64,7 @@ createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm, ID);
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
 %simulation time
-T = 200;
+T = 100;
 
 %number of obseration sequences
 numSeq = 50;
@@ -75,7 +75,7 @@ createTraining_sim(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_tr
 %% =============== CREATE ANOMALY SEQUENCE ================================
 
 %simulation time
-T = 200;
+T = 100;
 
 %number of obseration sequences
 numSeq = 10;

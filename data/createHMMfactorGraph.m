@@ -12,6 +12,8 @@ fprintf(fid, '%d\n', 1); %number of variables
 fprintf(fid, '%d\n', 1); %variable ids in the factor
 fprintf(fid, '%d\n', Nhid); %dim of variables in the factor
 fprintf(fid, '%d\n', nnz(A0)); %number of nonzero elements
+fprintf(fid, '%d\n', 0); %number of nonzero elements that are possible
+fprintf(fid, '%d\n', 0); %type of factor: 0 - regular, dense; 1 - sparse
 
 elem = A0;
 nnzind = find(elem > 0);
@@ -30,6 +32,8 @@ fprintf(fid, '%d\n', 2); %number of variables
 fprintf(fid, '%d\t%d\n', 1, 0); %variable ids in the factor
 fprintf(fid, '%d\t%d\n', Nhid, Nhid); %dim of variables in the factor
 fprintf(fid, '%d\n', nnz(A)); %number of nonzero elements
+fprintf(fid, '%d\n', 0); %number of nonzero elements that are possible
+fprintf(fid, '%d\n', 0); %type of factor: 0 - regular, dense; 1 - sparse
 
 elem = reshape(A, numel(A),1);
 nnzind = find(elem > 0);
@@ -49,6 +53,8 @@ fprintf(fid, '%d\n', 2); %number of variables
 fprintf(fid, '%d\t%d\n', 2, 1); %variable ids in the factor
 fprintf(fid, '%d\t%d\n', Nobs, Nhid); %dim of variables in the factor
 fprintf(fid, '%d\n', nnz(O)); %number of nonzero elements
+fprintf(fid, '%d\n', 0); %number of nonzero elements that are possible
+fprintf(fid, '%d\n', 0); %type of factor: 0 - regular, dense; 1 - sparse
 
 elem = reshape(O, numel(O),1);
 nnzind = find(elem > 0);

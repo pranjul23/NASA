@@ -19,7 +19,7 @@ Nobs = 41;
 Nhid = 10;
 
 %max duration
-Dmax = 80;
+Dmax = 100;
 
 [A0 D0 A D O] = genHSMMparam_init(Nobs, Nhid, Dmax);
 

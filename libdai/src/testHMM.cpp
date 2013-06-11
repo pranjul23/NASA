@@ -129,7 +129,7 @@ void TestHMM::test_marginal(const char* filename, size_t ID){
 
 			//compute p(o_last=c | o_1...o_{last-1})
 			//this will give us a distribution: {o_last=1, o_last=2, ... o_last=M}
-			O_last = jt->calcMarginal(graph->var(2*k));
+			O_last = jt->calcMarginal(graph->var(2*k+2));
 
 			//since we have a specific observation at last time step: o_last=c, get its probability:
 			sequence_marginal.push_back( log(O_last.p().get(test_data[i][k].second)) );

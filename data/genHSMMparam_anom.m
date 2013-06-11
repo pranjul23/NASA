@@ -65,7 +65,7 @@ for i=1:Nhid
     O(:,i) = O(:,i)/sum(O(:,i));
 end
 
-O = O_true;
+%O = O_true;
 
 
 

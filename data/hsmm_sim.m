@@ -78,7 +78,7 @@ createTraining_sim(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_tr
 T = 100;
 
 %number of obseration sequences
-numSeq = 10;
+numSeq = 20;
 
 createTesting_sim(T, numSeq, Nobs, ...
                   Nhid_true, Dmax_true, Nhid_anom, Dmax_anom, ...

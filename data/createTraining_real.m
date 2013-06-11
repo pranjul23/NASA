@@ -32,7 +32,7 @@ if reduced_data
         obs = obs(:,2);
         lenObs = length(obs);
         
-        if lenObs <= 170
+        if lenObs <= 300
             ind = [ind i];
         end
     end

@@ -142,8 +142,8 @@ HMMparam::HMMparam(const char* filename){
 	//internaly the order of variables is in increasing order
 	//but here we want in such order so as to print (at|at-1)
 	//print row by row, so the fastest varying index corresponds to at-1
-	trans.push_back(dist[0].vars().elements().at(1));
 	trans.push_back(dist[0].vars().elements().at(0));
+	trans.push_back(dist[0].vars().elements().at(1));
 
 	obs.push_back(dist[1].vars().elements().at(0));
 	obs.push_back(dist[1].vars().elements().at(1));
@@ -182,6 +182,7 @@ void HMMparam::printHMMparam(const char* filename){
 	myfile << "P(At|At-1 = " << "): \n";
 	for(size_t jj=0; jj<trans[1].states(); jj++){
 		for(size_t kk=0; kk<trans[0].states(); kk++){
+//			std::cout << "li = " << li << "  permTrans.convertLinearIndex(li) = " << permTrans.convertLinearIndex(li) <<" dist[0].p().get(permTrans.convertLinearIndex(li)) = "<<dist[0].p().get(permTrans.convertLinearIndex(li))<< "\n";
 			myfile << setw(6) << dist[0].p().get(permTrans.convertLinearIndex(li)) << " ";
 			li++;
 		}

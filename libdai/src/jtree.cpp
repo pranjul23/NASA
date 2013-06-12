@@ -941,6 +941,7 @@ Factor JTree::calcDistrib(const vector<VarSet> &vs, Factor & pattern){
 
 
 
+//variable with margLabel will be marginalized out (removed)
 void JTree::normDistrib(Factor &f, const size_t& margLabel){
 
 	vector<Factor>::const_iterator it;
@@ -961,6 +962,7 @@ void JTree::normDistrib(Factor &f, const size_t& margLabel){
 
 	//cout << "Denominator: " << f.marginal(X,false) << "\n";
 
+	//f.marginal(X) - marginalize(remove) everything except X
 	f /= f.marginal(X, false);
 }
 

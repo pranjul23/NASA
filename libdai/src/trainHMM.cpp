@@ -100,6 +100,7 @@ void TrainHMM::train(const char* filename, size_t ID, size_t max_num_iter){
 			//calculate state transition distribution
 			//res = jt->calcDistrib(vs, 2);
 			transit += jt->calcDistrib(vs);
+//			cout << "transit = " << transit << "\n";
 
 
 			//================= prepare variables to calculate observation distribution ===============
@@ -131,11 +132,12 @@ void TrainHMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 		param.init[0] = initA0;
 
-		//{at-1, at}, marginalize at-1 out: {at}, and devide {at-1, at}/{at}
-		jt->normDistrib(transit, 0);
+		//transit contains {at-1, at}, marginalize at out to get {at-1}; then {at|at-1} is obtianed by dividing {at-1, at}/{at-1}
+		//marginalize(remove) variable 1==at-1
+		jt->normDistrib(transit, 1);
 		param.dist[0] = transit;
 
-		//{at, ot}, marginalize ot out: {at}, and devide {at, ot}/{at}
+		//{at, ot}, marginalize ot out to get {at}, and devide {at, ot}/{at}
 		jt->normDistrib(observ, 1);
 		param.dist[1] = observ;
 

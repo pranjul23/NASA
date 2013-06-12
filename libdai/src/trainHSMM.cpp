@@ -207,15 +207,15 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 		param.init[0] = initD0;
 		param.init[1] = initA0;
 
-		//{dt-1, dt, at}, marginalize dt out: {dt-1, at}, and devide {dt-1, dt, at}/{dt-1, at}
+		//{dt-1, dt, at}, marginalize dt out to get {dt-1, at}, and devide {dt-1, dt, at}/{dt-1, at}
 		jt->normDistrib(durat, 1);
 		param.dist[0] = durat;
 
-		//{at-1, dt, at}, marginalize at out: {at-1, dt}, and devide {at-1, dt, at}/{at-1, dt}
+		//{at-1, dt, at}, marginalize at out to get {at-1, dt}, and devide {at-1, dt, at}/{at-1, dt}
 		jt->normDistrib(transit, 2);
 		param.dist[1] = transit;
 
-		//{at, ot}, marginalize ot out: {at}, and devide {at, ot}/{at}
+		//{at, ot}, marginalize ot out to get {at}, and devide {at, ot}/{at}
 		jt->normDistrib(observ, 1);
 		param.dist[2] = observ;
 

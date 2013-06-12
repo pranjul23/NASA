@@ -5,6 +5,7 @@
 #include <utility>
 #include <fstream>
 #include <iomanip>
+#include <limits>
 
 
 namespace dai{
@@ -102,10 +103,10 @@ HMMparam::HMMparam(const char* filename){
 		for( size_t k = 0; k < nr_nonzeros_curr; k++ ) {
 			size_t li;
 			Real val;
-			while( (is.peek()) == '#' ) getline(is,line);
+			//while( (is.peek()) == '#' ) getline(is,line);
 			is >> li;
 
-			while( (is.peek()) == '#' ) getline(is,line);
+			//while( (is.peek()) == '#' ) getline(is,line);
 			is >> val;
 
 			// store value, but permute indices first according to internal representation

@@ -19,6 +19,7 @@
 #include <dai/util.h>
 #include <dai/exceptions.h>
 #include <boost/lexical_cast.hpp>
+#include <limits>
 
 
 namespace dai {
@@ -121,7 +122,7 @@ void FactorGraph::saveFactorGraph ( std::ostream &os) {
         //number of nonzeros currently in the factor
         size_t nr_nonzeros = 0;
         for( size_t k = 0; k < factor(I).nrStates(); k++ )
-            if( factor(I)[k] != (Real)0 )
+            if( factor(I)[k] >= numeric_limits<Real>::min() )
                 nr_nonzeros++;
         os << nr_nonzeros << endl;
 
@@ -133,7 +134,7 @@ void FactorGraph::saveFactorGraph ( std::ostream &os) {
 
         //indeces of current nonzero elements
         for( size_t k = 0; k < factor(I).nrStates(); k++ )
-            if( factor(I)[k] != (Real)0 )
+            if( factor(I)[k] >= numeric_limits<Real>::min() )
                 os << k << " " << setw(os.precision()+4) << factor(I)[k] << endl;
 
         //indeces of nonzero elements that are possible

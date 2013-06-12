@@ -62,7 +62,7 @@ void TestHMM::test_loglik(const char* filename, size_t ID){
 		delete jt;
 		delete graph;
 
-		//cout << "Tested point " << i << " out of " << test_data.size() <<"\n";
+		cout << "Tested point " << i << " out of " << test_data.size() <<"\n";
 	}
 
 	cout << "done.\n";
@@ -103,6 +103,7 @@ void TestHMM::test_marginal(const char* filename, size_t ID){
 
 	cout << "Now we do testing...\n";
 
+
 	for(size_t i=0; i<test_data.size(); i++) {
 
 		//allocate memory
@@ -133,6 +134,7 @@ void TestHMM::test_marginal(const char* filename, size_t ID){
 
 			//since we have a specific observation at last time step: o_last=c, get its probability:
 			sequence_marginal.push_back( log(O_last.p().get(test_data[i][k].second)) );
+
 		}
 
 		cout << "Tested point " << i << " out of " << test_data.size() <<"\n";

@@ -6,7 +6,7 @@ clc;
 
 
 %unique ID
-ID = 0;
+ID = 15;
 
 
 %% ================ INIT PARAMETERS =======================================
@@ -16,10 +16,10 @@ ID = 0;
 Nobs = 41;
 
 %number of hidden states
-Nhid = 10;
+Nhid = 12;
 
 %max duration
-Dmax = 100;
+Dmax = 150;
 
 [A0 D0 A D O] = genHSMMparam_init(Nobs, Nhid, Dmax);
 
@@ -37,11 +37,11 @@ createHMMfactorGraph(Nobs, Nhid, A0_hmm, A_hmm, O_hmm, ID);
 
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
-createTraining_real(ID);
+trainInd = createTraining_real(ID);
 
 
 
 
 %% =============== CREATE TESTING SEQUENCE ================================
 
-createTesting_real(ID);
+createTesting_real(ID, trainInd);

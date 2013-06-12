@@ -1,4 +1,4 @@
-function [] = createTraining_real(ID)
+function [ind] = createTraining_real(ID)
 
 
 %directory to read training data from

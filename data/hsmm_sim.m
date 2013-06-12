@@ -67,7 +67,7 @@ createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm, ID);
 T = 100;
 
 %number of obseration sequences
-numSeq = 50;
+numSeq = 200;
 
 createTraining_sim(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true, ID);
 

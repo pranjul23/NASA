@@ -1,4 +1,4 @@
-function [A0 D0 A D O] = genHSMMparam_init(Nobs, Nhid, Dmax)
+function [A0 D0 A Afull D O] = genHSMMparam_init(Nobs, Nhid, Dmax)
 
 %initial state distribution
 A0 = rand(Nhid,1);
@@ -15,10 +15,12 @@ D0 = D0./sum(D0); %normalize
 %element i,j,k is transition from j to i when d_{t-1} = k: p(i|j,k)
 
 A1 = rand(Nhid);
+Afull = A1;
 A1 = tril(A1,-1)+triu(A1,1);
 
 for i=1:Nhid
     A1(:,i) = A1(:,i)/sum(A1(:,i));
+    Afull(:,i) = Afull(:,i)/sum(Afull(:,i));
 end
 
 A = cat(3, A1, eye(Nhid));

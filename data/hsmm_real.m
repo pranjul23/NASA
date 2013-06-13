@@ -6,7 +6,7 @@ clc;
 
 
 %unique ID
-ID = 15;
+ID = 0;
 
 
 %% ================ INIT PARAMETERS =======================================
@@ -16,14 +16,14 @@ ID = 15;
 Nobs = 41;
 
 %number of hidden states
-Nhid = 12;
+Nhid = 5;
 
 %max duration
-Dmax = 150;
+Dmax = 25;
 
-[A0 D0 A D O] = genHSMMparam_init(Nobs, Nhid, Dmax);
+[A0 D0 A Afull D O] = genHSMMparam_init(Nobs, Nhid, Dmax);
 
-[A0_hmm A_hmm O_hmm] = genHMMparam(A0, A, O);
+[A0_hmm A_hmm O_hmm] = genHMMparam(A0, Afull, O);
 
 
 

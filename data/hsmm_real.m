@@ -6,7 +6,7 @@ clc;
 
 
 %unique ID
-ID = 0;
+ID = 9;
 
 
 %% ================ INIT PARAMETERS =======================================
@@ -16,7 +16,7 @@ ID = 0;
 Nobs = 41;
 
 %number of hidden states
-Nhid = 5;
+Nhid = 50;
 
 %max duration
 Dmax = 25;

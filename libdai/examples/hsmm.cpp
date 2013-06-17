@@ -35,7 +35,7 @@ int main( int argc, char *argv[] ){
 	learntFactor << string("data/hsmm_factor_graph_learnt_") << ID << string(".fg");
 
 	//===========================================================
-	//train model using normal sequences
+	//train model using normal sequences.
 
 	TrainHSMM model(trainData.str().c_str());
 

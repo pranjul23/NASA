@@ -31,11 +31,12 @@ else
 endif
 
 # Define build targets
-TARGETS:=lib tests utils examples
+#TARGETS:=lib tests utils examples
+TARGETS:=lib examples
 ifdef WITH_MATLAB
   TARGETS:=$(TARGETS) matlabs
 endif
-TARGETS:=$(TARGETS) unittests testregression testem
+#TARGETS:=$(TARGETS) unittests testregression testem
 ifdef WITH_DOC
   TARGETS:=$(TARGETS) doc
 endif

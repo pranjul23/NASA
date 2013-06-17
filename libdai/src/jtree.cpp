@@ -176,7 +176,7 @@ void JTree::construct( const FactorGraph &fg, const std::vector<VarSet> &cl, boo
     for( size_t i = 0; i < RTree.size(); i++ ) {
         edges.push_back( Edge( RTree[i].first, nrIRs() ) );
         edges.push_back( Edge( RTree[i].second, nrIRs() ) );
-        // inner clusters have counting number -1, except if they are empty
+        // inner clusters have counting number -1, except if they are empty.
         VarSet intersection = cl[RTree[i].first] & cl[RTree[i].second];
         _IRs.push_back( Region( intersection, intersection.size() ? -1.0 : 0.0 ) );
     }

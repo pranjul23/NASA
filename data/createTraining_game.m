@@ -24,7 +24,7 @@ fprintf(fidhsmm, '%d\n',len-110);
 fprintf(fidhmm, '%d\n',len-110);
 
 
-fid = fopen(data);
+fid = fopen(data); 
 
 tline = fgets(fid);
 counter=1;

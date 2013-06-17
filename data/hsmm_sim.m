@@ -14,7 +14,7 @@ Nobs = 12;
 %% =============== TRUE PARAMETERS ========================================
 
 %number of hidden states
-Nhid_true = 10;
+Nhid_true = 12;
 
 %number of observation steps
 Dmax_true = 60;
@@ -26,10 +26,10 @@ Dmax_true = 60;
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid_init = 4;
+Nhid_init = 10;
 
 %number of observation steps
-Dmax_init = 10;
+Dmax_init = 60;
 
 [A0_init D0_init A_init D_init O_init] = genHSMMparam_init(Nobs, Nhid_init, Dmax_init);
 

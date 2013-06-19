@@ -60,7 +60,8 @@ void TestHSMM::test_loglik(const char* filename, size_t ID){
 		jt->init();
 		jt->run();
 
-		likelihood_test.push_back(jt->logZ());
+		//compute normalized loglikelyhood
+		likelihood_test.push_back(jt->logZ()/test_data[i].size());
 
 		delete jt;
 		delete graph;

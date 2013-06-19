@@ -1,6 +1,6 @@
-function [] = createTraining_game(ID)
+function [] = createTesting_game(ID)
 
-data = 'GameTraining.txt';
+data = 'GameTesting.txt';
  
 fid = fopen(data);
 
@@ -14,20 +14,19 @@ len = len-1;
 
 fclose(fid);
 
-loc = strcat('../libdai/examples/data/HSMMtraining_',num2str(ID),'.txt');
+
+loc = strcat('../libdai/examples/data/HSMMtesting_',num2str(ID),'.txt');
 fidhsmm = fopen(loc, 'w');
 
-loc = strcat('../libdai/examples/data/HMMtraining_',num2str(ID),'.txt');
+loc = strcat('../libdai/examples/data/HMMtesting_',num2str(ID),'.txt');
 fidhmm = fopen(loc, 'w');
+
 
 fprintf(fidhsmm, '%d\n',len);
 fprintf(fidhmm, '%d\n',len);
 
-
-fid = fopen(data); 
-
+fid = fopen(data);
 tline = fgets(fid);
-counter=1;
 
 while ischar(tline)
     
@@ -46,18 +45,11 @@ while ischar(tline)
     fprintf(fidhmm, [format,'%d\n'], dataHMM');
     
     tline = fgets(fid);
-    counter = counter+1;
 end
 
 fclose(fid);
 fclose(fidhsmm);
 fclose(fidhmm);
-
-
-
-
-
-
 
 
 

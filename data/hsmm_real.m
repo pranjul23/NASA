@@ -40,8 +40,6 @@ createHMMfactorGraph(Nobs, Nhid, A0_hmm, A_hmm, O_hmm, ID);
 trainInd = createTraining_real(ID);
 
 
-
-
 %% =============== CREATE TESTING SEQUENCE ================================
 
 createTesting_real(ID, trainInd);

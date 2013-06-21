@@ -25,8 +25,14 @@ fidhmm = fopen(loc, 'w');
 fprintf(fidhsmm, '%d\n',len);
 fprintf(fidhmm, '%d\n',len);
 
+%data for Murphyk HMM function
+test = cell(len, 1);
+
+
 fid = fopen(data);
 tline = fgets(fid);
+
+iterator = 1;
 
 while ischar(tline)
     
@@ -45,7 +51,13 @@ while ischar(tline)
     fprintf(fidhmm, [format,'%d\n'], dataHMM');
     
     tline = fgets(fid);
+    
+    %save data for Murphyk HMM function    
+    test{iterator} = D + ones(size(D));  
+    iterator = iterator + 1;
 end
+
+save('murphykHMMtestData.mat', 'test');
 
 fclose(fid);
 fclose(fidhsmm);

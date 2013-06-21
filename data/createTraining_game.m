@@ -23,6 +23,8 @@ fidhmm = fopen(loc, 'w');
 fprintf(fidhsmm, '%d\n',len);
 fprintf(fidhmm, '%d\n',len);
 
+%save data for Murphyk HMM function 
+train = cell(len,1);
 
 fid = fopen(data); 
 
@@ -45,9 +47,15 @@ while ischar(tline)
     fprintf(fidhsmm, [format,'%d\n'], dataHSMM');
     fprintf(fidhmm, [format,'%d\n'], dataHMM');
     
-    tline = fgets(fid);
+    tline = fgets(fid);    
+      
+    %save data for Murphyk HMM function    
+    train{counter} = D + ones(size(D));  
+    
     counter = counter+1;
 end
+
+save('murphykHMMtrainData.mat', 'train');
 
 fclose(fid);
 fclose(fidhsmm);

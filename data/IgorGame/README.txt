@@ -1,0 +1,1 @@
+t1a*.txt - no initial acceleration; no flaps go down; throtle is always at 50%; landing without crash

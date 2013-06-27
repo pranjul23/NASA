@@ -4,16 +4,16 @@ clear;
 clc;
 
 %unique ID
-ID = 7;
+ID = 10;
 
 
 %number of observation symbols
-Nobs = 12;
+Nobs = 14;
 
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid_init = 12;
+Nhid_init = 15;
 
 %number of observation steps
 Dmax_init = 100;

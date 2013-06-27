@@ -1,7 +1,8 @@
 function [] = createTraining_game(ID)
 
-data = 'GameTraining.txt';
- 
+%data = 'PranjulGame/GameTraining.txt';
+data = 'IgorGame/Training.txt';
+
 fid = fopen(data);
 
 tline = fgets(fid);

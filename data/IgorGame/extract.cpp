@@ -9,6 +9,8 @@
 
 using namespace std;
 
+//g++ -I/opt/local/include -L/opt/local/lib -lboost_regex -lboost_filesystem -lboost_system extract.cpp -o extract
+
 int main(){
 
 	ifstream file;
@@ -23,13 +25,14 @@ int main(){
 	commands.push_back("2"); //4
 	commands.push_back("4"); //5
 	commands.push_back("6"); //6
-	commands.push_back("7"); //7
-	commands.push_back("1"); //8
-	commands.push_back("0"); //9
-	commands.push_back("Enter"); //10
-	commands.push_back("<Space>"); //11
-	commands.push_back("["); //12
-	commands.push_back("]"); //13
+	commands.push_back("1"); //7
+	commands.push_back("0"); //8
+	commands.push_back("Enter"); //9
+	commands.push_back("<Space>"); //10
+	commands.push_back("]"); //11    
+	commands.push_back("7"); //12
+    commands.push_back("["); //13
+	
 
 	string buffer, timestr, commandstr;
 	double timeprev , timecurr;

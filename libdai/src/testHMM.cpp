@@ -19,7 +19,7 @@ TestHMM::TestHMM(const char* filename){
 }
 
 
-void TestHMM::test_loglik(const char* filename, size_t ID){
+void TestHMM::test_loglik(const char* filename, size_t ID, string type){
 
 	HMMparam param(filename);
 
@@ -70,7 +70,7 @@ void TestHMM::test_loglik(const char* filename, size_t ID){
 
 	ofstream os;
 	stringstream result;
-	result << string("data/HMMlikelihood_test_") << ID << string(".txt");
+	result << string("data/HMMlikelihood_")<< type << string("_") << ID << string(".txt");
 	os.open(result.str().c_str(), ios::trunc);
 
 	for(size_t i=0; i<likelihood_test.size(); i++){

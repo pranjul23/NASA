@@ -21,7 +21,7 @@ TestHSMM::TestHSMM(const char* filename){
 }
 
 
-void TestHSMM::test_loglik(const char* filename, size_t ID){
+void TestHSMM::test_loglik(const char* filename, size_t ID, string type){
 
 	HSMMparam param(filename);
 
@@ -66,14 +66,14 @@ void TestHSMM::test_loglik(const char* filename, size_t ID){
 		delete jt;
 		delete graph;
 
-		//cout << "Tested point " << i << " out of " << test_data.size() <<"\n";
+		cout << "Tested point " << i << " out of " << test_data.size() <<"\n";
 	}
 
 	cout << "done.\n";
 
 	ofstream os;
 	stringstream result;
-	result << string("data/HSMMlikelihood_test_") << ID << string(".txt");
+	result << string("data/HSMMlikelihood_") << type << string("_") << ID << string(".txt");
 	os.open(result.str().c_str(), ios::trunc);
 
 	for(size_t i=0; i<likelihood_test.size(); i++){

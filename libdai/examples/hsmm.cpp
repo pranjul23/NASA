@@ -44,8 +44,8 @@ int main( int argc, char *argv[] ){
 	//===========================================================
 	//now evaluate test sequences for anomaly
 
-	TestHSMM evalTrain(trainData.str().c_str());
-	evalTrain.test_loglik(learntFactor.str().c_str(), ID, "train");
+//	TestHSMM evalTrain(trainData.str().c_str());
+//	evalTrain.test_loglik(learntFactor.str().c_str(), ID, "train");
 
 	TestHSMM evaluation(testData.str().c_str());
 	evaluation.test_loglik(learntFactor.str().c_str(), ID, "test");

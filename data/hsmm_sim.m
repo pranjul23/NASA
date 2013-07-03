@@ -4,16 +4,16 @@ clear;
 clc;
 
 %unique ID
-ID = 0;
+ID = 29;
 
 %number of observation symbols
-Nobs = 4;
+Nobs = 10;
 
 
 %% =============== TRUE PARAMETERS ========================================
 
 %number of hidden states
-Nhid_true = 4;
+Nhid_true = 7;
 
 %number of observation steps
 Dmax_true = 10;
@@ -21,11 +21,15 @@ Dmax_true = 10;
 
 [A0_true D0_true A_true D_true O_true] = genHSMMparam_true(Nobs, Nhid_true, Dmax_true, ID);
 
+if any(isnan(A0_true)) || any(isnan(D0_true)) || any(any(isnan(A_true(:,:,1)))) || any(any(isnan(D_true(:,:,1)))) || any(any(isnan(O_true(:,:))))
+    error('encountered NaN');
+end
+
 
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid_init = 4;
+Nhid_init = 7;
 
 %number of observation steps
 Dmax_init = 10;
@@ -38,10 +42,10 @@ Dmax_init = 10;
 %% =============== ANOMALY PARAMETERS =====================================
 
 %number of hidden states
-Nhid_anom = 4;
+Nhid_anom = 7;
 
 %number of observation steps
-Dmax_anom = 10;
+Dmax_anom = 20;
 
 
 %min duration
@@ -66,7 +70,7 @@ createHMMfactorGraph(Nobs, Nhid_init, A0_init_hmm, A_init_hmm, O_init_hmm, ID);
 T = 100;
 
 %number of obseration sequences
-numSeq = 50;
+numSeq = 200;
 
 createTraining_sim(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_true, D_true, O_true, ID);
 
@@ -76,7 +80,7 @@ createTraining_sim(T, numSeq, Nobs, Nhid_true, Dmax_true, A0_true, D0_true, A_tr
 T = 100;
 
 %number of obseration sequences
-numSeq = 20;
+numSeq = 50;
 
 createTesting_sim(T, numSeq, Nobs, ...
                   Nhid_true, Dmax_true, Nhid_anom, Dmax_anom, ...

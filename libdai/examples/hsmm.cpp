@@ -49,7 +49,7 @@ int main( int argc, char *argv[] ){
 
 	TestHSMM evaluation(testData.str().c_str());
 	evaluation.test_loglik(learntFactor.str().c_str(), ID, "test");
-	evaluation.test_marginal(learntFactor.str().c_str(), ID);
+	//evaluation.test_marginal(learntFactor.str().c_str(), ID);
 
 };
 

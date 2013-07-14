@@ -1,10 +1,7 @@
-data = 'GameTesting.txt';
- 
+data = 'IgorGame/Training.txt'; 
 fid1 = fopen(data);
 
-
-loc = 'GameTestingChan.txt';
-
+loc = 'TrainingChan.txt';
 fid2 = fopen(loc, 'w');
 
 

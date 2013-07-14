@@ -9,14 +9,14 @@ tmp = data;
 tmp(tmp == -inf) = [];
 data(data == -inf) = min(tmp) - 0.5;
 
-%prepare labels
-% [anomalies; normals]
-labels = [ones(10,1);zeros(10,1)];
-
-
 N = 5;
 L = 10;
 res = zeros(N,1);
+
+%prepare labels
+% [anomalies; normals]
+labels = [ones(L,1);zeros(L,1)];
+
 
 for i=1:N
     %create scores

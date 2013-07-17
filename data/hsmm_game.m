@@ -6,7 +6,6 @@ clc;
 %unique ID
 ID = 79;
 
-
 %number of observation symbols
 Nobs = 12;
 

@@ -8,7 +8,7 @@ N = length(ID);
 
 %loc = '../libdai/examples/data/resultSim/';
 %loc = '../libdai/examples/data/resultChandola/';
-loc = '../libdai/examples/data/resultGame/';
+loc = '../libdai/examples/data/resultGame2/';
 
 HSMMscores = [];
 for i=1:N

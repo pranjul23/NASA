@@ -9,9 +9,9 @@ Nobs = 12;
 %maximum duration in any state
 Dmax_init = 100;
 
-
 %unique ID
 ID = 0;
+
 
 %iterate through different number of hidden states
 for Nhid_init = 2:16

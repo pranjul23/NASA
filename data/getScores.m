@@ -9,8 +9,12 @@ tmp = data;
 tmp(tmp == -inf) = [];
 data(data == -inf) = min(tmp) - 0.5;
 
+%number of anomalies
 N = 5;
+
+%number of sequences in each anomaly
 L = 10;
+
 res = zeros(N,1);
 
 %prepare labels

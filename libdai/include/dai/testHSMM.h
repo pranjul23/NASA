@@ -16,6 +16,7 @@ public:
 	TestHSMM(const char* filename);
 	void test_loglik(const char* filename, size_t ID, std::string type);
 	void test_marginal(const char* filename, size_t ID);
+	void test_marginal_cut(const char* filename, size_t ID);
 };
 
 }

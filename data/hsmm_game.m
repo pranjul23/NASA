@@ -14,10 +14,10 @@ ID = 0;
 
 
 %iterate through different number of hidden states
-for Nhid_init = 2:16
+for Nhid_init = 11:15
         
     %different random initializations
-    for i=1:10
+    for i=1:4
         %% ================ INIT PARAMETERS =======================================
         
         [A0_init D0_init A_init Afull D_init O_init] = genHSMMparam_init(Nobs, Nhid_init, Dmax_init);

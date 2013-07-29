@@ -1,12 +1,12 @@
 loc = '../libdai/examples/data/resultChandola/';
 
-ID = 1:19;
+ID = 2:19;
 
 N = length(ID);
 
 for i=1:N
-    file1 = strcat(loc, 'windScore', num2str(ID(i)));
-    file2 = strcat(loc, 'windScores', num2str(ID(i)));
+    file1 = strcat(loc, 'stideScore', num2str(ID(i)));
+    file2 = strcat(loc, 'stideScores', num2str(ID(i)));
     
     fid1 = fopen(file1);
     fid2 = fopen(file2,'w');    

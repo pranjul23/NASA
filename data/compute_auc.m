@@ -2,13 +2,13 @@
 close all
 
 %ID = [40:59 0:39 60:79];
-ID = 0:164;
+ID = 0:149;
 
 N = length(ID);
 
 %loc = '../libdai/examples/data/resultSim/';
 %loc = '../libdai/examples/data/resultChandola/';
-loc = '../libdai/examples/data/resultGame2/';
+loc = '../libdai/examples/data/resultGame3/';
 
 HSMMscores = [];
 for i=1:N
@@ -27,8 +27,9 @@ end
 
 
 %plot results
-S = 15;
-A = 5;
+S = 15; %number of different hidden states
+
+A = 5; %numner of different types of anomalies
 
 aucHMM = zeros(A,S);
 devHMM = zeros(A,S);
@@ -38,11 +39,11 @@ devHSMM = zeros(A,S);
 
 for i=1:A
     for j=1:S
-        aucHMM(i,j) = mean(HMMscores(i, (j-1)*11+1 : j*11));
-        devHMM(i,j) = std(HMMscores(i, (j-1)*11+1 : j*11));
+        aucHMM(i,j) = mean(HMMscores(i, (j-1)*10+1 : j*10));
+        devHMM(i,j) = std(HMMscores(i, (j-1)*10+1 : j*10));
         
-        aucHSMM(i,j) = mean(HSMMscores(i, (j-1)*11+1 : j*11));
-        devHSMM(i,j) = std(HSMMscores(i, (j-1)*11+1 : j*11));
+        aucHSMM(i,j) = mean(HSMMscores(i, (j-1)*10+1 : j*10));
+        devHSMM(i,j) = std(HSMMscores(i, (j-1)*10+1 : j*10));
     end
 
     figure;    

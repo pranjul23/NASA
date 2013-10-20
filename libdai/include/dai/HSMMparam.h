@@ -10,8 +10,8 @@ namespace dai{
 
 class HSMMparam{
 private:
-	std::vector<Var> trans, durat, obs;
-	Permute permDurat, permTrans, permObs;
+	std::vector<Var> trans, dur, durat, obs;
+	Permute permDur, permDurat, permTrans, permObs;
 
 public:
 
@@ -19,9 +19,14 @@ public:
 
 	HSMMparam(const char* filename);
 
+	void printHSMMparam(const char* filename);
+
 	void saveHSMMparam(const char* filename);
 
-	void printHSMMparam(const char* filename);
+	// version of the above functions for different HSMM model
+	HSMMparam(const char* filename, int dummy);
+	void printHSMMparam(const char* filename, int dummy);
+	void saveHSMMparam(const char* filename, int dummy);
 };
 
 }

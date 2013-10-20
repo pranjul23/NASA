@@ -322,7 +322,13 @@ class FactorGraph {
         virtual void ReadFromFile( const char *filename );
 
         void createHSMMFactorGraph(std::vector<Factor> &init, std::vector<Factor> &dist, size_t T);
+
+        //same as above but for different HSMM model
+        void createHSMMFactorGraph(std::vector<Factor> &init, std::vector<Factor> &dist, size_t T, int dummy);
+
         void createHMMFactorGraph(std::vector<Factor> &init, std::vector<Factor> &dist, size_t T);
+
+        void createHSMMFactorGraphForSave(std::vector<Factor> &init, std::vector<Factor> &dist);
 
         /// Writes a factor graph to a file
         /** \see \ref fileformats-factorgraph

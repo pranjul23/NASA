@@ -11,7 +11,7 @@ loc = '../libdai/examples/data/resultChandola/';
 auc = [];
 
 for i=1:N
-    file = strcat(loc, 'fsaScores', num2str(ID(i)));
+    file = strcat(loc, 'stideScores', num2str(ID(i)));
     auc = [auc getScores(file)];
 end
 

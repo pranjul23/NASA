@@ -14,6 +14,9 @@ class TrainHSMM{
 public:
 	TrainHSMM(const char* filename);
 	void train(const char* filename, size_t ID, size_t max_num_iter);
+
+	//version of the above function for different HSMM model
+	void train(const char* filename, size_t ID, size_t max_num_iter, int dummy);
 };
 
 }

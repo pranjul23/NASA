@@ -32,6 +32,7 @@ FactorGraph::FactorGraph( const std::vector<Factor> &P ) : _G(), _backup() {
     // add factors, obtain variables
     set<Var> varset;
     _factors.reserve( P.size() );
+
     size_t nrEdges = 0;
     for( vector<Factor>::const_iterator p2 = P.begin(); p2 != P.end(); p2++ ) {
         _factors.push_back( *p2 );
@@ -657,6 +658,130 @@ void FactorGraph::createHSMMFactorGraph(std::vector<Factor> &init, std::vector<F
 		facs.push_back(dist[2]);
 
 	}
+
+	*this = FactorGraph(facs);
+}
+
+
+
+
+void FactorGraph::createHSMMFactorGraph(std::vector<Factor> &init, std::vector<Factor> &dist, size_t T, int dummy){
+
+	DAI_ASSERT(T >= 1);
+
+	std::vector<Factor> facs;
+	std::vector<Real> elem;
+
+	facs.reserve(3*T + 2);
+
+
+	//====== insert initial distribution factors =====
+	DAI_ASSERT(init.size() == 1);
+	DAI_ASSERT(init[0].vars().elements().size() == 1);
+
+	//before inserting factors into factor graph, we need to relabel variables
+	init[0].vars().elements().at(0).label() = 1;
+
+	facs.push_back(init[0]);
+
+	//====== insert rest of distributions ======
+	DAI_ASSERT(dist.size() == 4);
+	DAI_ASSERT(dist[0].vars().elements().size() == 2);
+	DAI_ASSERT(dist[1].vars().elements().size() == 3);
+	DAI_ASSERT(dist[2].vars().elements().size() == 3);
+	DAI_ASSERT(dist[3].vars().elements().size() == 2);
+
+	//p(d1 | a1);
+	dist[0].vars().elements().at(0).label() = 0;
+	dist[0].vars().elements().at(1).label() = 1;
+	facs.push_back(dist[0]);
+
+	//p(o1 | a1)
+	dist[3].vars().elements().at(0).label() = 1;
+	dist[3].vars().elements().at(1).label() = 2;
+	facs.push_back(dist[3]);
+
+	for(size_t iter = 1; iter<T-1; iter++){
+
+		//p(dt | at, dt-1);
+		dist[1].vars().elements().at(0).label() = 3*iter-3;
+		dist[1].vars().elements().at(1).label() = 3*iter;
+		dist[1].vars().elements().at(2).label() = 3*iter+1;
+		facs.push_back(dist[1]);
+
+		//p(at | at-1, dt-1);
+		dist[2].vars().elements().at(0).label() = 3*iter-3;
+		dist[2].vars().elements().at(1).label() = 3*iter-2;
+		dist[2].vars().elements().at(2).label() = 3*iter+1;
+		facs.push_back(dist[2]);
+
+		//p(ot | at);
+		dist[3].vars().elements().at(0).label() = 3*iter+1;
+		dist[3].vars().elements().at(1).label() = 3*iter+2;
+		facs.push_back(dist[3]);
+
+	}
+
+
+	//========= insert distributions for last step
+	//p(at | at-1, dt-1);
+	dist[2].vars().elements().at(0).label() = 3*(T-1)-3;
+	dist[2].vars().elements().at(1).label() = 3*(T-1)-2;
+	dist[2].vars().elements().at(2).label() = 3*(T-1);
+	facs.push_back(dist[2]);
+
+	//p(ot | at);
+	dist[3].vars().elements().at(0).label() = 3*(T-1);
+	dist[3].vars().elements().at(1).label() = 3*(T-1)+1;
+	facs.push_back(dist[3]);
+
+	*this = FactorGraph(facs);
+}
+
+
+
+void FactorGraph::createHSMMFactorGraphForSave(std::vector<Factor> &init, std::vector<Factor> &dist){
+
+	std::vector<Factor> facs;
+
+	facs.reserve(5);
+
+	//====== insert initial distribution factors =====
+	DAI_ASSERT(init.size() == 1);
+	DAI_ASSERT(init[0].vars().elements().size() == 1);
+
+	//before inserting factors into factor graph, we need to relabel variables
+	init[0].vars().elements().at(0).label() = 1;
+	facs.push_back(init[0]);
+
+	//====== insert rest of distributions ======
+	DAI_ASSERT(dist.size() == 4);
+	DAI_ASSERT(dist[0].vars().elements().size() == 2);
+	DAI_ASSERT(dist[1].vars().elements().size() == 3);
+	DAI_ASSERT(dist[2].vars().elements().size() == 3);
+	DAI_ASSERT(dist[3].vars().elements().size() == 2);
+
+	//p(d1 | a1);
+	dist[0].vars().elements().at(0).label() = 0;
+	dist[0].vars().elements().at(1).label() = 1;
+	facs.push_back(dist[0]);
+
+	//p(dt | at, dt-1);
+	dist[1].vars().elements().at(0).label() = 0;
+	dist[1].vars().elements().at(1).label() = 3;
+	dist[1].vars().elements().at(2).label() = 4;
+	facs.push_back(dist[1]);
+
+	//p(at | at-1, dt-1);
+	dist[2].vars().elements().at(0).label() = 0;
+	dist[2].vars().elements().at(1).label() = 1;
+	dist[2].vars().elements().at(2).label() = 4;
+	facs.push_back(dist[2]);
+
+	//p(o1 | a1)
+	dist[3].vars().elements().at(0).label() = 1;
+	dist[3].vars().elements().at(1).label() = 2;
+	facs.push_back(dist[3]);
 
 	*this = FactorGraph(facs);
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdtprojectproperties>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.IncludePaths">
+<language name="holder for library settings">
+
+</language>
+<language name="Assembly">
+
+</language>
+<language name="GNU C++">
+<includepath>/usr/local/include</includepath>
+<includepath>/usr/include/c++/4.2.1</includepath>
+<includepath>/usr/include</includepath>
+<includepath>/Developer/usr/llvm-gcc-4.2/lib/gcc/i686-apple-darwin10/4.2.1/include</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/include/dai</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/include</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/src</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/utils</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/tests</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai</includepath>
+
+</language>
+<language name="GNU C">
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/include</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/include/dai</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/src</includepath>
+<includepath>/Users/igor/Documents/Projects/anomaly/code/HSMM/libdai/tests</includepath>
+
+</language>
+</section>
+</cdtprojectproperties>

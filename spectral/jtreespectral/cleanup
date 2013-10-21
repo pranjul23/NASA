@@ -1,0 +1,16 @@
+#!/bin/bash
+
+rm -rf hierarchical-job*.condor
+rm -rf asymmetric-job*.condor
+rm -rf overlapping-job*.condor
+rm -rf spectral-tree-job*.condor
+rm -rf *matlab_hierarchical*.sh
+rm -rf *matlab_asymmetric*.sh
+rm -rf *matlab_overlapping*.sh
+rm -rf *spectral_matlab_tree*
+
+rm -rf matlab_hierarchical*.mat
+rm -rf matlab_asymmetric*.mat
+rm -rf matlab_overlapping*.mat
+rm -rf Nmatlab_hierarchical*.mat
+rm -rf Nmatlab_asymmetric*.mat

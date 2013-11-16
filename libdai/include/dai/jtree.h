@@ -45,6 +45,7 @@ class JTree : public DAIAlgRG {
 
         /// Stores the logarithm of the partition sum
         Real _logZ;
+        Real _Z;
 
     public:
         /// The junction tree (stored as a rooted tree)

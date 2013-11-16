@@ -53,6 +53,7 @@ int main( int argc, char *argv[] ){
 //	TestHSMM evalTrain(trainData.str().c_str());
 //	evalTrain.test_loglik(learntFactor.str().c_str(), ID, "train");
 
+	//TestHSMM evaluation(testData.str().c_str());
 	TestHSMM evaluation(testData.str().c_str());
 
 	//evaluation.test_loglik(learntFactor.str().c_str(), ID, "test");
@@ -60,7 +61,7 @@ int main( int argc, char *argv[] ){
 	evaluation.test_loglik(learntFactor.str().c_str(), ID, "test", 0);
 	evaluation.test_loglik(trueFactor.str().c_str(), ID, "true", 0);
 
-	evaluation.test_loglik(initFactor.str().c_str(), ID, "init", 0);
+	//evaluation.test_loglik(initFactor.str().c_str(), ID, "init", 0);
 
 	//evaluation.test_marginal(learntFactor.str().c_str(), ID);
 	//evaluation.test_marginal_cut(learntFactor.str().c_str(), ID);

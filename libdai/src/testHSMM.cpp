@@ -95,6 +95,8 @@ void TestHSMM::test_loglik(const char* filename, size_t ID, string type, int dum
 	FactorGraph *graph;
 	JTree *jt;
 
+	VarSet X;
+
 	// Set some constants
 	size_t maxiter = 10000;
 	Real   tol = 1e-9;
@@ -116,6 +118,7 @@ void TestHSMM::test_loglik(const char* filename, size_t ID, string type, int dum
 		graph->createHSMMFactorGraph(param.init, param.dist, test_data[i].size(), 0);
 
 		jt = new JTree(*graph, opts("updates",string("HUGIN"))("heuristic",string("MINWEIGHT")) );
+
 
 		//clamp the observation variables to their observed values
 		for(size_t j = 0; j < test_data[i].size(); j++ ){

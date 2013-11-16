@@ -8,11 +8,13 @@ loc = strcat('../../libdai/examples/data/HSMMtesting_',num2str(ID),'.txt');
 fidhsmm = fopen(loc, 'w');
 
 fprintf(fidhsmm, '%d\n',numSeq);
-          
-testNorm = zeros(floor(numSeq/2), T);
+
+N = floor(numSeq/2);
+%N = numSeq;
+testNorm = zeros(N, T);
 
 %generate normal sequences
-for i=1:floor(numSeq/2)
+for i=1:N
     
     prevState = randsample(1:Nhid_true, 1, true, A0_true);
     prevDur = 1;
@@ -63,11 +65,12 @@ for i=1:floor(numSeq/2)
     testNorm(i,:) = observationsNorm;
 end
 
-
-testAnom = zeros(ceil(numSeq/2), T);
+M = ceil(numSeq/2);
+%M = 0;
+testAnom = zeros(M, T);
 
 %generate anomalous sequences
-for i=1:ceil(numSeq/2)
+for i=1:M
     
     prevState = randsample(1:Nhid_anom, 1, true, A0_anom);
     prevDur = 1;

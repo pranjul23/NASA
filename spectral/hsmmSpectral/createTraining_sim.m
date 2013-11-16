@@ -13,15 +13,12 @@ for i=1:numSeq
     prevDur = 1;
     
     currTime = 1;
-    observations = [];
-    states = [];
-    durations = [];
-    
+    observations = zeros(1, T);    
         
     %initialization
     prevDur = randsample(1:Dmax, 1, true, D(:,prevState, prevDur))';    
     Obs = randsample(1:Nobs, 1, true, O(:,prevState))';    
-    observations = [observations, Obs];    
+    observations(1) = Obs;    
     
     currTime = currTime + 1;
             
@@ -36,29 +33,25 @@ for i=1:numSeq
         %perform dur observations in current state
         currObs = randsample(1:Nobs, 1, true, O(:,currState))';
         
+        %save data        
+        observations(currTime) = currObs;
+        
         %advance time
         currTime = currTime + 1;        
         prevDur = dur;
-        prevState = currState;
-        
-        %save data
-        durations = [durations, dur];
-        states = [states, currState];
-        observations = [observations, currObs];
+        prevState = currState;                
     end
     
-    %if i <= 500
-        lenObs = length(observations);
-        fprintf(fidhsmm, '%d\n', lenObs);
-        
-        dataHSMM = [[2:3:3*(lenObs-1)-1 3*(lenObs-1)+1]; observations-1];
-        
-        format = repmat('%d\t', 1, lenObs-1);
-        
-        fprintf( fidhsmm, [format,'%d\n'], dataHSMM' );
-    %end
+    lenObs = length(observations);
+    fprintf(fidhsmm, '%d\n', lenObs);
     
-    train(i,:) = observations;    
+    dataHSMM = [[2:3:3*(lenObs-1)-1 3*(lenObs-1)+1]; observations-1];
+    
+    format = repmat('%d\t', 1, lenObs-1);
+    
+    fprintf( fidhsmm, [format,'%d\n'], dataHSMM' );
+    
+    train(i,:) = observations;
 end
 
 fclose(fidhsmm);

@@ -305,6 +305,7 @@ void JTree::runHUGIN() {
 
     // CollectEvidence
     _logZ = 0.0;
+    _Z = 1;
     for( size_t i = RTree.size(); (i--) != 0; ) {
 //      Make outer region RTree[i].first consistent with outer region RTree[i].second
 //      IR(i) = seperator OR(RTree[i].first) && OR(RTree[i].second)

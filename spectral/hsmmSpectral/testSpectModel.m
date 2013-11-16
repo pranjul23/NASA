@@ -20,20 +20,19 @@ for i=1:L
     delta = zeros(obsDim,1);
     delta(val) = 1;    
     tdelta = sptensor(delta);
-        
-    mode = find(tailTensor.var_ind == last_ind);
-    
+                
     %select the slice corresponding to actual observation (tensor)
+    mode = find(obsTensors(last_ind).var_ind == last_ind);
+    tail_obs = squeeze(ttt(obsTensors(last_ind).tensor, tdelta, mode, 1));            
+    
     assert(tailTensor.seq_ind == last_ind);    
-    tail_tran = squeeze(ttt(tailTensor.tensor, tdelta, mode, 1));
-        
-    %select the slice corresponding to actual observation (scalar)
-    tail_obs = obsTensors(last_ind).tensor(val, val);
+    
+    mode = find(tailTensor.var_ind == last_ind);
+    res = ttt(tailTensor.tensor, tail_obs, mode, 1);
     
     %SCALE: myltiply by some big number to avoid underflow
-    scale = 1;%10^(round(length(sequence)/2));
-    
-    res = tail_tran * tail_obs * scale;
+    scale = 1;%10^(round(length(sequence)/2));    
+    res = res * scale;
     
     %the indeces of the variables in the result tensor
     res_ind = tailTensor.var_ind;
@@ -44,26 +43,26 @@ for i=1:L
     
     for k = last_ind-1 : -1 : stop_ind
         
-        assert(durTensors(k+1).var_ind(1:numObs) == res_ind(1:numObs));        
-        res = ttt(durTensors(k+1).tensor, res, 1:numObs, 1:numObs);        
-        %res_ind remains the same after the previous step
+        assert(all(durTensors(k).var_ind(1:numObs) == res_ind(1:numObs)));        
+        res = ttt(durTensors(k).tensor, res, 1:numObs, 1:numObs);        
+        
+        res_ind = durTensors(k).var_ind(numObs+1:2*numObs);
         
         val = sequence(k);
         delta = zeros(obsDim,1);
         delta(val) = 1;    
         tdelta = sptensor(delta);    
-    
+            
+        mode = find(obsTensors(k).var_ind == k);
+        obs = squeeze(ttt(obsTensors(k).tensor, tdelta, mode, 1));
+        
         mode = find(tranTensors(k).var_ind == k);
-        tran = squeeze(ttt(tranTensors(k).tensor, tdelta, mode, 1));
+        leaf = ttt(tranTensors(k).tensor, obs, mode, 1);
         
         leaf_ind = tranTensors(k).var_ind;
         leaf_ind(mode) = [];
         
-        obs = obsTensors(k).tensor(val, val);
-    
-        leaf = tran * obs;
-    
-        assert(leaf_ind(1:numObs) == res_ind(1:numObs));
+        assert(all(leaf_ind(1:numObs) == res_ind(1:numObs)));
         res = ttt(leaf, res, 1:numObs, 1:numObs);
         
         res_ind = leaf_ind(numObs+1:2*numObs);
@@ -72,49 +71,50 @@ for i=1:L
     
     for k = stop_ind-1: -1 : 3
         
-        res = ttt(durTensors(stop_ind).tensor, res, 1:numObs, 1:numObs);
+        res = ttt(durTensors(stop_ind-1).tensor, res, 1:numObs, 1:numObs);
     
         val = sequence(k);
         delta = zeros(obsDim,1);
         delta(val) = 1;    
         tdelta = sptensor(delta);
         
+        mode = find(obsTensors(k).var_ind == k);
+        obs = squeeze(ttt(obsTensors(k).tensor, tdelta, mode, 1));
+            
         mode = find(tranTensors(stop_ind).var_ind == stop_ind);
-        tran = squeeze(ttt(tranTensors(stop_ind).tensor, tdelta, mode, 1));
-    
-        obs = obsTensors(k).tensor(val, val);
-    
-        leaf = tran * obs;
-    
-        res = ttt(leaf, res, numObs+1:2*numObs, 1:numObs);        
+        leaf = ttt(tranTensors(stop_ind).tensor, obs, mode, 1);
+                
+        res = ttt(leaf, res, 1:numObs, 1:numObs);        
     end
     
     
-    res = ttt(durTensors(stop_ind).tensor, res, 1:numObs, 1:numObs);
+    res = ttt(durTensors(stop_ind-1).tensor, res, 1:numObs, 1:numObs);
     
     val = sequence(1);
     delta = zeros(obsDim,1);
     delta(val) = 1;    
     tdelta = sptensor(delta);
+        
+    mode = find(obsTensors(1).var_ind == 1);
+    obs1 = squeeze(ttt(obsTensors(1).tensor, tdelta, mode, 1));
     
-    mode = find(rootTensor.var_ind == 1);
-    root = ttt(rootTensor.tensor, tdelta, mode, 1);
-    
-    obs1 = obsTensors(1).tensor(val, val);
-    
+    res_ind = rootTensor.var_ind;
+    res_ind(mode) = [];
+        
+        
     
     val = sequence(2);
     delta = zeros(obsDim,1);
     delta(val) = 1;    
     tdelta = sptensor(delta);
     
-    mode = find(rootTensor.var_ind == 1);
-    root = squeeze(ttt(root, tdelta, mode, 1));
+    mode = find(obsTensors(2).var_ind == 2);
+    obs2 = squeeze(ttt(obsTensors(2).tensor, tdelta, mode, 1));
+        
     
-    obs2 = obsTensors(2).tensor(val, val);
+    root = ttt(rootTensor.tensor, obs1, 1, 1);
     
-    root = root * obs1;
-    root = root * obs2;
+    root = ttt(root, obs2, 1, 1);    
     
     res = ttt(root, res, 1:numObs, 1:numObs); 
     result(i) = res;

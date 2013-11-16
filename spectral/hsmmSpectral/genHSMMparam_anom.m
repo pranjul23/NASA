@@ -32,6 +32,11 @@ D1 = full(sprand(Dmax, Nhid, 0.5));
 D1(1:(Dmin-1),:) = 0;
 
 for i=1:Nhid
+    
+    if sum(D1(:,i)) == 0
+        D1(randi(Dmax,1),i)=1;
+    end
+    
     D1(:,i) = D1(:,i)/sum(D1(:,i));
 end
 
@@ -52,7 +57,7 @@ end
 
 O = full(sprand(Nobs, Nhid, 0.5));
 for i=1:Nhid
-    
+        
     if sum(O(:,i)) == 0
         O(randi(Nobs,1),i)=1;
     end

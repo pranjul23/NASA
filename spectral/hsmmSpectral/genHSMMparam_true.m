@@ -1,7 +1,7 @@
 function [A0 A D O] = genHSMMparam_true(Nobs, Nhid, Dmin, Dmax, ID)
 
 %initial state distribution
-A0 = full(sprand(Nhid, 1, 0.9)); %0.6
+A0 = full(sprand(Nhid, 1, 1)); %0.6
 if sum(A0) == 0
     A0(randi(Nhid,1))=1;
 end
@@ -11,7 +11,7 @@ A0 = A0./sum(A0); %normalize
 %========= transition distribution ==========
 %element i,j,k is transition from j to i when d_{t-1} = k: p(i|j,k)
 
-A1 = full(sprand(Nhid, Nhid, 0.9)); %0.6
+A1 = full(sprand(Nhid, Nhid, 1)); %0.6
 A1 = tril(A1,-1)+triu(A1,1);
 
 for i=1:Nhid
@@ -34,7 +34,7 @@ end
 %========= duration distribution ============
 %element i,j is duration of i time units, given we are in state j and d_{t-1} = k
 
-D1 = full(sprand(Dmax, Nhid, 0.9)); %0.6
+D1 = full(sprand(Dmax, Nhid, 1)); %0.6
 D1(1:(Dmin-1),:) = 0;
 
 for i=1:Nhid
@@ -59,7 +59,7 @@ end
 %========= observation distribution =========
 %element i,j is observation of symbol i, given we are in state j and d_{t-1} = k
 
-O = full(sprand(Nobs, Nhid, 0.9)); %0.5
+O = full(sprand(Nobs, Nhid, 1)); %0.5
 for i=1:Nhid
     
     if sum(O(:,i)) == 0

@@ -1,4 +1,8 @@
-function rootTensor = estimateRootTensor(train, numObs, skip, span, obsDim, durMax, A1_true, A_true, D_true, O_true)
+function rootTensor = estimateRootTensor(train, ...
+                                         numObs, ...
+                                         obsDim, ...
+                                         stateDim, ...
+                                         durMax, A1_true, A_true, D_true, O_true)
 
 %sequences size
 [L, N] = size(train);
@@ -13,7 +17,7 @@ end
 
 tens = zeros(obsDim*(ones(1, numObs+2)));
 
-indices = [1 2 3:skip:(3+span-1)];
+indices = [1 2 getRightInd(3, stateDim, durMax, numObs)];
 
 ind = train(:, indices);
 ind = [ind(:,1)  ind(:, 2:m)-ones(size(ind(:, 2:m)))];
@@ -29,11 +33,14 @@ rootTensor.tensor = sptensor(tensor(tens/L));
 
 % M = computeO3O4D1X2(A1_true, A_true, D_true(:,:,1), D_true, O_true);
 % M = tensor(M);
-% eA = tensor(embedA1(A_true, D_true(:,:,1), A1_true));
-% res2 = ttt(eA, M, [4 1], [3 4]);
-% res2 = ttt(tensor(O_true), res2, 2, 1);
-% res2 = ttt(tensor(O_true), res2, 2, 2);
-% 
+
+M = getCondProb(O_true, D_true, A_true, [2 getRightInd(3, stateDim, durMax, numObs)], 1);
+eA = tensor(embedA1(A_true, D_true(:,:,1), A1_true));
+
+res2 = ttt(eA, M, [1 4], [length(M.size)-1 length(M.size)]);
+res2 = ttt(tensor(O_true), res2, 2, 1);
+res2 = ttt(tensor(O_true), res2, 2, 2);
+
 % rootTensor.tensor = sptensor(res2);
 
-rootTensor.var_ind = indices;
+

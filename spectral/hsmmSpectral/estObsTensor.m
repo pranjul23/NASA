@@ -1,4 +1,4 @@
-function obsTensor = estObsTensor(train, M, obsDim, stateDim, A1_true, A_true, D_true, O_true)
+function obsTensor = estObsTensor(train, obsDim, stateDim, A1_true, A_true, D_true, O_true)
 
 %sequence length
 [L, N] = size(train);
@@ -12,7 +12,7 @@ end
 
 scaled_tensor = zeros(obsDim,obsDim);
 
-for i=1:M
+for i=1:N-1
     
     tensr = zeros(obsDim,obsDim); %modes i i+1
     
@@ -29,13 +29,14 @@ for i=1:M
     scaled_tensor = scaled_tensor + tensr/L;
 end
 
-scaled_tensor = scaled_tensor/M;
+scaled_tensor = scaled_tensor/N;
+% scaled_tensor = computeO1O2(A1_true, A_true, D_true(:,:,1), D_true, O_true);
 
 %do svd by exracting only the K largest values/vectors
 [U S V] = svds(sparse(scaled_tensor), stateDim);
 
 %drop singular values with small values
-num = nnz(diag(S)>=1e-20);
+num = nnz(diag(S)>=1e-7);
 
 assert(num>=1);
 %
@@ -55,6 +56,4 @@ V = V(:,1:num);
 res = scaled_tensor*(V*diag(1./diag(S))*U');
 
 obsTensor= sptensor(tensor(res));
-
-
 

@@ -4,7 +4,7 @@ function O1O2O4 = computeO1O2O4(A1, A, D1, D, O)
 d = size(D1,1);
 
 
-O1O2O4 = zeros(o, o, o, o);
+O1O2O4 = zeros(o, o, o);
 
 for ind_o4 = 1:o
 for ind_o2 = 1:o

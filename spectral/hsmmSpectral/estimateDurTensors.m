@@ -49,11 +49,11 @@ for k = 1:length(iter_ind)
     %scale the computed multdim array and convert in to tensor class
     scaled_tensor = sptensor(tens/L);
     
-%     if k==1
-%         scaled_tensor = sptensor(computeO1O2O5O6(A1_true, A_true, D_true(:,:,1), D_true, O_true));
-%     else
-%         scaled_tensor = sptensor(computeO2O3O6O7(A1_true, A_true, D_true(:,:,1), D_true, O_true));
-%     end
+    if k==1
+        scaled_tensor = sptensor(computeO1O2O5O6(A1_true, A_true, D_true(:,:,1), D_true, O_true));
+    else
+        scaled_tensor = sptensor(computeO2O3O6O7(A1_true, A_true, D_true(:,:,1), D_true, O_true));
+    end
 
     
     
@@ -79,11 +79,11 @@ for k = 1:length(iter_ind)
     
     scaled_tensor_inv = tensor(tens/L);
     
-%     if k==1
-%         scaled_tensor_inv = sptensor(computeO1O2O4O5(A1_true, A_true, D_true(:,:,1), D_true, O_true));
-%     else
-%         scaled_tensor_inv = sptensor(computeO2O3O5O6(A1_true, A_true, D_true(:,:,1), D_true, O_true));
-%     end
+    if k==1
+        scaled_tensor_inv = sptensor(computeO1O2O4O5(A1_true, A_true, D_true(:,:,1), D_true, O_true));
+    else
+        scaled_tensor_inv = sptensor(computeO2O3O5O6(A1_true, A_true, D_true(:,:,1), D_true, O_true));
+    end
     
 
     %tensor's modes - 1:numObs,1:numObs
@@ -122,11 +122,11 @@ for k = 1:length(iter_ind)
 end
 
 
-% iter_ind = [2 3 4];
-% 
-% for k = 1:length(iter_ind)
-% 
-%     
+iter_ind = [2 3 4];
+
+for k = 1:length(iter_ind)
+
+    
 %     if k==1
 %         M = computeO3O4D1X2(A1_true, A_true, D_true(:,:,1), D_true, O_true);
 %         M = tensor(M);
@@ -145,49 +145,49 @@ end
 %         res = sptensor(tensor(res2m));
 %         
 %         ind_res = [4 5 3 4];
-%     elseif k==2
-%         M = computeO4O5D2X3(A1_true, A_true, D_true(:,:,1), D_true, O_true);
-%         M = tensor(M);
-%         Mm = tenmat(M,[1 2]);
-%         invMm = pinv(Mm.data);
-%         Mm(:) = invMm';
-%         M = tensor(Mm);
-%         eD = tensor(embedD(D_true));
-%         V = computeO5O6D3X3(A1_true, A_true, D_true(:,:,1), D_true, O_true);
-%         V = tensor(V);
-%         res2 = ttt(M, eD, [3 4], [4 3]);
-%         res2 = ttt(res2, V, [3 4], [3 4]);
-%          
-%         res2m = tenmat(res2, [1 2]);
-%         res2m(:) = res2m.data';
-%         res = sptensor(tensor(res2m));
-%         
-%         ind_res = [5 6 4 5];
-%     elseif k==3
-%         M = computeO5O6D3X4(A1_true, A_true, D_true(:,:,1), D_true, O_true);
-%         M = tensor(M);
-%         Mm = tenmat(M,[1 2]);
-%         invMm = pinv(Mm.data);
-%         Mm(:) = invMm';
-%         M = tensor(Mm);
-%         eD = tensor(embedD(D_true));
-%         V = computeO6O7D4X4(A1_true, A_true, D_true(:,:,1), D_true, O_true);
-%         V = tensor(V);
-%         res2 = ttt(M, eD, [3 4], [4 3]);
-%         res2 = ttt(res2, V, [3 4], [3 4]);  
-%         
-%         res2m = tenmat(res2, [1 2]);
-%         res2m(:) = res2m.data';
-%         res = sptensor(tensor(res2m));
-%         
-%         ind_res = [6 7 5 6];
-%     end
-%     
-%     
-%     durTensors(iter_ind(k)).tensor = res;
-%     durTensors(iter_ind(k)).var_ind = ind_res; 
-% 
-% end
+    if k==1
+        M = computeO4O5D2X3(A1_true, A_true, D_true(:,:,1), D_true, O_true);
+        M = tensor(M);
+        Mm = tenmat(M,[1 2]);
+        invMm = pinv(Mm.data);
+        Mm(:) = invMm';
+        M = tensor(Mm);
+        eD = tensor(embedD(D_true));
+        V = computeO5O6D3X3(A1_true, A_true, D_true(:,:,1), D_true, O_true);
+        V = tensor(V);
+        res2 = ttt(M, eD, [3 4], [4 3]);
+        res2 = ttt(res2, V, [3 4], [3 4]);
+         
+        res2m = tenmat(res2, [1 2]);
+        res2m(:) = res2m.data';
+        res = sptensor(tensor(res2m));
+        
+        ind_res = [5 6 4 5];
+    elseif k==2
+        M = computeO5O6D3X4(A1_true, A_true, D_true(:,:,1), D_true, O_true);
+        M = tensor(M);
+        Mm = tenmat(M,[1 2]);
+        invMm = pinv(Mm.data);
+        Mm(:) = invMm';
+        M = tensor(Mm);
+        eD = tensor(embedD(D_true));
+        V = computeO6O7D4X4(A1_true, A_true, D_true(:,:,1), D_true, O_true);
+        V = tensor(V);
+        res2 = ttt(M, eD, [3 4], [4 3]);
+        res2 = ttt(res2, V, [3 4], [3 4]);  
+        
+        res2m = tenmat(res2, [1 2]);
+        res2m(:) = res2m.data';
+        res = sptensor(tensor(res2m));
+        
+        ind_res = [6 7 5 6];
+    end
+    
+    
+    durTensors(iter_ind(k)).tensor = res;
+    durTensors(iter_ind(k)).var_ind = ind_res; 
+
+end
 
 
 

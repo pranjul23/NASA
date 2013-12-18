@@ -486,9 +486,9 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_curr <<
 				", diff: "<<  std::abs(likelihood_curr-likelihood_prev) <<"\n";
 
-		if( std::abs(likelihood_curr-likelihood_prev) < 2.0 ){
-			break;
-		}
+		//if( std::abs(likelihood_curr-likelihood_prev) < 2.0 ){
+		//	break;
+		//}
 
 		likelihood_prev = likelihood_curr;
 		likelihood_curr = 0;

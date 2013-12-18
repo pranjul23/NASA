@@ -4,7 +4,7 @@ clear variables;
 clc;
 
 %unique ID
-ID = 29;
+ID = 30;
 
 %number of observation symbols
 Nobs = 5;
@@ -16,7 +16,7 @@ Nobs = 5;
 Nhid_true = 4;
 
 %maximum possible duration
-Dmax_true = 6;
+Dmax_true = 10;
 
 %minimum possible duration
 Dmin_true = 1;
@@ -35,7 +35,7 @@ end
 Nhid_init = 4;
 
 %max duration
-Dmax_init = 6;
+Dmax_init = 10;
 
 %min duration
 Dmin_init = 1;
@@ -49,7 +49,7 @@ Dmin_init = 1;
 Nhid_anom = 4;
 
 %number of observation steps
-Dmax_anom = 6;
+Dmax_anom = 10;
 
 %min duration
 %Dmin_anom = Dmax_true;
@@ -74,10 +74,10 @@ createHSMMfactorGraph(Nobs, Nhid_true, Dmax_true, A1_true, A_true, D_true, O_tru
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
 %simulation time
-Ttrain = 50;
+Ttrain = 100;
 
 %number of obseration sequences
-numSeq = 100000;
+numSeq = 1000000;
 
 train = createTraining_sim(Ttrain, numSeq, Nobs, Nhid_true, Dmax_true, A1_true, A_true, D_true, O_true, ID);
 
@@ -87,10 +87,10 @@ train = createTraining_sim(Ttrain, numSeq, Nobs, Nhid_true, Dmax_true, A1_true, 
 span =  Dmax_true;
 
 %find the length of testing sequence for spectral method
-Ttest = Ttrain - span;
+Ttest = 100;
 
 %number of obseration sequences
-numSeq = 25;
+numSeq = 1000;
 
 test = createTesting_sim(Ttest, numSeq, Nobs, ...
                          Nhid_true, Dmax_true, Nhid_anom, Dmax_anom, ...
@@ -98,23 +98,19 @@ test = createTesting_sim(Ttest, numSeq, Nobs, ...
                          A0_anom, A_anom, D_anom, O_anom, ID);
 
                      
-%% ============= LEARN SPECTRAL MODEL =====================================
+%% ============= SAVE DATA ================================================
 
-[rootTensor  ...
- tailTensor  ...
- obsTensor  ...
- tranTensor ...
- durTensor ] = learnSpectModel2(train, Nobs, Nhid_true, Dmin_true, Dmax_true, A1_true, A_true, D_true, O_true);
-
-numObs = ceil( (log(Nhid_true)+log(Dmax_true)) / log(Nhid_true) );
-
-result = testSpectModel2(test, Nobs, numObs, ...
-                          rootTensor,  ...
-                          tailTensor,  ...
-                          obsTensor,  ...
-                          tranTensor, ...
-                          durTensor);
-
+save(strcat('SpectralTainData', num2str(ID),'.mat'), ...
+     'train', ...
+     'test', ...
+     'Nobs', ...
+     'Nhid_true', ...
+     'Dmin_true', ...
+     'Dmax_true', ...
+     'A1_true', ...
+     'A_true', ...
+     'D_true', ...
+     'O_true');
 
 
 

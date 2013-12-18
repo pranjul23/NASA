@@ -33,7 +33,7 @@ rootTensor = tensor(tens/L);
 L = getLeftCondProb(O_true, D_true, A_true, A1_true, [1 2 2], 0);
 R = getRightCondProb(O_true, D_true, A_true, [2  getRightInd(3, stateDim, durMax, numObs)], 0);
 
-rootTensor = ttt(L, R, [3 4], [length(R.size)-1 length(R.size)]);
+% rootTensor = ttt(L, R, [3 4], [length(R.size)-1 length(R.size)]);
 
 
 M = getRightCondProb(O_true, D_true, A_true, [2 getRightInd(3, stateDim, durMax, numObs)], 1);

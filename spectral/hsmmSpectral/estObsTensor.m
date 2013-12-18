@@ -30,7 +30,7 @@ for i=1:N-1
 end
 
 scaled_tensor = scaled_tensor/N;
-scaled_tensor = computeO1O2(A1_true, A_true, D_true(:,:,1), D_true, O_true);
+% scaled_tensor = computeO1O2(A1_true, A_true, D_true(:,:,1), D_true, O_true);
 
 %do svd by exracting only the K largest values/vectors
 [U S V] = svd(scaled_tensor);

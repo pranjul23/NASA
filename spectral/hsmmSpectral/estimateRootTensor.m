@@ -14,7 +14,6 @@ for k = 2:m
     P(k) = P(k-1)*obsDim;
 end
 
-
 tens = zeros(obsDim*(ones(1, numObs+2)));
 
 indices = [1 2 getRightInd(3, stateDim, durMax, numObs)];
@@ -28,19 +27,23 @@ uniq_ind = unique(ind);
 count = histc(ind, uniq_ind);
 tens(uniq_ind) = count;
 
-rootTensor.tensor = sptensor(tensor(tens/L));
+rootTensor = tensor(tens/L);
 % rootTensor.tensor = sptensor(tensor(computeO1O2O3O4(A1_true, A_true, D_true(:,:,1), D_true, O_true)));
 
-% M = computeO3O4D1X2(A1_true, A_true, D_true(:,:,1), D_true, O_true);
-% M = tensor(M);
+L = getLeftCondProb(O_true, D_true, A_true, A1_true, [1 2 2], 0);
+R = getRightCondProb(O_true, D_true, A_true, [2  getRightInd(3, stateDim, durMax, numObs)], 0);
 
-M = getCondProb(O_true, D_true, A_true, [2 getRightInd(3, stateDim, durMax, numObs)], 1);
+rootTensor = ttt(L, R, [3 4], [length(R.size)-1 length(R.size)]);
+
+
+M = getRightCondProb(O_true, D_true, A_true, [2 getRightInd(3, stateDim, durMax, numObs)], 1);
 eA = tensor(embedA1(A_true, D_true(:,:,1), A1_true));
 
 res2 = ttt(eA, M, [1 4], [length(M.size)-1 length(M.size)]);
 res2 = ttt(tensor(O_true), res2, 2, 1);
 res2 = ttt(tensor(O_true), res2, 2, 2);
 
-% rootTensor.tensor = sptensor(res2);
+rootTensor = res2;
+
 
 

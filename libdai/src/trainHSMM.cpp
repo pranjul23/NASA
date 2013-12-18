@@ -265,7 +265,7 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 //the EM training algorithm applied to updated version of HSMM
 
-void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int dummy){
+void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int dummy, int Ntrain){
 
 	// Read FactorGraph from the file specified by the first command line argument
 	HSMMparam param(filename, 0);
@@ -316,10 +316,13 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 //		std::cout << "========================\n";
 //	}
 
+	if(Ntrain == -1 or Ntrain > data.size()){
+		Ntrain = data.size();
+	}
 
 	for(size_t iter = 0; iter<max_num_iter; iter++){
 
-		for(size_t i=0; i<data.size(); i++) {
+		for(size_t i=0; i<Ntrain; i++) {
 
 			//initialize HSMM of size equal the number of observations
 			graph = new FactorGraph();
@@ -444,7 +447,7 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 		}
 
 		//normalize the result and put back into init and dist structure
-		initA0 /= data.size();
+		initA0 /= Ntrain;
 		param.init[0] = initA0;
 
 		//{dt, at}, marginalize out dt to get {at}, and devide {dt, at}/{at}
@@ -483,7 +486,7 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 		cout << "Iteration # " << iter << ". LogLikelihood: " << likelihood_curr <<
 				", diff: "<<  std::abs(likelihood_curr-likelihood_prev) <<"\n";
 
-		if( std::abs(likelihood_curr-likelihood_prev) < 0.1 ){
+		if( std::abs(likelihood_curr-likelihood_prev) < 2.0 ){
 			break;
 		}
 

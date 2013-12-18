@@ -10,3 +10,5 @@ for i = 2:numObs-1
     ind(i) = ind(i-1) + (Nhid^p - Nhid^(p-1));
     p=p+1;
 end
+
+

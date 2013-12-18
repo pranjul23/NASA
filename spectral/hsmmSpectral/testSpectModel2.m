@@ -12,11 +12,11 @@ function result = testSpectModel2(test, obsDim, numObs, ...
 result = zeros(L,1);
 
 
-rootTensor.tensor = tensor(rootTensor.tensor);
-tailTensor = tensor(tailTensor);
-obsTensor = tensor(obsTensor);
-tranTensor = tensor(tranTensor);
-durTensor = tensor(durTensor);
+% rootTensor.tensor = tensor(rootTensor.tensor);
+% tailTensor = tensor(tailTensor);
+% obsTensor = tensor(obsTensor);
+% tranTensor = tensor(tranTensor);
+% durTensor = tensor(durTensor);
 
 for i=1:L
     sequence = test(i,:);
@@ -71,12 +71,13 @@ for i=1:L
     obs2 = squeeze(ttt(obsTensor, tdelta, 1, 1));
         
     
-    root = ttt(rootTensor.tensor, obs1, 1, 1);
+    root = ttt(rootTensor, obs1, 1, 1);
     
     root = ttt(root, obs2, 1, 1);    
     
     res = ttt(root, res, 1:numObs, 1:numObs); 
     result(i) = res;
+    i
 end
 
 

@@ -16,7 +16,9 @@ public:
 	void train(const char* filename, size_t ID, size_t max_num_iter);
 
 	//version of the above function for different HSMM model
-	void train(const char* filename, size_t ID, size_t max_num_iter, int dummy);
+	//has only prior for hidden state and at the last step does not draw new duration variable
+	//Ntrain is the number of examples to use for training (-1 means use all of them)
+	void train(const char* filename, size_t ID, size_t max_num_iter, int dummy, int Ntrain = -1);
 };
 
 }

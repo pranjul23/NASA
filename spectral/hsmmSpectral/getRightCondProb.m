@@ -1,8 +1,8 @@
-%compute conditional probability OiOj..Ok|XcDc
+%compute conditional probability OiOj..Ok|XcDc (to the right of XcDc)
 %type 0: |XcDc
 %type 1: |XcDc-1
 
-function res = getCondProb(O, D, X, ind, type)
+function res = getRightCondProb(O, D, X, ind, type)
 
 
 assert(length(ind) >= 3);
@@ -36,7 +36,7 @@ T = tenmat(X, 1);
 T = T.data;
 
 %embed X
-%x_t-1 x_t x_t-1 d_t-1
+%x_t d_t-1 x_t-1 d_t-1
 res = zeros(x,d,x,d);
 
 for ind1 = 1:x
@@ -78,6 +78,7 @@ if type == 1
     T = T*D;
 end
 
+% res = T;
 
 %prepare observation matrix
 K = O;
@@ -86,6 +87,8 @@ for i=1:length(ind)-2
 end
 
 Z = K*T;
+
+% res = Z;
 
 %transform result into tensor
 dim = [ones(1,length(ind)-1)*o x d];

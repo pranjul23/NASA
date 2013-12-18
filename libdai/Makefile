@@ -122,7 +122,7 @@ all : $(TARGETS)
 	@echo libDAI built successfully!
 
 #EXAMPLES=$(foreach name, test_hsmm example example_bipgraph example_varset example_permute example_sprinkler example_sprinkler_em,examples/$(name)$(EE))
-EXAMPLES=$(foreach name, hsmm hmm ,examples/$(name)$(EE))
+EXAMPLES=$(foreach name, hsmm hsmm_spectest hmm ,examples/$(name)$(EE))
 ifdef WITH_GIBBS
   EXAMPLES:=$(EXAMPLES) examples/example_sprinkler_gibbs$(EE)
 endif

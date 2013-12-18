@@ -24,21 +24,21 @@ for i=1:N-1
     
     %compute empirical estimate of probabilities
     count = histc(ind, unique(ind));
-    tensr(unique(ind)) = count;
+    tensr(unique(ind)) = count/L;
     
-    scaled_tensor = scaled_tensor + tensr/L;
+    scaled_tensor = scaled_tensor + tensr;
 end
 
 scaled_tensor = scaled_tensor/N;
-% scaled_tensor = computeO1O2(A1_true, A_true, D_true(:,:,1), D_true, O_true);
+scaled_tensor = computeO1O2(A1_true, A_true, D_true(:,:,1), D_true, O_true);
 
 %do svd by exracting only the K largest values/vectors
-[U S V] = svds(sparse(scaled_tensor), stateDim);
+[U S V] = svd(scaled_tensor);
 
 %drop singular values with small values
-num = nnz(diag(S)>=1e-7);
-
+num = min(nnz(diag(S)>=eps),  stateDim);
 assert(num>=1);
+
 %
 U = U(:,1:num);
 S = S(1:num, 1:num);
@@ -55,5 +55,5 @@ V = V(:,1:num);
 
 res = scaled_tensor*(V*diag(1./diag(S))*U');
 
-obsTensor= sptensor(tensor(res));
+obsTensor= tensor(res);
 

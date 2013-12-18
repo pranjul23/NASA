@@ -9,15 +9,6 @@ function tranTensor = estTranTensor(train,...
 %sequences size
 [L, N] = size(train);
 
-
-%find start and end indeces in the data sequence, so that tensors can be
-%estimated from enough data
-tran_start_ind = span + 2; %+2 because clique dixixi+1 spans 2 observations and Oi+1 is the one we reference against
-tran_end_ind = N - span;
-
-iter_ind = tran_start_ind : tran_end_ind;
-
-
 %compute linear indeces for efficient matrix access
 m = 2*numObs+1;
 P = ones(m,1);
@@ -36,6 +27,15 @@ end
 scaled_tens = zeros(obsDim*(ones(1, 2*numObs+1)));
 scaled_tens_inv = zeros(obsDim*(ones(1, 2*numObs)));
 
+
+%find start and end indeces in the data sequence, so that tensors can be
+%estimated from enough data
+tran_start_ind = span + 1;
+tran_end_ind = N - span;
+
+iter_ind = tran_start_ind : tran_end_ind;
+
+
 for k = 1:length(iter_ind)
     
     i = iter_ind(k);
@@ -44,7 +44,7 @@ for k = 1:length(iter_ind)
     tens_inv = zeros(obsDim*(ones(1, 2*numObs)));
         
     %compute indeces    
-    ind = [getLeftInd(i-2, stateDim, durMax, numObs) i getRightInd(i+1, stateDim, durMax, numObs) ];
+    ind = [getLeftInd(i-1, stateDim, durMax, numObs)  i  getRightInd(i+1, stateDim, durMax, numObs)];
     
     ind = train(:, ind);
     ind = [ind(:,1)  ind(:, 2:m)-ones(size(ind(:, 2:m)))];
@@ -52,11 +52,19 @@ for k = 1:length(iter_ind)
         
     %compute empirical estimate of probabilities
     count = histc(ind, unique(ind));
-    tens(unique(ind)) = count;
+    tens(unique(ind)) = count/L;
+    
+    
+    %%%
+    Le = getLeftCondProb(O_true, D_true, A_true, A1_true, [getLeftInd(i-1, stateDim, durMax, numObs) i], 0);
+    Ri = getRightCondProb(O_true, D_true, A_true, [i i getRightInd(i+1, stateDim, durMax, numObs)], 0);
+    tens = ttt(Le, Ri, [length(Le.size)-1 length(Le.size)], [length(Ri.size)-1 length(Ri.size)]);
+    %%%
+    
     
         
     %compute indeces for inverse tensor
-    ind = [getLeftInd(i-2, stateDim, durMax, numObs)  getRightInd(i+1, stateDim, durMax, numObs)];
+    ind = [getLeftInd(i-1, stateDim, durMax, numObs)  getRightInd(i+1, stateDim, durMax, numObs)];
     
     ind = train(:, ind);
     ind = [ind(:,1)  ind(:, 2:m_inv)-ones(size(ind(:, 2:m_inv)))];
@@ -64,21 +72,31 @@ for k = 1:length(iter_ind)
     
     %compute empirical estimate of probabilities
     count = histc(ind, unique(ind));
-    tens_inv(unique(ind)) = count;
+    tens_inv(unique(ind)) = count/L;
+    
+    
+    %%%
+    Le = getLeftCondProb(O_true, D_true, A_true, A1_true, [getLeftInd(i-1, stateDim, durMax, numObs) i], 0);
+    Ri = getRightCondProb(O_true, D_true, A_true, [i getRightInd(i+1, stateDim, durMax, numObs)], 0);
+    tens_inv = ttt(Le, Ri, [length(Le.size)-1 length(Le.size)], [length(Ri.size)-1 length(Ri.size)]);
+    %%%
     
     
     %scale the computed multdim array and convert in to tensor class
-    scaled_tens = scaled_tens + tens/L;
-    scaled_tens_inv = scaled_tens_inv + tens_inv/L;
+    scaled_tens = scaled_tens + tens;
+    scaled_tens_inv = scaled_tens_inv + tens_inv;        
+    
 end
-
-
 
 scaled_tens = scaled_tens/length(iter_ind);
 scaled_tens_inv = scaled_tens_inv/length(iter_ind);
 
+% N = length(iter_ind);
+% scaled_tens = scaled_tens/((N^2+N)/2);
+% scaled_tens_inv = scaled_tens_inv/((N^2+N)/2);
+
 %scale the computed multdim array and convert in to tensor class
-scaled_tensor = sptensor(scaled_tens);
+scaled_tensor = tensor(scaled_tens);
 scaled_tensor_inv = tensor(scaled_tens_inv);
 
 % scaled_tensor = sptensor(computeO1O2O4O5O6(A1_true, A_true, D_true(:,:,1), D_true, O_true));
@@ -93,10 +111,11 @@ mat_tensor = tenmat(scaled_tensor_inv, 1:numObs, 't');
 
 
 %do svd by exracting only the K largest values/vectors
-[U S V] = svds(sparse(mat_tensor.data), durMax*stateDim);
+[U S V] = svd(mat_tensor.data);
 
-%drop singular values with small values
-num = nnz(diag(S) >= 1e-7);
+%drop singular values with small values and try to keep at least durMax*stateDim
+num = min(nnz(diag(S) >= eps), durMax*stateDim);
+% num = 30;
 assert(num >= 1);
 
 U = U(:,1:num);
@@ -109,42 +128,35 @@ V = V(:,1:num);
 %So, we need USV' * VS^U' = UU'
 
 mat_tensor(:) = (V*diag(1./diag(S))*U')';
-%mat_tensor(:) = (V*inv(U'*mat_tensor.data*V)*U')';
 
-%tranTensors{c} = ttt(scaled_tensor, tensor(mat_tensor), 1:numObs);
-res = tensor(ttt(scaled_tensor, sptensor(tensor(mat_tensor)), 1:numObs));
-
-tranTensor = res;
+tranTensor = tensor(ttt(scaled_tensor, tensor(mat_tensor), 1:numObs));
 
 
 
-
-indM = getRightInd(4, stateDim, durMax, numObs);
-M = getCondProb(O_true, D_true, A_true, [2 indM], 0); %O..O|xt,dt
-
-Mm = tenmat(M, 1:length(indM));
-[U S V] = svds(Mm.data, durMax*stateDim);
-invMm = (V*diag(1./diag(S))*U');
-%invMm = pinv(Mm.data);
-
-Mm(:) = invMm';
-M = tensor(Mm);
-
-eA = tensor(embedA(A_true)); %x_t x_t x_t-1 d_t-1 d_t-1
-
-indK = getRightInd(4, stateDim, durMax, numObs);
-K = getCondProb(O_true, D_true, A_true, [3 indK], 1); %O..O|xt,dt-1
-
-res2 = ttt(K, eA, [length(K.size)-1 length(K.size)], [2 4]);
-res2 = ttt(res2, M, [length(indK)+2 length(indK)+3], [length(M.size)-1 length(M.size)]);
-
+% indM = getRightInd(4, stateDim, durMax, numObs);
+% M = getRightCondProb(O_true, D_true, A_true, [2 indM], 0); %O..O|xt,dt
+% 
+% Mm = tenmat(M, 1:length(indM));
+% [U S V] = svd(Mm.data, 0);
+% 
+% num = min(nnz(diag(S) >= eps), durMax*stateDim);
+% assert(num == durMax*stateDim);
+% 
+% invMm = (V*diag(1./diag(S))*U');
+% %invMm = pinv(Mm.data);
+% 
+% Mm(:) = invMm';
+% M = tensor(Mm);
+% 
+% eA = tensor(embedA(A_true)); %x_t x_t x_t-1 d_t-1 d_t-1
+% 
+% indK = getRightInd(4, stateDim, durMax, numObs);
+% K = getRightCondProb(O_true, D_true, A_true, [3 indK], 1); %O..O|xt,dt-1
+% 
+% res2 = ttt(K, eA, [length(K.size)-1 length(K.size)], [2 4]);
+% res2 = ttt(res2, M, [length(indK)+2 length(indK)+3], [length(M.size)-1 length(M.size)]);
+% 
 % tranTensor = ttt(tensor(O_true), res2, 2, length(indK)+1);
-
-
-
-
-
-
 
 
 

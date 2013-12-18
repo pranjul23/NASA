@@ -84,7 +84,7 @@ void TestHSMM::test_loglik(const char* filename, size_t ID, string type){
 
 
 
-void TestHSMM::test_loglik(const char* filename, size_t ID, string type, int dummy){
+void TestHSMM::test_loglik(const char* filename, size_t ID, string type, int dummy, int ID2){
 
 	//"type" specifies the suffix of the output file "test" or "true"
 
@@ -146,7 +146,14 @@ void TestHSMM::test_loglik(const char* filename, size_t ID, string type, int dum
 
 	ofstream os;
 	stringstream result;
-	result << string("data/HSMMlikelihood_") << type << string("_") << ID << string(".txt");
+
+	//ID2 is used to wirte test results with fixed number of training iterations
+	if(ID2 >= 0){
+		result << string("data/HSMMlikelihood_") << type << string("_") << ID << string("-") << ID2 << string(".txt");
+	}
+	else{
+		result << string("data/HSMMlikelihood_") << type << string("_") << ID << string(".txt");
+	}
 	os.open(result.str().c_str(), ios::trunc);
 
 

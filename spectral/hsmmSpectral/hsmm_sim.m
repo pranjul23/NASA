@@ -16,7 +16,7 @@ Nobs = 5;
 Nhid_true = 4;
 
 %maximum possible duration
-Dmax_true = 10;
+Dmax_true = 6;
 
 %minimum possible duration
 Dmin_true = 1;
@@ -35,7 +35,7 @@ end
 Nhid_init = 4;
 
 %max duration
-Dmax_init = 10;
+Dmax_init = 6;
 
 %min duration
 Dmin_init = 1;
@@ -49,7 +49,7 @@ Dmin_init = 1;
 Nhid_anom = 4;
 
 %number of observation steps
-Dmax_anom = 10;
+Dmax_anom = 6;
 
 %min duration
 %Dmin_anom = Dmax_true;
@@ -92,12 +92,13 @@ Ttest = 100;
 %number of obseration sequences
 numSeq = 1000;
 
+disp('Create testing start');
 test = createTesting_sim(Ttest, numSeq, Nobs, ...
                          Nhid_true, Dmax_true, Nhid_anom, Dmax_anom, ...
                          A1_true, A_true, D_true, O_true, ...
                          A0_anom, A_anom, D_anom, O_anom, ID);
 
-                     
+disp('Create testing end');                     
 %% ============= SAVE DATA ================================================
 
 save(strcat('SpectralTainData', num2str(ID),'.mat'), ...
@@ -113,9 +114,40 @@ save(strcat('SpectralTainData', num2str(ID),'.mat'), ...
      'O_true');
 
  
-%run HSMM EM
+%% =============== RUN HSMM EM ============================================
+
 cd '../../libdai/examples/' 
-system(['./hsmm_spectest ', num2str(ID), ' 60 100'])
+
+Ntrain = [500, 1000, 5000, 10000];
+
+
+for k = 1:length(Ntrain)
+    
+    system(['./hsmm_spectest ', num2str(ID), ' 50 ', num2str(Ntrain(k))]);
+    
+    N = 5;
+    
+    %true joint likelihood
+    loc = strcat('data/HSMMlikelihood_true_', num2str(ID), '.txt');
+    tru = load(loc);
+    
+    %em-computed joint likelihood 
+    em = zeros(numSeq, N+1);
+    for i=0:N
+        loc = strcat('data/HSMMlikelihood_test_', num2str(ID), '-', num2str(i), '.txt');
+        em(:,i+1) = load(loc);
+    end
+    
+    save(['../../spectral/hsmmSpectral/emTestResults', num2str(ID), '-1', '.mat'], 'tru', 'em');    
+    
+    break;
+end
+
+
+
+
+
+
 
 
 

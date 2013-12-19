@@ -52,6 +52,8 @@ for i=1:numSeq
     fprintf( fidhsmm, [format,'%d\n'], dataHSMM' );
     
     train(i,:) = observations;
+    
+    fprintf('Training example %d \n', i);
 end
 
 fclose(fidhsmm);

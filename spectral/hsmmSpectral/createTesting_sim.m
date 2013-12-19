@@ -10,7 +10,8 @@ fidhsmm = fopen(loc, 'w');
 fprintf(fidhsmm, '%d\n',numSeq);
 
 N = floor(numSeq/2);
-%N = numSeq;
+N = numSeq; % <-- only normal sequences
+
 testNorm = zeros(N, T);
 
 %generate normal sequences
@@ -66,7 +67,7 @@ for i=1:N
 end
 
 M = ceil(numSeq/2);
-%M = 0;
+M = 0; % <-- no anomalies
 testAnom = zeros(M, T);
 
 %generate anomalous sequences

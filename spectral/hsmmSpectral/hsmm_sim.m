@@ -112,6 +112,10 @@ save(strcat('SpectralTainData', num2str(ID),'.mat'), ...
      'D_true', ...
      'O_true');
 
+ 
+%run HSMM EM
+cd '../../libdai/examples/' 
+system(['./hsmm_spectest ', num2str(ID), ' 60 100'])
 
 
 

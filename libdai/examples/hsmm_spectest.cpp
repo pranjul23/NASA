@@ -59,7 +59,7 @@ int main( int argc, char *argv[] ){
 	evaluation.test_loglik(learntFactor.str().c_str(), ID, "test", 0, 0);
 
 
-	for(int num_iter = 0, iter = 10, c = 1; num_iter <= max_num_iter;  num_iter += iter, c++){
+	for(int num_iter = 0, iter = 10, c = 1; num_iter < max_num_iter;  num_iter += iter, c++){
 
 		//===========================================================
 		//train model

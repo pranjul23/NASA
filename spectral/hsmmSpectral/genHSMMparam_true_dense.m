@@ -1,7 +1,7 @@
 function [A0 A D O] = genHSMMparam_true_dense(Nobs, Nhid, Dmin, Dmax, ID)
 
 %initial state distribution
-A0 = full(sprand(Nhid, 1, 1)); %0.6
+A0 = rand(Nhid, 1); 
 if sum(A0) == 0
     A0(randi(Nhid,1))=1;
 end

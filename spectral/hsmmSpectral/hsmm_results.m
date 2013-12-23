@@ -1,12 +1,14 @@
 %script to diplay results of testing EM and Spectral HSMM
 
-close all;
+% close all;
 
 ID = 29;
 
 %true joint llikelihood
-loc = strcat('../../libdai/examples/data/HSMMlikelihood_true_', num2str(ID), '.txt');
-tru = load(loc);
+% loc = strcat('../../libdai/examples/data/HSMMlikelihood_true_', num2str(ID), '.txt');
+% tru = load(loc);
+
+load emTestResults31-3.mat;
 
 %remove logarithm
 tru = exp(tru);
@@ -15,32 +17,32 @@ tru = exp(tru);
 e = (result-tru)./tru;
 
 %Mean absolute deviation
-err1_sp = mean(abs(e))
+err1_sp = mean(abs(e));
 
 %Root mean squared error
-err2_sp = sqrt(mean(e.*e))
+err2_sp = sqrt(mean(e.*e));
 
 
-N = 11;
+N = 5;
 
 err1_em = zeros(N,1);
 err2_em = zeros(N,1);
 
+%remove logarithm
+em = exp(em);
+    
+%EM error
+e = (em - tru*ones(1,N+1))./(tru*ones(1,N+1));
+    
 for i = 0:N
-    loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '-', num2str(i), '.txt');
-    em = load(loc);
-    
-    %remove logarithm
-    em = exp(em);
-    
-    %EM error
-    e = (em-tru)./tru;
+%     loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '-', num2str(i), '.txt');
+%     em = load(loc);        
     
     %Mean absolute deviation
-    err1_em(i+1) = mean(abs(e));
+    err1_em(i+1) = mean(abs(e(:,i+1)));
     
     %Root mean squared error
-    err2_em(i+1) = sqrt(mean(e.*e));
+    err2_em(i+1) = sqrt(mean(e(:,i+1).*e(:,i+1)));
     
 end
 
@@ -48,7 +50,7 @@ end
 
 figure
 plot(err1_em, '-+r', 'linewidth', 2);
-title('MAE');
+title('MAE');  
 
 hold on
 plot(err1_sp*ones(size(err1_em)), '-b', 'linewidth', 2);

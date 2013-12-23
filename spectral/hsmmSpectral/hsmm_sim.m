@@ -116,33 +116,45 @@ save(strcat('SpectralTainData', num2str(ID),'.mat'), ...
  
 %% =============== RUN HSMM EM ============================================
 
-cd '../../libdai/examples/' 
-
 Ntrain = [500, 1000, 5000, 10000];
 
+origin = pwd;
+
+flg = 0;
 
 for k = 1:length(Ntrain)
     
-    system(['./hsmm_spectest ', num2str(ID), ' 50 ', num2str(Ntrain(k))]);
+  cd '../../libdai/examples/'    
+    system(['./hsmm_spectest ', num2str(ID), ' 70 ', num2str(Ntrain(k))]);    
+  cd(origin);
     
-    N = 5;
+    N = 7;
     
     %true joint likelihood
-    loc = strcat('data/HSMMlikelihood_true_', num2str(ID), '.txt');
+    loc = strcat('../../libdai/examples/data/HSMMlikelihood_true_', num2str(ID), '.txt');
     tru = load(loc);
     
     %em-computed joint likelihood 
     em = zeros(numSeq, N+1);
     for i=0:N
-        loc = strcat('data/HSMMlikelihood_test_', num2str(ID), '-', num2str(i), '.txt');
+        loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '-', num2str(i), '.txt');
         em(:,i+1) = load(loc);
     end
     
-    save(['../../spectral/hsmmSpectral/emTestResults', num2str(ID), '-1', '.mat'], 'tru', 'em');    
+    hsmm;
     
-    break;
+    save(['emTestResults', num2str(ID), '-', num2str(k), '.mat'], 'tru', 'em', 'sp');        
 end
 
+
+Ntrain = 1000000;
+%compute true quantities using spectral algo
+flg = 1;
+hsmm;
+
+flg = 0;
+hsmm;
+save(['emTestResults', num2str(ID), '-', num2str(5), '.mat'], 'sp', 'sp_true');
 
 
 

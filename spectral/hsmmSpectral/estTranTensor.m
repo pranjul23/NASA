@@ -4,7 +4,7 @@ function tranTensor = estTranTensor(train,...
                                     obsDim, ...
                                     stateDim, ...
                                     durMin, ...
-                                    durMax, A1_true, A_true, D_true, O_true)
+                                    durMax, A1_true, A_true, D_true, O_true, flg)
 
 %sequences size
 [L, N] = size(train);
@@ -56,9 +56,11 @@ for k = 1:length(iter_ind)
     
     
     %%%
-    Le = getLeftCondProb(O_true, D_true, A_true, A1_true, [getLeftInd(i-1, stateDim, durMax, numObs) i], 0);
-    Ri = getRightCondProb(O_true, D_true, A_true, [i i getRightInd(i+1, stateDim, durMax, numObs)], 0);
-%     tens = ttt(Le, Ri, [length(Le.size)-1 length(Le.size)], [length(Ri.size)-1 length(Ri.size)]);
+    if flg
+        Le = getLeftCondProb(O_true, D_true, A_true, A1_true, [getLeftInd(i-1, stateDim, durMax, numObs) i], 0);
+        Ri = getRightCondProb(O_true, D_true, A_true, [i i getRightInd(i+1, stateDim, durMax, numObs)], 0);
+        tens = ttt(Le, Ri, [length(Le.size)-1 length(Le.size)], [length(Ri.size)-1 length(Ri.size)]);
+    end
     %%%
     
     
@@ -76,9 +78,11 @@ for k = 1:length(iter_ind)
     
     
     %%%
-    Le = getLeftCondProb(O_true, D_true, A_true, A1_true, [getLeftInd(i-1, stateDim, durMax, numObs) i], 0);
-    Ri = getRightCondProb(O_true, D_true, A_true, [i getRightInd(i+1, stateDim, durMax, numObs)], 0);
-%     tens_inv = ttt(Le, Ri, [length(Le.size)-1 length(Le.size)], [length(Ri.size)-1 length(Ri.size)]);
+    if flg
+        Le = getLeftCondProb(O_true, D_true, A_true, A1_true, [getLeftInd(i-1, stateDim, durMax, numObs) i], 0);
+        Ri = getRightCondProb(O_true, D_true, A_true, [i getRightInd(i+1, stateDim, durMax, numObs)], 0);
+        tens_inv = ttt(Le, Ri, [length(Le.size)-1 length(Le.size)], [length(Ri.size)-1 length(Ri.size)]);
+    end
     %%%
     
     

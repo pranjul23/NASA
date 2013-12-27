@@ -32,12 +32,12 @@ createHSMMfactorGraph(Nobs, Nhid_init, Dmax_init, A1_init, A_init, D_init, O_ini
 
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
-train = createTraining_real(ID, 0.9);
+train = createTrainingAir_real(ID);
 
 
 %% =============== CREATE TESTING SEQUENCE ================================
 
-test = createTesting_real(ID, 0.1);
+test = createTestingAir_real(ID);
 
 
 [rootTensor  ...

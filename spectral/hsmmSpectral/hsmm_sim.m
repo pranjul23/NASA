@@ -122,6 +122,10 @@ origin = pwd;
 
 flg = 0;
 
+cd '../tensor_toolbox';
+addpath(pwd);
+cd(origin);
+
 for k = 1:length(Ntrain)
     
   cd '../../libdai/examples/'    

@@ -145,13 +145,14 @@ for k = 1:length(Ntrain)
         em(:,i+1) = load(loc);
     end
     
+    numTrain = Ntrain(k);
     hsmm;
     
     save(['emTestResults', num2str(ID), '-', num2str(k), '.mat'], 'tru', 'em', 'sp');        
 end
 
 
-Ntrain = 1000000;
+numTrain = 1000000;
 %compute true quantities using spectral algo
 flg = 1;
 hsmm;

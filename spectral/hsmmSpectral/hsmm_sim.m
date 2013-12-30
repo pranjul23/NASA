@@ -116,7 +116,7 @@ save(strcat('SpectralTainData', num2str(ID),'.mat'), ...
  
 %% =============== RUN HSMM EM ============================================
 
-Ntrain = [500, 1000, 5000, 10000];
+Ntrain = [500, 1000, 5000, 10000, 100000, 1000000];
 
 origin = pwd;
 
@@ -150,16 +150,6 @@ for k = 1:length(Ntrain)
     
     save(['emTestResults', num2str(ID), '-', num2str(k), '.mat'], 'tru', 'em', 'sp');        
 end
-
-
-numTrain = 1000000;
-%compute true quantities using spectral algo
-flg = 1;
-hsmm;
-
-flg = 0;
-hsmm;
-save(['emTestResults', num2str(ID), '-', num2str(5), '.mat'], 'sp', 'sp_true');
 
 
 

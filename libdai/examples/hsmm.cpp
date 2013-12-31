@@ -59,7 +59,7 @@ int main( int argc, char *argv[] ){
 	//evaluation.test_loglik(learntFactor.str().c_str(), ID, "test");
 
 	evaluation.test_loglik(learntFactor.str().c_str(), ID, "test", 0);
-	evaluation.test_loglik(trueFactor.str().c_str(), ID, "true", 0);
+//	evaluation.test_loglik(trueFactor.str().c_str(), ID, "true", 0);
 
 	//evaluation.test_loglik(initFactor.str().c_str(), ID, "init", 0);
 

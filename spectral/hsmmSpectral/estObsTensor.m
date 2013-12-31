@@ -18,6 +18,12 @@ for i=1:N-1
     
     %compute indeces
     ind = train(:, [i i+1]);
+    
+    %for sequences of unequal length
+    %rows which contain -1 are invalid, need to delete whole row
+    inv_ind = (sum(ind<0,2)>0);
+    ind(inv_ind,:)=[];    
+    
     ind = [ind(:,1)  ind(:, 2:m)-ones(size(ind(:, 2:m)))];
     
     ind = ind*P;

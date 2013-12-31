@@ -37,7 +37,13 @@ for k = 1:length(iter_ind)
     %compute indeces
     ind = [getLeftInd(i-1, stateDim, durMax, numObs)  getRightInd(i+2, stateDim, durMax, numObs)]; 
     
-    ind = train(:, ind);
+    ind = train(:, ind);    
+    
+    %for sequences of unequal length
+    %rows which contain -1 are invalid, need to delete whole row
+    inv_ind = (sum(ind<0,2)>0);
+    ind(inv_ind,:)=[];
+    
     ind = [ind(:,1)  ind(:, 2:m)-ones(size(ind(:, 2:m)))];    
     ind = ind*P;
     
@@ -58,6 +64,12 @@ for k = 1:length(iter_ind)
     ind = [getLeftInd(i-1, stateDim, durMax, numObs)  getRightInd(i+1, stateDim, durMax, numObs)];
                 
     ind = train(:, ind);
+    
+    %for sequences of unequal length
+    %rows which contain -1 are invalid, need to delete whole row
+    inv_ind = (sum(ind<0,2)>0);
+    ind(inv_ind,:)=[];
+    
     ind = [ind(:,1)  ind(:, 2:m)-ones(size(ind(:, 2:m)))];    
     ind = ind*P;
     

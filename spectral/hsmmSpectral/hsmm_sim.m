@@ -7,16 +7,16 @@ clc;
 ID = 30;
 
 %number of observation symbols
-Nobs = 5;
+Nobs = 3;
 
 
 %% =============== TRUE PARAMETERS ========================================
 
 %number of hidden states
-Nhid_true = 4;
+Nhid_true = 2;
 
 %maximum possible duration
-Dmax_true = 6;
+Dmax_true = 2;
 
 %minimum possible duration
 Dmin_true = 1;
@@ -32,10 +32,10 @@ end
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid_init = 4;
+Nhid_init = 2;
 
 %max duration
-Dmax_init = 6;
+Dmax_init = 2;
 
 %min duration
 Dmin_init = 1;
@@ -46,10 +46,10 @@ Dmin_init = 1;
 %% =============== ANOMALY PARAMETERS =====================================
 
 %number of hidden states
-Nhid_anom = 4;
+Nhid_anom = 2;
 
 %number of observation steps
-Dmax_anom = 6;
+Dmax_anom = 2;
 
 %min duration
 %Dmin_anom = Dmax_true;
@@ -114,7 +114,7 @@ save(strcat('SpectralTainData', num2str(ID),'.mat'), ...
      'O_true');
 
  
-%% =============== RUN HSMM EM ============================================
+%% =============== RUN HSMM and EM ========================================
 
 Ntrain = [500, 1000, 5000, 10000, 100000, 1000000];
 
@@ -144,9 +144,8 @@ for k = 1:length(Ntrain)
         loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '-', num2str(i), '.txt');
         em(:,i+1) = load(loc);
     end
-    
-    numTrain = Ntrain(k);
-    hsmm;
+        
+    sp = hsmm(train(1:Ntrain(k),:), test, Nobs, Nhid_true, Dmin_true, Dmax_true, A1_true, A_true, D_true, O_true, flg);
     
     save(['emTestResults', num2str(ID), '-', num2str(k), '.mat'], 'tru', 'em', 'sp');        
 end

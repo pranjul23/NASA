@@ -7,26 +7,26 @@ clc;
 ID = 29;
 
 %number of observation symbols
-Nobs = 5;
+Nobs = 13;
 
 
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid_init = 3;
+Nhid = 10;
 
 %max duration
-Dmax_init = 6;
+Dmax = 100;
 
 %min duration
-Dmin_init = 1;
+Dmin = 1;
 
-[A1_init A_init Afull D_init O_init] = genHSMMparam_init(Nobs, Nhid_init, Dmin_init, Dmax_init);
+[A1_init A_init Afull D_init O_init] = genHSMMparam_init(Nobs, Nhid, Dmin, Dmax);
 
 
 %% =============== CREATE FACTOR GRAPH ====================================
 
-createHSMMfactorGraph(Nobs, Nhid_init, Dmax_init, A1_init, A_init, D_init, O_init, ID, 'init');
+createHSMMfactorGraph(Nobs, Nhid, Dmax, A1_init, A_init, D_init, O_init, ID, 'init');
 
 
 
@@ -40,23 +40,15 @@ train = createTrainingAir_real(ID);
 test = createTestingAir_real(ID);
 
 
-[rootTensor  ...
- tailTensor  ...
- obsTensor  ...
- tranTensor ...
- durTensor ] = learnSpectModel2(train, ...
-                                numObs, ...
-                                span, ...
-                                skip, ...
-                                Nobs, ...
-                                Nhid_true, ...
-                                Dmin_true, ...
-                                Dmax_true, [], [], []);
+%% =============== RUN HSMM and EM ========================================
 
+cd '../../libdai/examples/'    
+   system(['./hsmm ', num2str(ID), ' 70']);    
+cd(origin);
 
-result = testSpectModel2(test, Nobs, numObs, ...
-                         rootTensor,  ...
-                         tailTensor,  ...
-                         obsTensor,  ...
-                         tranTensor, ...
-                         durTensor);
+loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '.txt');
+em = load(loc);
+
+sp = hsmm(train, test, Nobs, Nhid, Dmin, Dmax, [], [], [], [], 0);
+
+save(['RealResults', num2str(ID), '.mat'], 'em', 'sp');

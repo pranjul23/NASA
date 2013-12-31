@@ -7,7 +7,7 @@ function result = testSpectModel2(test, obsDim, numObs, ...
                                    
                                    
                                    
-[L, N] = size(test);
+L = size(test,1);
 
 result = zeros(L,1);
 
@@ -19,7 +19,12 @@ result = zeros(L,1);
 % durTensor = tensor(durTensor);
 
 for i=1:L
-    sequence = test(i,:);
+    
+    if iscell(test)
+        sequence = test{i};
+    else
+        sequence = test(i,:);
+    end
     
     last_ind = length(sequence);
     val = sequence(last_ind);

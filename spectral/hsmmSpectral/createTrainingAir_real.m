@@ -1,4 +1,4 @@
-function train = createTrainingAir_real(ID)
+function train_mat = createTrainingAir_real(ID)
 
 load('data.mat');
 
@@ -12,12 +12,18 @@ fprintf(fidhsmm, '%d\n', length(seq_ind));
 
 train = cell(length(seq_ind),1);
 
+maxLen = -inf;
+
 for k=1:length(seq_ind)
     
     i = seq_ind(k);
     
     obs = actions{i};
     lenObs = length(obs);            
+    
+    if lenObs > maxLen
+        maxLen = lenObs;
+    end
     
     fprintf(fidhsmm, '%d\n', lenObs);
     
@@ -29,6 +35,14 @@ for k=1:length(seq_ind)
     fprintf(fidhsmm, [format,'%d\n'], dataHSMM'); 
     
     train{i} = obs;    
+end
+
+
+%transform cellarray into matrix (for Spectral method)
+train_mat = -1*ones(length(seq_ind), maxLen);
+
+for k=1:length(seq_ind)
+    train_mat(k, 1:length(train{k})) = train{k};
 end
 
 fclose(fidhsmm);

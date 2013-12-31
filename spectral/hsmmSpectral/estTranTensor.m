@@ -47,6 +47,12 @@ for k = 1:length(iter_ind)
     ind = [getLeftInd(i-1, stateDim, durMax, numObs)  i  getRightInd(i+1, stateDim, durMax, numObs)];
     
     ind = train(:, ind);
+    
+    %for sequences of unequal length
+    %rows which contain -1 are invalid, need to delete whole row
+    inv_ind = (sum(ind<0,2)>0);
+    ind(inv_ind,:)=[];    
+    
     ind = [ind(:,1)  ind(:, 2:m)-ones(size(ind(:, 2:m)))];
     ind = ind*P;
         
@@ -69,6 +75,12 @@ for k = 1:length(iter_ind)
     ind = [getLeftInd(i-1, stateDim, durMax, numObs)  getRightInd(i+1, stateDim, durMax, numObs)];
     
     ind = train(:, ind);
+    
+    %for sequences of unequal length
+    %rows which contain -1 are invalid, need to delete whole row
+    inv_ind = (sum(ind<0,2)>0);
+    ind(inv_ind,:)=[];
+        
     ind = [ind(:,1)  ind(:, 2:m_inv)-ones(size(ind(:, 2:m_inv)))];
     ind = ind*P_inv;
     
@@ -88,8 +100,7 @@ for k = 1:length(iter_ind)
     
     %scale the computed multdim array and convert in to tensor class
     scaled_tens = scaled_tens + tens;
-    scaled_tens_inv = scaled_tens_inv + tens_inv;        
-    
+    scaled_tens_inv = scaled_tens_inv + tens_inv; 
 end
 
 scaled_tens = scaled_tens/length(iter_ind);

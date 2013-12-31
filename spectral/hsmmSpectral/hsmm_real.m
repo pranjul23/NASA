@@ -29,7 +29,6 @@ Dmin = 1;
 createHSMMfactorGraph(Nobs, Nhid, Dmax, A1_init, A_init, D_init, O_init, ID, 'init');
 
 
-
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
 train = createTrainingAir_real(ID);
@@ -41,6 +40,12 @@ test = createTestingAir_real(ID);
 
 
 %% =============== RUN HSMM and EM ========================================
+
+origin = pwd;
+
+cd '../tensor_toolbox';
+addpath(pwd);
+cd(origin);
 
 cd '../../libdai/examples/'    
    system(['./hsmm ', num2str(ID), ' 70']);    

@@ -1,8 +1,8 @@
 function train_mat = createTrainingAir_real(ID)
 
-load('data.mat');
+load('dataNorm.mat');
 
-seq_ind = 1:125;
+seq_ind = 5:length(actions);
 
 %the result will be written to 
 loc = strcat('../../libdai/examples/data/HSMMtraining_',num2str(ID),'.txt');
@@ -34,7 +34,7 @@ for k=1:length(seq_ind)
     
     fprintf(fidhsmm, [format,'%d\n'], dataHSMM'); 
     
-    train{i} = obs;    
+    train{k} = obs;    
 end
 
 

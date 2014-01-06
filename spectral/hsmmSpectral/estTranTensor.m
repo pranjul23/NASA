@@ -35,7 +35,6 @@ tran_end_ind = N - span;
 
 iter_ind = tran_start_ind : tran_end_ind;
 
-
 for k = 1:length(iter_ind)
     
     i = iter_ind(k);
@@ -101,6 +100,8 @@ for k = 1:length(iter_ind)
     %scale the computed multdim array and convert in to tensor class
     scaled_tens = scaled_tens + tens;
     scaled_tens_inv = scaled_tens_inv + tens_inv; 
+    
+    fprintf('Spectral: tran tensor %.0f\n', k/length(iter_ind)*100);    
 end
 
 scaled_tens = scaled_tens/length(iter_ind);

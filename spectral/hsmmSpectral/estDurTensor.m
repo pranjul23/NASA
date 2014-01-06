@@ -90,8 +90,8 @@ for k = 1:length(iter_ind)
     scaled_tens = scaled_tens + tens;
     scaled_tens_inv = scaled_tens_inv + tens_inv;  
     
+    fprintf('Spectral: dur tensor %.0f\n', k/length(iter_ind)*100);    
 end
-
 
 scaled_tens = scaled_tens/length(iter_ind);
 scaled_tens_inv = scaled_tens_inv/length(iter_ind);

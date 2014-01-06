@@ -7,16 +7,16 @@ clc;
 ID = 29;
 
 %number of observation symbols
-Nobs = 13;
+Nobs = 10;
 
 
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid = 10;
+Nhid = 7;
 
 %max duration
-Dmax = 100;
+Dmax = 45;
 
 %min duration
 Dmin = 1;
@@ -43,17 +43,17 @@ test = createTestingAir_real(ID);
 
 origin = pwd;
 
-cd '../tensor_toolbox';
-addpath(pwd);
-cd(origin);
-
-cd '../../libdai/examples/'    
-   system(['./hsmm ', num2str(ID), ' 70']);    
-cd(origin);
-
-loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '.txt');
-em = load(loc);
+% cd '../tensor_toolbox';
+% addpath(pwd);
+% cd(origin);
+% 
+% cd '../../libdai/examples/'    
+%    system(['./hsmm ', num2str(ID), ' 70']);    
+% cd(origin);
+% 
+% loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '.txt');
+% em = load(loc);
 
 sp = hsmm(train, test, Nobs, Nhid, Dmin, Dmax, [], [], [], [], 0);
 
-save(['RealResults', num2str(ID), '.mat'], 'em', 'sp');
+% save(['RealResults', num2str(ID), '.mat'], 'em', 'sp');

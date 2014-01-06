@@ -19,6 +19,12 @@ tens = zeros(obsDim*(ones(1, numObs+2)));
 indices = [1 2 getRightInd(3, stateDim, durMax, numObs)];
 
 ind = train(:, indices);
+
+%for sequences of unequal length
+%rows which contain -1 are invalid, need to delete whole row
+inv_ind = (sum(ind<0,2)>0);
+ind(inv_ind,:)=[];
+
 ind = [ind(:,1)  ind(:, 2:m)-ones(size(ind(:, 2:m)))];
 ind = ind*P;
 

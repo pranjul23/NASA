@@ -1,9 +1,9 @@
 function test = createTestingAir_real(ID)
 
-load('data.mat');
+load('dataNorm.mat');
 
-seq_anom_ind = 126:215;
-seq_norm_ind = 216:length(actions);
+seq_anom_ind = 1:4;
+seq_norm_ind = 1:4;
 
 %the result will be written to 
 loc = strcat('../../libdai/examples/data/HSMMtraining_',num2str(ID),'.txt');
@@ -42,6 +42,7 @@ end
 
 %% ====================== ANOMALY DATA ====================================
 
+load('dataAnom.mat');
 
 %second sequences are anomalous ones
 for k=1:length(seq_anom_ind)

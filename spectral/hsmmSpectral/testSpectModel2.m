@@ -12,11 +12,11 @@ L = size(test,1);
 result = zeros(L,1);
 
 
-% rootTensor.tensor = tensor(rootTensor.tensor);
-% tailTensor = tensor(tailTensor);
-% obsTensor = tensor(obsTensor);
-% tranTensor = tensor(tranTensor);
-% durTensor = tensor(durTensor);
+% rootTensor = sptensor(rootTensor);
+% tailTensor = sptensor(tailTensor);
+% obsTensor = sptensor(obsTensor);
+% tranTensor = sptensor(tranTensor);
+% durTensor = sptensor(durTensor);
 
 for i=1:L
     
@@ -81,8 +81,9 @@ for i=1:L
     root = ttt(root, obs2, 1, 1);    
     
     res = ttt(root, res, 1:numObs, 1:numObs); 
-    result(i) = res;
-    i
+    
+    %output normalized log of result
+    result(i) = log(abs(res))/length(sequence);    
 end
 
 

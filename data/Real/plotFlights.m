@@ -1,243 +1,137 @@
 %script to plot flight trajectories from NASA dataset
+close all
+load '../../spectral/hsmmSpectral/dataNorm.mat'
 
-endPoints = zeros(15000,3);
-fileNames = cell(15000,1);
+N = length(data);
 
-origin = pwd;
+%visualize trajectories
+f1 = figure;
 
-
-folder = 'Tail_6';
-
-c1 = 1;
-c2 = 1;
-
-files = 71:73;
-
-%% ========================================================================
-% determine take-off and landing positions    
-
-for f = 1:length(files)
+for i=1:N
     
-    k = 1;
+    load(data{i});
     
-    while(1)        
-                
-        loc = [folder num2str(files(f)) '_' num2str(k)];
-        
-        if ~exist(loc, 'dir')
-           break; 
-        end
-        
-        list = dir(loc);
-        cd(loc);
-        
-        for i=3:length(list)
-            
-            load(list(i).name);
-            
-            if(length(unique(PH.data)) < 6)
-                fprintf('skipped %d: corrupt PH - missing symbols ', i);
-                disp(unique(PH.data)');
-                continue;
-            end
-            
-            if(any(unique(PH.data)>7))
-                fprintf('skipped %d: corrupt PH - extra symbols ', i);
-                disp(unique(PH.data)');
-                continue;
-            end
-            
-            if( length(unique(LATP.data)) < 10 || length(unique(LONP.data)) < 10 )
-                fprintf('skipped %d: corrupt LATP or LONP\n', i);
-                continue;
-            end
-            
-            
-            %select part of flight from takeoff to landing
-            assert(PH.Rate == 1);
-            ind = ((PH.data ~= 2)&(PH.data ~= 1)&(PH.data ~= 0));
-            
-            assert(length(unique(PH.data(ind))) <= 5);
-            
-            
-            %altitude
-            assert(RALT.Rate == 8);
-            A = RALT.data(1:8:end);
-            
-            if(max(A)<2000)
-                fprintf('skipped %d: currupt RALT ', i);
-                disp(max(A));
-                continue;
-            end
-            
-            
-            %lat lon alt [deg deg m]
-            assert(LONP.Rate == 1); assert(LATP.Rate == 1);
-            LLA = [LATP.data(ind) LONP.data(ind) 0.3048*A(ind)];
-            
-            %transform to ECEF coordinate system
-            xyz = lla2ecef(LLA);
-            
-            if any(any(xyz == 0))
-                fprintf('skipped %d: corrupt trajectory \n', i);
-                continue;
-            end
-            
-            if norm(xyz(1,:)-xyz(end,:)) < 10000
-                fprintf('skipped %d: too short trajectory \n', i);
-                continue;
-            end
-            
-            plot3(xyz(:,1), xyz(:,2), xyz(:,3), '-c');
-            hold on
-            plot3(xyz(end,1), xyz(end,2), xyz(end,3), 'o', 'markersize', 5, 'MarkerFaceColor','b','MarkerEdgeColor','b');
-            hold on
-            plot3(xyz(1,1), xyz(1,2), xyz(1,3), 'o', 'markersize', 5, 'MarkerFaceColor','r','MarkerEdgeColor','r');
-            
-            endPoints(c1,:) = xyz(1,:); %odd - departure airport
-            endPoints(c1+1,:) = xyz(end,:); %even - arrival airport
-            
-            fileNames{c2} = [loc '/' list(i).name];
-            
-            c1 = c1 + 2;
-            c2 = c2 + 1;
-        end
-        
-        %  grid on
-        %  axis equal
-        
-        cd(origin);
-        
-        k = k + 1;
-    end    
+    %select part of flight from takeoff to landing
+    ind = zeros(size(PH.data))';
+    ind(startInd(i):endInd(i))=1;
+    ind=logical(ind);
+    
+    %altitude
+    A = RALT.data(1:8:end);
+    
+    %lat lon alt [deg deg m]
+    assert(LONP.Rate == 1); assert(LATP.Rate == 1);
+    LLA = [LATP.data(ind) LONP.data(ind) 0.3048*A(ind)];
+    
+    %transform to ECEF coordinate system
+    xyz = lla2ecef(LLA);
+    
+    plot3(xyz(:,1), xyz(:,2), xyz(:,3), '-g');
+    
+    hold on
+    plot3(xyz(end,1), xyz(end,2), xyz(end,3), 'o', 'markersize', 5, 'MarkerFaceColor','b','MarkerEdgeColor','b');
+    
+    hold on
+    plot3(xyz(1,1), xyz(1,2), xyz(1,3), 'o', 'markersize', 5, 'MarkerFaceColor','c','MarkerEdgeColor','c');
 end
 
-% %quick visualization of locations of all the airports
-% plot3(endPoints(1:2:end,1), endPoints(1:2:end,2), endPoints(1:2:end,3), '.r'); %departure
-% hold on;
-% plot3(endPoints(2:2:end,1), endPoints(2:2:end,2), endPoints(2:2:end,3), '.b'); %arrival
-% grid on
-% axis equal
-
-%% ========================================================================
-% cluster
-
-%first, remove zero rows (extra left after preallocaiton of space)
-endPoints(c1:end, :) = [];
-fileNames(c2:end) = [];
-
-
-%compute all pairwise distances
-D = dist(endPoints');
-
-%points that are close are from same airport
-L = D<=50000;
-
-%find # of clusters and cluster membership
-[S, C] = graphconncomp(sparse(double(L)), 'Directed', false);
-
-[~, largest_clust_ID] = sort((histc(C, unique(C))), 'descend');
-
-%% ========================================================================
-% select flights 
-
-% SINGLE ARR_DEP PAIR
-% %cluster ID for departure airport
-% dep = 88;
-% 
-% %select odd indeces - they correspond to departure airports
-% ind = find(C==dep);
-% 
-% ind_odd_dep = ind(logical(mod(ind,2)));
-% ind_even = ind_odd_dep + 1;
-% 
-% %find arrival airport such that number of depart-arrival is maximized
-% arriv = C(ind_even);
-% 
-% arriv_uniq = unique(arriv);
-% M = -inf;
-% M_val = 0;
-% 
-% for i=1:length(arriv_uniq)
-%     tmp = nnz(arriv == arriv_uniq(i));
-%     if tmp > M
-%         M = tmp;
-%         M_val = arriv_uniq(i);
-%     end
-% end
-% 
-% ind = find(C==M_val);
-% ind_odd_arr = ind(~logical(mod(ind,2)))-1;
-% 
-% ind = intersect(ind_odd_dep, ind_odd_arr);
-% 
-% 
-% %transform to indeces for fileNames
-% ind = (ind+1)/2;
-
-
-% ALL FLIGHTS COMMING TO ARR
-arr = largest_clust_ID(1);
-
-%select all aiplanes arriving to the same airport
-ind = find(C==arr);
-
-ind_even_arr = ind(~logical(mod(ind,2)));
-
-% %transform to indeces for fileNames
-ind = ind_even_arr/2;
-
-
-
-%pick selected file names
-data = fileNames(ind);
-
-%% ========================================================================
-%visualize resutls
-
-% N = length(data);
-% for i=1:N
-%     
-%     load(data{i});
-%     
-%     %select part of flight from takeoff to landing
-%     ind = ((PH.data ~= 2)&(PH.data ~= 1)&(PH.data ~= 0));
-%     
-%     %altitude
-%     A = RALT.data(1:8:end);
-%     
-%     %lat lon alt [deg deg m]
-%     assert(LONP.Rate == 1); assert(LATP.Rate == 1);
-%     LLA = [LATP.data(ind) LONP.data(ind) 0.3048*A(ind)];
-%     
-%     %transform to ECEF coordinate system
-%     xyz = lla2ecef(LLA);
-%     
-%     plot3(xyz(:,1), xyz(:,2), xyz(:,3), '-g');
-%     hold on
-%     plot3(xyz(end,1), xyz(end,2), xyz(end,3), 'o', 'markersize', 5, 'MarkerFaceColor','b','MarkerEdgeColor','b');
-%     
-%     hold on
-%     plot3(xyz(1,1), xyz(1,2), xyz(1,3), 'o', 'markersize', 5, 'MarkerFaceColor','r','MarkerEdgeColor','r');
-% end
-% 
-% grid on
-% axis equal
-
-%% ========================================================================
-% exctract pilot actions
-
-[actions rates] = extractPilotActions(data);
-
-save('../../spectral/hsmmSpectral/data.mat', 'actions', 'rates');
+grid on
+axis equal
 
 
 
 
 
+%number of actions
+A = 10;
 
+%pilot actions
+act_names = cell(A,1);
+k=1;
 
+act_names{k} = 'ABRK'; %airbrake position
+k=k+1;
+act_names{k} = 'ALTS'; %selected altitude
+k=k+1;
+act_names{k} = 'CASS'; %selected airspeed
+k=k+1;
+% act_names{k} = 'CCPC'; %control column position capt
+% k=k+1;
+% act_names{k} = 'CWPC'; %control wheel position capt
+% k=k+1;
+act_names{k} = 'FLAP'; %flap position
+k=k+1;
+act_names{k} = 'HDGS'; %selected heading
+k=k+1;
+act_names{k} = 'MNS'; %selected mach
+k=k+1;
+act_names{k} = 'N1C'; %N1 command
+k=k+1;
+% act_names{k} = 'RUDP'; %rudder pedal position
+% k=k+1;
+act_names{k} = 'VSPS'; %selected vertical speed
+k=k+1;
+act_names{k} = 'TMODE'; %thrust mode
+k=k+1;
+act_names{k} = 'VMODE'; %vertical engage mode
+k=k+1;
 
+rates = [1 1 1 1 1 1 4 1 1 1];
+
+%visualize actions
+f2 = figure;
+
+for i = 1:N
+    
+    load(data{i});        
+        
+    %select part of flight from takeoff to landing
+    ind = zeros(size(PH.data))';
+    ind(startInd(i):endInd(i))=1;
+    ind=logical(ind);    
+    
+    for k = 1:A
+        
+        variab = genvarname(act_names{k});
+       
+        if rates(k) == 1
+            D = eval([variab '.data(ind)']);
+        else
+            D = eval([variab '.data']);
+            D = D(1:rates(k):end);
+            D = D(ind);
+        end
+        
+        subplot(A+1,1,k);
+        plot(D);
+        set(gca,'XTickLabel',[]);
+        ylabel(act_names{k});
+    end    
+    
+    subplot(A+1,1,k+1);
+    plot(PH.data(ind));
+    set(gca,'XTickLabel',[])
+    ylabel('PH');
+    
+    
+    AA = RALT.data(1:8:end);
+    
+    %lat lon alt [deg deg m]
+    LLA = [LATP.data(ind) LONP.data(ind) 0.3048*AA(ind)];
+    
+    %transform to ECEF coordinate system
+    xyz = lla2ecef(LLA);
+    
+    figure(f1);
+    o1 = plot3(xyz(:,1), xyz(:,2), xyz(:,3), '-r', 'linewidth', 3);
+    o2 = plot3(xyz(1,1), xyz(1,2), xyz(1,3), 'o', 'markersize', 10, 'MarkerFaceColor','k','MarkerEdgeColor','k');
+    
+    pause(5);    
+    
+    delete(o1);
+    delete(o2);
+    figure(f2);    
+end
 
 
 

@@ -2,7 +2,8 @@ function train_mat = createTrainingAir_real(ID)
 
 load('dataNorm.mat');
 
-seq_ind = 5:length(actions);
+seq_ind = 1:length(actions);
+seq_ind([3 11 31 65 105 218 236]) = [];
 
 %the result will be written to 
 loc = strcat('../../libdai/examples/data/HSMMtraining_',num2str(ID),'.txt');

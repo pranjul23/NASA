@@ -43,17 +43,17 @@ test = createTestingAir_real(ID);
 
 origin = pwd;
 
-% cd '../tensor_toolbox';
-% addpath(pwd);
-% cd(origin);
-% 
-% cd '../../libdai/examples/'    
-%    system(['./hsmm ', num2str(ID), ' 70']);    
-% cd(origin);
-% 
-% loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '.txt');
-% em = load(loc);
+cd '../tensor_toolbox';
+addpath(pwd);
+cd(origin);
+
+cd '../../libdai/examples/'    
+   system(['./hsmm ', num2str(ID), ' 70']);    
+cd(origin);
+
+loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '.txt');
+em = load(loc);
 
 sp = hsmm(train, test, Nobs, Nhid, Dmin, Dmax, [], [], [], [], 0);
 
-% save(['RealResults', num2str(ID), '.mat'], 'em', 'sp');
+save(['RealResults', num2str(ID), '.mat'], 'em', 'sp');

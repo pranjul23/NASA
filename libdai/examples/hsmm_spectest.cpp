@@ -18,16 +18,17 @@ using namespace std;
 
 int main( int argc, char *argv[] ){
 
-	size_t ID = 0, max_num_iter = 0, Ntrain;
+	size_t ID = 0, max_num_iter = 0, Ntrain, Ltrain;
 
-	if ( argc != 4) {
-		cout << "Usage: " << argv[0] << " <ID> <max_num_iter> <Ntrain>" << endl << endl;
+	if ( argc != 5) {
+		cout << "Usage: " << argv[0] << " <ID> <max_num_iter> <Ntrain> <Ltrain>" << endl << endl;
 		return 1;
 	}
 	else {
 		ID = atoi(argv[1]);
 		max_num_iter = atoi(argv[2]);
 		Ntrain = atoi(argv[3]);
+		Ltrain = atoi(argv[4]);
 	}
 
 	stringstream trainData, initFactor, testData, learntFactor, trueFactor;
@@ -54,8 +55,8 @@ int main( int argc, char *argv[] ){
 
 	//NOTE:  in the code, if the variable "int dummy" is present
 	//it means we use a code for different HSMM model
-	//last arg tells how many training data use in training
-	model.train(initFactor.str().c_str(), ID, 0, 0, Ntrain);
+	//Ntrain tells how many training data use in training
+	model.train(initFactor.str().c_str(), ID, 0, 0);
 	evaluation.test_loglik(learntFactor.str().c_str(), ID, "test", 0, 0);
 
 
@@ -64,7 +65,7 @@ int main( int argc, char *argv[] ){
 		//===========================================================
 		//train model
 
-		model.train(learntFactor.str().c_str(), ID, iter, 0, Ntrain);
+		model.train(learntFactor.str().c_str(), ID, iter, 0, Ntrain, Ltrain);
 
 		//===========================================================
 		//test model

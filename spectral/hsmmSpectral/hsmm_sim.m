@@ -4,7 +4,7 @@ clear variables;
 clc;
 
 %unique ID
-ID = 30;
+ID = 50;
 
 %number of observation symbols
 Nobs = 3;
@@ -74,10 +74,10 @@ createHSMMfactorGraph(Nobs, Nhid_true, Dmax_true, A1_true, A_true, D_true, O_tru
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
 %simulation time
-Ttrain = 100;
+Ttrain = 100000;
 
 %number of obseration sequences
-numSeq = 1000000;
+numSeq = 1000;
 
 train = createTraining_sim(Ttrain, numSeq, Nobs, Nhid_true, Dmax_true, A1_true, A_true, D_true, O_true, ID);
 
@@ -116,7 +116,10 @@ save(strcat('SpectralTainData', num2str(ID),'.mat'), ...
  
 %% =============== RUN HSMM and EM ========================================
 
-Ntrain = [500, 1000, 5000, 10000, 100000, 1000000];
+%Ntrain = [500, 1000, 5000, 10000, 100000, 1000000];
+
+Ntrain = 1000;
+Ltrain = [100, 1000, 10000, 100000];
 
 origin = pwd;
 
@@ -126,10 +129,12 @@ cd '../tensor_toolbox';
 addpath(pwd);
 cd(origin);
 
-for k = 1:length(Ntrain)
+assert(length(Ntrain) == 1)
+
+for k = 1:length(Ltrain)
     
   cd '../../libdai/examples/'    
-    system(['./hsmm_spectest ', num2str(ID), ' 70 ', num2str(Ntrain(k))]);    
+    system(['./hsmm_spectest ', num2str(ID), ' 70 ', num2str(Ntrain), ' ', num2str(Ltrain(k))]);    
   cd(origin);
     
     N = 7;
@@ -145,9 +150,9 @@ for k = 1:length(Ntrain)
         em(:,i+1) = load(loc);
     end
         
-    sp = hsmm(train(1:Ntrain(k),:), test, Nobs, Nhid_true, Dmin_true, Dmax_true, A1_true, A_true, D_true, O_true, flg);
+    sp = hsmm(train(:, 1:Ltrain(k)), test, Nobs, Nhid_true, Dmin_true, Dmax_true, A1_true, A_true, D_true, O_true, flg);
     
-    save(['emTestResults', num2str(ID), '-', num2str(k), '.mat'], 'tru', 'em', 'sp');        
+    save(['simTestResults', num2str(ID), '-', num2str(k), '.mat'], 'tru', 'em', 'sp');        
 end
 
 

@@ -265,7 +265,7 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter){
 
 //the EM training algorithm applied to updated version of HSMM
 
-void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int dummy, int Ntrain){
+void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int dummy, int Ntrain, int Ltrain){
 
 	// Read FactorGraph from the file specified by the first command line argument
 	HSMMparam param(filename, 0);
@@ -320,21 +320,41 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 		Ntrain = data.size();
 	}
 
-	for(size_t iter = 0; iter<max_num_iter; iter++){
+	size_t len = 0;
+
+	for(size_t iter = 0; iter < max_num_iter; iter++){
 
 		for(size_t i=0; i<Ntrain; i++) {
+
+
+			if(Ltrain == -1 or Ltrain > data[i].size()){
+				len = data[i].size();
+			}
+			else{
+				len = Ltrain;
+			}
 
 			//initialize HSMM of size equal the number of observations
 			graph = new FactorGraph();
 
-			graph->createHSMMFactorGraph(param.init, param.dist, data[i].size(), 0);
+			graph->createHSMMFactorGraph(param.init, param.dist, len, 0);
 
 			jt = new JTree(*graph, opts("updates",string("HUGIN"))("heuristic",string("MINWEIGHT")) );
 
 			//clamp the observation variables to their observed values
-			for(size_t j = 0; j < data[i].size(); j++ ){
+			for(size_t j = 0; j < len; j++ ){
+
 				//cout << "clamping var" << data[i][j].first << " to value " << data[i][j].second << "\n";
-				jt->clamp(data[i][j].first, data[i][j].second);
+
+				//decrement index of last measurement
+				//this is needed because in new HSMM model at the last step there is no d_t
+				//but if we simply truncate training data, then there will be d_t
+				if(j==len-1 and len < data[i].size()){
+					jt->clamp(data[i][j].first-1, data[i][j].second);
+				}
+				else{
+					jt->clamp(data[i][j].first, data[i][j].second);
+				}
 			}
 
 			jt->init();
@@ -368,7 +388,7 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 			//================= prepare variables to calculate transition distribution ===============
 			vs.clear();
 
-			for(size_t j = 1; j < data[i].size()-1; j++){
+			for(size_t j = 1; j < len-1; j++){
 				X |= graph->var(3*j-3);
 				X |= graph->var(3*j-2);
 				X |= graph->var(3*j+1);
@@ -378,9 +398,9 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 				X /= tmp;
 			}
 
-			X |= graph->var(3*(data[i].size()-1) - 3);
-			X |= graph->var(3*(data[i].size()-1) - 2);
-			X |= graph->var(3*(data[i].size()-1));
+			X |= graph->var(3*(len-1) - 3);
+			X |= graph->var(3*(len-1) - 2);
+			X |= graph->var(3*(len-1));
 			vs.push_back(X);
 
 			tmp = X;
@@ -392,7 +412,7 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 			vs.clear();
 
 
-			for(size_t j = 1; j < data[i].size()-1; j++){
+			for(size_t j = 1; j < len-1; j++){
 				X |= graph->var(3*j-3);
 				X |= graph->var(3*j);
 				X |= graph->var(3*j+1);
@@ -416,7 +436,7 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 			tmp = X;
 			X /= tmp;
 
-			for(size_t j = 1; j < data[i].size()-1; j++){
+			for(size_t j = 1; j < len-1; j++){
 				X |= graph->var(3*j+1);
 				X |= graph->var(3*j+2);
 				vs.push_back(X);
@@ -425,8 +445,8 @@ void TrainHSMM::train(const char* filename, size_t ID, size_t max_num_iter, int 
 				X /= tmp;
 			}
 
-			X |= graph->var(3*(data[i].size()-1));
-			X |= graph->var(3*(data[i].size()-1) + 1);
+			X |= graph->var(3*(len-1));
+			X |= graph->var(3*(len-1) + 1);
 			vs.push_back(X);
 
 			tmp = X;

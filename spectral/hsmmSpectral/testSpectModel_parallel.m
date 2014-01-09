@@ -13,7 +13,7 @@ L = size(test,1);
 result = zeros(L, 1);
 
 %number of cores
-C = 7;
+C = 6;
 
 assert(L >= C);
 

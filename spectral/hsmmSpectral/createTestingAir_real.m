@@ -2,11 +2,11 @@ function test = createTestingAir_real(ID)
 
 load('dataNorm.mat');
 
-seq_anom_ind = [3 11 31 65 105 218 236];
-seq_norm_ind = [3 11 31 65 105 218 236];
+seq_anom_ind = [3 11 40 94 135 218 236];
+seq_norm_ind = [3 11 40 94 135 218 236 236 236];
 
 %the result will be written to 
-loc = strcat('../../libdai/examples/data/HSMMtraining_',num2str(ID),'.txt');
+loc = strcat('../../libdai/examples/data/HSMMtesting_',num2str(ID),'.txt');
 fidhsmm = fopen(loc, 'w');
 
 %% ========================= NORMAL DATA ==================================
@@ -51,6 +51,10 @@ for k=1:length(seq_anom_ind)
     
     obs = actions{i};
     obs(obs == 7) = []; %!!! REMOVE THIS ********************************************
+    
+    if i == 236
+        obs = randi(10, 1, 893);
+    end
     
     lenObs = length(obs);            
     

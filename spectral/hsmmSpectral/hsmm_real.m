@@ -4,7 +4,7 @@ clear variables;
 clc;
 
 %unique ID
-ID = 29;
+ID = 31;
 
 %number of observation symbols
 Nobs = 10;
@@ -13,10 +13,10 @@ Nobs = 10;
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid = 7;
+Nhid = 5;
 
 %max duration
-Dmax = 45;
+Dmax = 24;
 
 %min duration
 Dmin = 1;

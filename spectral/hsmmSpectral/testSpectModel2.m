@@ -37,7 +37,7 @@ for i=1:L
     
     res = ttt(tailTensor, tail_obs, 1, 1);
     
-    scale = 10^5;%10^(round(length(sequence)/2));    
+    scale = 10^10;%10^(round(length(sequence)/2));    
     res = res * scale;
     
     %3 is the last index  before rootTensor starts

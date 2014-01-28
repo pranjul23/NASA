@@ -4,10 +4,10 @@ clear variables;
 clc;
 
 %unique ID
-ID = 31;
+ID = 10;
 
 %number of observation symbols
-Nobs = 10;
+Nobs = 9;
 
 
 %% ================ INIT PARAMETERS =======================================
@@ -41,19 +41,21 @@ test = createTestingAir_real(ID);
 
 %% =============== RUN HSMM and EM ========================================
 
-origin = pwd;
-
-cd '../tensor_toolbox';
-addpath(pwd);
-cd(origin);
-
-cd '../../libdai/examples/'    
-   system(['./hsmm ', num2str(ID), ' 70']);    
-cd(origin);
-
-loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '.txt');
-em = load(loc);
+% origin = pwd;
+% 
+% cd '../tensor_toolbox';
+% addpath(pwd);
+% cd(origin);
+% 
+% cd '../../libdai/examples/'    
+%    system(['./hsmm ', num2str(ID), ' 70']);    
+% cd(origin);
+% 
+% loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '.txt');
+% em = load(loc);
 
 sp = hsmm(train, test, Nobs, Nhid, Dmin, Dmax, [], [], [], [], 0);
 
-save(['RealResults', num2str(ID), '.mat'], 'em', 'sp');
+% save(['RealResults', num2str(ID), '.mat'], 'em', 'sp');
+save(['RealResults', num2str(ID), '.mat'], 'sp');
+

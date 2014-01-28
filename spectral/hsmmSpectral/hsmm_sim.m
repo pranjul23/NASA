@@ -7,16 +7,16 @@ clc;
 ID = 50;
 
 %number of observation symbols
-Nobs = 3;
+Nobs = 6;
 
 
 %% =============== TRUE PARAMETERS ========================================
 
 %number of hidden states
-Nhid_true = 2;
+Nhid_true = 3;
 
 %maximum possible duration
-Dmax_true = 2;
+Dmax_true = 5;
 
 %minimum possible duration
 Dmin_true = 1;
@@ -32,10 +32,10 @@ end
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid_init = 2;
+Nhid_init = 3;
 
 %max duration
-Dmax_init = 2;
+Dmax_init = 5;
 
 %min duration
 Dmin_init = 1;
@@ -46,10 +46,10 @@ Dmin_init = 1;
 %% =============== ANOMALY PARAMETERS =====================================
 
 %number of hidden states
-Nhid_anom = 2;
+Nhid_anom = 3;
 
 %number of observation steps
-Dmax_anom = 2;
+Dmax_anom = 5;
 
 %min duration
 %Dmin_anom = Dmax_true;
@@ -74,10 +74,10 @@ createHSMMfactorGraph(Nobs, Nhid_true, Dmax_true, A1_true, A_true, D_true, O_tru
 %% =============== CREATE TRAINING SEQUENCE ===============================
 
 %simulation time
-Ttrain = 100000;
+Ttrain = 100;
 
 %number of obseration sequences
-numSeq = 1000;
+numSeq = 100;
 
 train = createTraining_sim(Ttrain, numSeq, Nobs, Nhid_true, Dmax_true, A1_true, A_true, D_true, O_true, ID);
 
@@ -90,7 +90,7 @@ span =  Dmax_true;
 Ttest = 100;
 
 %number of obseration sequences
-numSeq = 1000;
+numSeq = 100;
 
 disp('Create testing start');
 test = createTesting_sim(Ttest, numSeq, Nobs, ...
@@ -133,22 +133,22 @@ assert(length(Ntrain) == 1)
 
 for k = 1:length(Ltrain)
     
-  cd '../../libdai/examples/'    
-    system(['./hsmm_spectest ', num2str(ID), ' 70 ', num2str(Ntrain), ' ', num2str(Ltrain(k))]);    
-  cd(origin);
-    
-    N = 7;
-    
-    %true joint likelihood
-    loc = strcat('../../libdai/examples/data/HSMMlikelihood_true_', num2str(ID), '.txt');
-    tru = load(loc);
-    
-    %em-computed joint likelihood 
-    em = zeros(numSeq, N+1);
-    for i=0:N
-        loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '-', num2str(i), '.txt');
-        em(:,i+1) = load(loc);
-    end
+%   cd '../../libdai/examples/'    
+%     system(['./hsmm_spectest ', num2str(ID), ' 70 ', num2str(Ntrain), ' ', num2str(Ltrain(k))]);    
+%   cd(origin);
+%     
+%     N = 7;
+%     
+%     %true joint likelihood
+%     loc = strcat('../../libdai/examples/data/HSMMlikelihood_true_', num2str(ID), '.txt');
+%     tru = load(loc);
+%     
+%     %em-computed joint likelihood 
+%     em = zeros(numSeq, N+1);
+%     for i=0:N
+%         loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '-', num2str(i), '.txt');
+%         em(:,i+1) = load(loc);
+%     end
         
     sp = hsmm(train(:, 1:Ltrain(k)), test, Nobs, Nhid_true, Dmin_true, Dmax_true, A1_true, A_true, D_true, O_true, flg);
     

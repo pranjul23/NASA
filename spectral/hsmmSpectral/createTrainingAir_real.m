@@ -3,7 +3,7 @@ function train_mat = createTrainingAir_real(ID)
 load('dataNorm.mat');
 
 seq_ind = 1:length(actions);
-seq_ind([3 11 40 94 135 218 236]) = [];
+seq_ind([1 100 1000 10000]) = [];
 
 %the result will be written to 
 loc = strcat('../../libdai/examples/data/HSMMtraining_',num2str(ID),'.txt');
@@ -26,14 +26,14 @@ for k=1:length(seq_ind)
         maxLen = lenObs;
     end
     
-    fprintf(fidhsmm, '%d\n', lenObs);
+%     fprintf(fidhsmm, '%d\n', lenObs); !!!!!!!!! MODIFY THIS      !!!!!!!!!!!!!!!!!!!!!!!!
     
     %remove 1 from all observations (in C++ we assume it starts with 0)    
     dataHSMM = [[2:3:3*(lenObs-1)-1 3*(lenObs-1)+1]; obs-1];
     
     format = repmat('%d\t', 1, lenObs-1);
     
-    fprintf(fidhsmm, [format,'%d\n'], dataHSMM'); 
+%     fprintf(fidhsmm, [format,'%d\n'], dataHSMM');  !!!!!!!!! MODIFY THIS      !!!!!!!!!!!!!!!!!!!!!!!!
     
     train{k} = obs;    
 end

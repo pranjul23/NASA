@@ -83,8 +83,8 @@ for i=1:L
     res = ttt(root, res, 1:numObs, 1:numObs); 
     
     %output normalized log of result
-    result(i) = res;
-    %result(i) = log(abs(res))/length(sequence);    
+    %result(i) = res;
+    result(i) = log(abs(res))/length(sequence);    
 end
 
 

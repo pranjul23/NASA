@@ -41,12 +41,12 @@ test = createTestingAir_real(ID);
 
 %% =============== RUN HSMM and EM ========================================
 
-% origin = pwd;
-% 
-% cd '../tensor_toolbox';
-% addpath(pwd);
-% cd(origin);
-% 
+origin = pwd;
+
+cd '../tensor_toolbox';
+addpath(pwd);
+cd(origin);
+
 % cd '../../libdai/examples/'    
 %    system(['./hsmm ', num2str(ID), ' 70']);    
 % cd(origin);

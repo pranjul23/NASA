@@ -1,5 +1,5 @@
 %function to train and test spectral model
-function sp = hsmm(train, test, Nobs, Nhid_true, Dmin_true, Dmax_true, A1_true, A_true, D_true, O_true, flg)
+function [sp len] = hsmm(train, test, Nobs, Nhid_true, Dmin_true, Dmax_true, A1_true, A_true, D_true, O_true, flg)
 
 
 disp('Spectral Training ...');

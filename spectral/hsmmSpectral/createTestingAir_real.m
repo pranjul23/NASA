@@ -2,8 +2,8 @@ function test = createTestingAir_real(ID)
 
 load('dataAnom.mat');
 
-seq_anom_ind = 1:46;
-seq_norm_ind = 47:117;
+seq_anom_ind = 101:300;
+seq_norm_ind = 1:100;
 
 %the result will be written to 
 loc = strcat('../../libdai/examples/data/HSMMtesting_',num2str(ID),'.txt');

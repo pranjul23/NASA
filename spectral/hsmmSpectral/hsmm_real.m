@@ -16,7 +16,7 @@ Nobs = 9;
 Nhid = 8;
 
 %max duration
-Dmax = 10;
+Dmax = 50;
 
 %min duration
 Dmin = 1;

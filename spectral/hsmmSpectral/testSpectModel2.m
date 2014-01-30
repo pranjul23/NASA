@@ -1,4 +1,4 @@
-function result = testSpectModel2(test, obsDim, numObs, ...
+function [result len] = testSpectModel2(test, obsDim, numObs, ...
                                   rootTensor,  ...
                                   tailTensor,  ...
                                   obsTensor,  ...
@@ -10,7 +10,7 @@ function result = testSpectModel2(test, obsDim, numObs, ...
 L = size(test,1);
 
 result = zeros(L,1);
-
+len = zeros(L,1);
 
 % rootTensor = sptensor(rootTensor);
 % tailTensor = sptensor(tailTensor);
@@ -37,7 +37,7 @@ for i=1:L
     
     res = ttt(tailTensor, tail_obs, 1, 1);
     
-    scale = 10^10;%10^(round(length(sequence)/2));    
+    scale = 1;%10^(round(length(sequence)/2));    
     res = res * scale;
     
     %3 is the last index  before rootTensor starts
@@ -83,8 +83,9 @@ for i=1:L
     res = ttt(root, res, 1:numObs, 1:numObs); 
     
     %output normalized log of result
-    %result(i) = res;
-    result(i) = log(abs(res))/length(sequence);    
+    result(i) = res;
+    %result(i) = log(abs(res))/length(sequence);    
+    i
 end
 
 

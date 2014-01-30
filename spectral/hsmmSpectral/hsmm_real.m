@@ -13,10 +13,10 @@ Nobs = 9;
 %% ================ INIT PARAMETERS =======================================
 
 %number of hidden states
-Nhid = 5;
+Nhid = 8;
 
 %max duration
-Dmax = 24;
+Dmax = 10;
 
 %min duration
 Dmin = 1;
@@ -54,8 +54,8 @@ cd(origin);
 % loc = strcat('../../libdai/examples/data/HSMMlikelihood_test_', num2str(ID), '.txt');
 % em = load(loc);
 
-sp = hsmm(train, test, Nobs, Nhid, Dmin, Dmax, [], [], [], [], 0);
+[sp len] = hsmm(train, test, Nobs, Nhid, Dmin, Dmax, [], [], [], [], 0);
 
 % save(['RealResults', num2str(ID), '.mat'], 'em', 'sp');
-save(['RealResults', num2str(ID), '.mat'], 'sp');
+save(['RealResults', num2str(ID), '.mat'], 'sp', 'len');
 
